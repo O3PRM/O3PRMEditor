@@ -1,0 +1,4 @@
+-I/usr/local/include
+-o
+/Users/lto/Projets/o3prmeditor/debug/controllers/moc_editcontroller.cxx
+/Users/lto/Projets/o3prmeditor/src/controllers/editcontroller.h

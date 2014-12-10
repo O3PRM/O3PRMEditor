@@ -1,0 +1,4 @@
+-I/usr/local/include
+-o
+/Users/lto/Projets/o3prmeditor/debug/moc_qkeysequencewidget.cxx
+/Users/lto/Projets/o3prmeditor/src/qkeysequencewidget.h

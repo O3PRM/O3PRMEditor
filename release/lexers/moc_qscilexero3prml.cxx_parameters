@@ -1,0 +1,4 @@
+-I/usr/local/include
+-o
+/Users/lto/Projets/o3prmeditor/release/lexers/moc_qscilexero3prml.cxx
+/Users/lto/Projets/o3prmeditor/src/lexers/qscilexero3prml.h

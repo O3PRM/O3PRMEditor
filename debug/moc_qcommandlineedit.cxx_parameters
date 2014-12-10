@@ -1,0 +1,4 @@
+-I/usr/local/include
+-o
+/Users/lto/Projets/o3prmeditor/debug/moc_qcommandlineedit.cxx
+/Users/lto/Projets/o3prmeditor/src/qcommandlineedit.h

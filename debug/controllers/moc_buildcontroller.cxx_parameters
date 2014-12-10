@@ -1,0 +1,4 @@
+-I/usr/local/include
+-o
+/Users/lto/Projets/o3prmeditor/debug/controllers/moc_buildcontroller.cxx
+/Users/lto/Projets/o3prmeditor/src/controllers/buildcontroller.h

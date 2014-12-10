@@ -1,0 +1,4 @@
+-I/usr/local/include
+-o
+/Users/lto/Projets/o3prmeditor/debug/uis/moc_projectproperties.cxx
+/Users/lto/Projets/o3prmeditor/src/uis/projectproperties.h
