@@ -1,3 +1,16 @@
+Pour compiler en Relase:
+    cd release
+    cmake -DCMAKE_BUILD_TYPE=Release ../src
+    make
+
+Pour comiler en Debug:
+    cd debug
+    cmake -DCMAKE_BUILD_TYPE=Debug ../src
+    make
+
+
+Le reste du README est deprecated et sera bientôt mis à jour.
+
 
 	LICENCE :
 	
