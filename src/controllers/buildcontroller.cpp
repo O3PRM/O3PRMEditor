@@ -12,7 +12,7 @@
 #include "parsers/o3prmrinterpretation.h"
 
 #include <agrum/core/errorsContainer.h>
-#include <agrum/prm/o3prmr/O3prmrInterpreter.h>
+#include <agrum/PRM/o3prmr/O3prmrInterpreter.h>
 
 using namespace gum::prm::o3prm;
 

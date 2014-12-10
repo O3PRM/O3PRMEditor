@@ -2,7 +2,7 @@
 
 #include "qsciscintillaextended.h"
 #include "prmtreemodel.h"
-#include <agrum/prm/o3prm/O3prmReader.h>
+#include <agrum/PRM/o3prm/O3prmReader.h>
 
 #include <QDebug>
 

@@ -4,8 +4,8 @@
 #include <QStandardItemModel>
 #include <QStringList>
 
-#include <agrum/prm/PRM.h>
-#include <agrum/prm/o3prmr/O3prmrContext.h>
+#include <agrum/PRM/PRM.h>
+#include <agrum/PRM/o3prmr/O3prmrContext.h>
 
 #include "qsciscintillaextended.h"
 
