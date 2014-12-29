@@ -1,10 +1,7 @@
 # Declaring the project and generale info about it
 PROJECT(O3PRMEDITOR)
 
-
-set(AGRUM_INSTALLATION_DIRECTORY "/home/phw/usr")
-set(aGrUM_DIR "${AGRUM_INSTALLATION_DIRECTORY}/lib/cmake/aGrUM/")
-
+set(AGRUM_INSTALLATION_DIRECTORY "/usr/local/")
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
@@ -26,24 +23,37 @@ FIND_PACKAGE(Qscintilla REQUIRED)
 INCLUDE_DIRECTORIES(${QSCINTILLA_INCLUDE_DIRS})
 SET(LIBS ${LIBS} ${QSCINTILLA_LIBRARIES})
 
-include(ExternalProject)
-ExternalProject_Add(AGRUM
-    PREFIX aGrUM
-    GIT_REPOSITORY git://forge.lip6.fr/aGrUM
-    CONFIGURE_COMMAND cd <SOURCE_DIR> ; ./act --no-fun  agrum release -p linux -j 7
-)
+INCLUDE(ExternalProject)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    ExternalProject_Add(AGRUM-SRC
+        PREFIX aGrUM
+        GIT_REPOSITORY file:////Users/lto/Projets/aGrUM-dev
+        GIT_TAG static_lib
+        CONFIGURE_COMMAND ""
+        UPDATE_COMMAND ""
+        BUILD_COMMAND ./act install release -p linux -j 7 -m PRM -d <INSTALL_DIR>
+        BUILD_IN_SOURCE 1
+        INSTALL_COMMAND ""
+    )
+else()
+    ExternalProject_Add(AGRUM-SRC
+        PREFIX aGrUM
+        GIT_REPOSITORY file:////Users/lto/Projets/aGrUM-dev
+        GIT_TAG master
+        CONFIGURE_COMMAND ""
+        UPDATE_COMMAND ""
+        BUILD_COMMAND ./act install release -p linux -j 7 -m PRM -d <INSTALL_DIR>
+        BUILD_IN_SOURCE 1
+        INSTALL_COMMAND ""
+    )
+endif()
 
-#FIND_PACKAGE(aGrUM)
-#IF(AGRUM_FOUND)
-#  MESSAGE(STATUS "Found aGrUM")
-#  MESSAGE(STATUS "aGrUM include : ${AGRUM_INCLUDE_DIR}")
-#  MESSAGE(STATUS "aGrUM lib : ${AGRUM_LIB_DIR}")
-#  include_directories(${AGRUM_INCLUDE_DIR})
-#  link_directories(${AGRUM_LIB_DIR})
-#ELSE()
-#    MESSAGE(FATAL_ERROR "---> aGrUM not found !")
-#ENDIF()
-#SET(LIBS ${LIBS} ${AGRUM_LIB_DIR})
+SET(AGRUM_INCLUDE_DIR "${PROJECT_BINARY_DIR}/aGrUM/include/")
+SET(AGRUM_LIB_DIR "${PROJECT_BINARY_DIR}/aGrUM/lib/")
+
+INCLUDE_DIRECTORIES(${AGRUM_INCLUDE_DIR})
+LINK_DIRECTORIES(${AGRUM_LIB_DIR})
+SET(LIBS ${LIBS} ${AGRUM_LIB_DIR})
 
 # Reproducing what qmake does
 FILE(GLOB_RECURSE O3PRM_SOURCES *.cpp)
@@ -81,3 +91,4 @@ ADD_EXECUTABLE(o3prmeditor ${O3PRM_SOURCES} ${O3PRM_HEADERS_MOC} ${O3PRM_FORMS_H
 
 TARGET_LINK_LIBRARIES(o3prmeditor ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum)
 SET_TARGET_PROPERTIES(o3prmeditor PROPERTIES LINK_FLAGS "-lstdc++")
+
