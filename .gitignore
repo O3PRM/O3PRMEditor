@@ -1,5 +1,6 @@
 # Compiled source #
 ###################
+release/
 *.com
 *.class
 *.dll
