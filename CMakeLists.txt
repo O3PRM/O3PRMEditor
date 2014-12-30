@@ -79,54 +79,54 @@ INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/include)
 LINK_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/lib)
 
 # Reproducing what qmake does
-SET(O3PRMEDITOR_MAIN main.cpp)
-SET(SOURCES controllers/buildcontroller.cpp
-            controllers/editcontroller.cpp
-            controllers/filecontroller.cpp
-            controllers/projectcontroller.cpp
-            controllers/searchcontroller.cpp
-            controllers/viewcontroller.cpp
-            lexers/qscilexero3prml.cpp
-            lexers/qscilexero3prml2.cpp
-            lexers/qscilexero3prmr.cpp
-            parsers/abstractparser.cpp
-            parsers/o3prmlinterpretation.cpp
-            parsers/o3prmrinterpretation.cpp
-            uis/advancedsearch.cpp
-            uis/mainwindow.cpp
-            uis/newprojectdialog.cpp
-            uis/projectproperties.cpp
-            uis/properties.cpp
-            prmcompleter.cpp
-            prmtreemodel.cpp
-            project.cpp
-            qcommandlineedit.cpp
-            qkeysequencewidget.cpp
-            qsciscintillaextended.cpp
+SET(O3PRMEDITOR_MAIN src/main.cpp)
+SET(SOURCES src/controllers/buildcontroller.cpp
+            src/controllers/editcontroller.cpp
+            src/controllers/filecontroller.cpp
+            src/controllers/projectcontroller.cpp
+            src/controllers/searchcontroller.cpp
+            src/controllers/viewcontroller.cpp
+            src/lexers/qscilexero3prml.cpp
+            src/lexers/qscilexero3prml2.cpp
+            src/lexers/qscilexero3prmr.cpp
+            src/parsers/abstractparser.cpp
+            src/parsers/o3prmlinterpretation.cpp
+            src/parsers/o3prmrinterpretation.cpp
+            src/uis/advancedsearch.cpp
+            src/uis/mainwindow.cpp
+            src/uis/newprojectdialog.cpp
+            src/uis/projectproperties.cpp
+            src/uis/properties.cpp
+            src/prmcompleter.cpp
+            src/prmtreemodel.cpp
+            src/project.cpp
+            src/qcommandlineedit.cpp
+            src/qkeysequencewidget.cpp
+            src/qsciscintillaextended.cpp
 )
-SET(HEADERS controllers/buildcontroller.h
-            controllers/editcontroller.h
-            controllers/filecontroller.h
-            controllers/projectcontroller.h
-            controllers/searchcontroller.h
-            controllers/viewcontroller.h
-            lexers/qscilexero3prml.h
-            lexers/qscilexero3prml2.h
-            lexers/qscilexero3prmr.h
-            parsers/abstractparser.h
-            parsers/o3prmlinterpretation.h
-            parsers/o3prmrinterpretation.h
-            uis/advancedsearch.h
-            uis/mainwindow.h
-            uis/newprojectdialog.h
-            uis/projectproperties.h
-            uis/properties.h
-            prmcompleter.h
-            prmtreemodel.h
-            project.h
-            qcommandlineedit.h
-            qkeysequencewidget.h
-            qsciscintillaextended.h
+SET(HEADERS src/controllers/buildcontroller.h
+            src/controllers/editcontroller.h
+            src/controllers/filecontroller.h
+            src/controllers/projectcontroller.h
+            src/controllers/searchcontroller.h
+            src/controllers/viewcontroller.h
+            src/lexers/qscilexero3prml.h
+            src/lexers/qscilexero3prml2.h
+            src/lexers/qscilexero3prmr.h
+            src/parsers/abstractparser.h
+            src/parsers/o3prmlinterpretation.h
+            src/parsers/o3prmrinterpretation.h
+            src/uis/advancedsearch.h
+            src/uis/mainwindow.h
+            src/uis/newprojectdialog.h
+            src/uis/projectproperties.h
+            src/uis/properties.h
+            src/prmcompleter.h
+            src/prmtreemodel.h
+            src/project.h
+            src/qcommandlineedit.h
+            src/qkeysequencewidget.h
+            src/qsciscintillaextended.h
 )
 FILE(GLOB_RECURSE FORMS *.ui)
 FILE(GLOB_RECURSE RESSOURCES *.qrc)
@@ -144,17 +144,18 @@ INCLUDE(${QT_USE_FILE})
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src)
+
 # Checking for a C++11 compiler
 FIND_PACKAGE(CXX11)
 IF(CXX11_FOUND)
-  SET(O3PRMEDITOR_CXX_FLAGS "${CXX11_FLAGS} ${O3PRM_CXX_FLAGS}" )
+  SET(O3PRMEDITOR_CXX_FLAGS "${CXX11_FLAGS} ${O3PRM_CXX_FLAGS}")
 ELSE()
   MESSAGE(FATAL_ERROR "The aGrUM framework requires C++11. Please use a C++11 compliant compiler.")
 ENDIF()
 
 # Compiling flags
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${O3PRMEDITOR_CXX_FLAGS} -Wall")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${O3PRMEDITOR_CXX_FLAGS} -Wall -DNDEBUG")
 
 ## Building the executable
 ADD_EXECUTABLE(o3prmeditor ${O3PRMEDITOR_MAIN} ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
@@ -164,7 +165,7 @@ SET_TARGET_PROPERTIES(o3prmeditor PROPERTIES LINK_FLAGS "-lstdc++")
 
 # Test related stuff
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-ADD_EXECUTABLE(o3prmeditor_test test/main.cpp test/projectTest.cpp)
+ADD_EXECUTABLE(o3prmeditor_test src/test/main.cpp src/test/projectTest.cpp)
 TARGET_LINK_LIBRARIES(o3prmeditor_test gmock)
 TARGET_LINK_LIBRARIES(o3prmeditor_test gtest)
 SET_TARGET_PROPERTIES(o3prmeditor_test PROPERTIES LINK_FLAGS "-lstdc++")
