@@ -1,16 +1,18 @@
 Pour compiler en Relase:
-    cd release
-    cmake -DCMAKE_BUILD_TYPE=Release ../src
+    mkdir -p build/release
+    cd build/release
+    cmake -DCMAKE_BUILD_TYPE=Release ..
     make
 
 Pour comiler en Debug:
-    cd debug
-    cmake -DCMAKE_BUILD_TYPE=Debug ../src
+    mkdir -p build/debug
+    cd build/debug
+    cmake -DCMAKE_BUILD_TYPE=Debug ..
     make
 
-
-Le reste du README est deprecated et sera bientôt mis à jour.
-
+################################################################################
+#       Le reste du README est deprecated et sera bientôt mis à jour.          #
+################################################################################
 
 	LICENCE :
 	

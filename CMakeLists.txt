@@ -13,11 +13,9 @@ LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 # Dependencies
 FIND_PACKAGE(Qt4 REQUIRED)
-SET(LIBS ${LIBS} ${QT_LIBRARIES})
 
 FIND_PACKAGE(Qscintilla REQUIRED)
 INCLUDE_DIRECTORIES(${QSCINTILLA_INCLUDE_DIRS})
-SET(LIBS ${LIBS} ${QSCINTILLA_LIBRARIES})
 
 INCLUDE(ExternalProject)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -46,7 +44,6 @@ endif()
 
 SET(AGRUM_INCLUDE_DIR "${PROJECT_BINARY_DIR}/aGrUM/include/")
 SET(AGRUM_LIB_DIR "${PROJECT_BINARY_DIR}/aGrUM/lib/")
-SET(LIBS ${LIBS} agrum)
 
 INCLUDE_DIRECTORIES(${AGRUM_INCLUDE_DIR})
 LINK_DIRECTORIES(${AGRUM_LIB_DIR})
@@ -54,26 +51,13 @@ LINK_DIRECTORIES(${AGRUM_LIB_DIR})
 ExternalProject_add(GMOCK
     PREFIX gmock
     SVN_REPOSITORY http://googlemock.googlecode.com/svn/trunk/
+    TIMEOUT 30
     INSTALL_COMMAND mkdir -p <INSTALL_DIR>/lib <INSTALL_DIR>/include
         COMMAND cp -R -f <INSTALL_DIR>/src/GMOCK/include/gmock <INSTALL_DIR>/include
         COMMAND cp -f <BINARY_DIR>/libgmock.a <INSTALL_DIR>/lib
         COMMAND cp -R -f <INSTALL_DIR>/src/GMOCK/gtest/include/gtest <INSTALL_DIR>/include
         COMMAND cp -f <BINARY_DIR>/gtest/libgtest.a <INSTALL_DIR>/lib
 )
-
-#ExternalProject_add(GMOCK
-#    PREFIX gmock
-#    SVN_REPOSITORY http://googlemock.googlecode.com/svn/trunk/
-#    CONFIGURE_COMMAND /usr/local/bin/autoreconf -fvi COMMAND ./configure --prefix=<INSTALL_DIR>
-#    UPDATE_COMMAND ""
-#    BUILD_COMMAND make
-#    BUILD_IN_SOURCE 1
-#    INSTALL_COMMAND mkdir -p <INSTALL_DIR>/lib <INSTALL_DIR>/include
-#        COMMAND cp -R -f include/gmock <INSTALL_DIR>/include
-#        COMMAND cp -f lib/libgmock.la lib/libgmock_main.la <INSTALL_DIR>/lib
-#        COMMAND cp -R -f gtest/include/gtest <INSTALL_DIR>/include
-#        COMMAND cp -R -f gtest/lib/libgtest.la gtest/lib/libgtest_main.la <INSTALL_DIR>/lib
-#)
 
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/include)
 LINK_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/lib)
@@ -130,11 +114,6 @@ SET(HEADERS src/controllers/buildcontroller.h
 )
 FILE(GLOB_RECURSE FORMS *.ui)
 FILE(GLOB_RECURSE RESSOURCES *.qrc)
-#FILE(GLOB_RECURSE RC_FILE *.rc)
-
-# Isolating test files
-#LIST(REMOVE_ITEM ${O3PRM_SOURCES} projectTest.cpp)
-#FILE(GLOB_RECURSE O3PRM_TEST_SOURCES src/test/main.cpp src/test/projectTest.cpp)
 
 QT4_WRAP_CPP(HEADERS_MOC ${HEADERS})
 QT4_WRAP_UI(FORMS_HEADERS ${FORMS})
@@ -146,26 +125,28 @@ ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src)
 
-# Checking for a C++11 compiler
+# Checking for a C++11 compiler and adding flags
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -DNDEBUG -O3")
+SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -O3")
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
 FIND_PACKAGE(CXX11)
 IF(CXX11_FOUND)
-  SET(O3PRMEDITOR_CXX_FLAGS "${CXX11_FLAGS} ${O3PRM_CXX_FLAGS}")
+  SET(CMAKE_CXX_FLAGS "${CXX11_FLAGS} ${CMAKE_CXX_FLAGS}")
 ELSE()
   MESSAGE(FATAL_ERROR "The aGrUM framework requires C++11. Please use a C++11 compliant compiler.")
 ENDIF()
 
-# Compiling flags
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${O3PRMEDITOR_CXX_FLAGS} -Wall -DNDEBUG")
-
 ## Building the executable
 ADD_EXECUTABLE(o3prmeditor ${O3PRMEDITOR_MAIN} ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
 TARGET_LINK_LIBRARIES(o3prmeditor ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum)
-#TARGET_LINK_LIBRARIES(o3prmeditor ${LIBS})
-SET_TARGET_PROPERTIES(o3prmeditor PROPERTIES LINK_FLAGS "-lstdc++")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    SET_TARGET_PROPERTIES(o3prmeditor PROPERTIES LINK_FLAGS "-lstdc++")
+endif()
 
 # Test related stuff
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 ADD_EXECUTABLE(o3prmeditor_test src/test/main.cpp src/test/projectTest.cpp)
-TARGET_LINK_LIBRARIES(o3prmeditor_test gmock)
-TARGET_LINK_LIBRARIES(o3prmeditor_test gtest)
-SET_TARGET_PROPERTIES(o3prmeditor_test PROPERTIES LINK_FLAGS "-lstdc++")
+TARGET_LINK_LIBRARIES(o3prmeditor_test gmock gtest)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    SET_TARGET_PROPERTIES(o3prmeditor_test PROPERTIES LINK_FLAGS "-lstdc++")
+endif()
