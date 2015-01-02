@@ -21,8 +21,8 @@ INCLUDE(ExternalProject)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     ExternalProject_Add(AGRUM-SRC
         PREFIX aGrUM
-        GIT_REPOSITORY file:////Users/lto/Projets/aGrUM-dev
-        GIT_TAG static_lib
+        GIT_REPOSITORY git://forge.lip6.fr/aGrUM 
+        GIT_TAG master
         CONFIGURE_COMMAND ""
         UPDATE_COMMAND ""
         BUILD_COMMAND ./act install release -p linux -j 7 -m PRM -d <INSTALL_DIR>
@@ -32,7 +32,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 else()
     ExternalProject_Add(AGRUM-SRC
         PREFIX aGrUM
-        GIT_REPOSITORY file:////Users/lto/Projets/aGrUM-dev
+        GIT_REPOSITORY git://forge.lip6.fr/aGrUM 
         GIT_TAG master
         CONFIGURE_COMMAND ""
         UPDATE_COMMAND ""
