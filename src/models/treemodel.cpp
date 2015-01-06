@@ -118,9 +118,9 @@ namespace o3prm
         auto readme = new TreeItem("README.txt", rootItem);
         rootItem->addChild(readme);
         auto org = new TreeItem("org/", rootItem);
-        rootItem->addChild(rootItem);
+        rootItem->addChild(org);
         auto lip6 = new TreeItem("lip6/", org);
-        org->addChild(org);
+        org->addChild(lip6);
         auto printers = new TreeItem("printers.o3prm", lip6);
         lip6->addChild(printers);
     }

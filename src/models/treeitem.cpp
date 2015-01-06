@@ -38,7 +38,7 @@ namespace o3prm
 
     int TreeItem::columnCount() const
     {
-        return itemData.count();
+        return 1;
     }
 
     QString TreeItem::name() const
