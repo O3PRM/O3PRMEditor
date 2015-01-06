@@ -47,8 +47,8 @@ FileController::FileController( MainWindow * mw, QObject * parent ) :
   d->lastDir = QDir::homePath();
 
   //
-  connect( mw->ui->actionNewO3prml, SIGNAL( triggered() ), this, SLOT( newO3prmlFile() ) );
-  connect( mw->ui->actionNewO3prmr, SIGNAL( triggered() ), this, SLOT( newO3prmrFile() ) );
+  //connect( mw->ui->actionNewO3prml, SIGNAL( triggered() ), this, SLOT( newO3prmlFile() ) );
+  //connect( mw->ui->actionNewO3prmr, SIGNAL( triggered() ), this, SLOT( newO3prmrFile() ) );
   connect( mw->ui->actionOpenFile, SIGNAL( triggered() ), this, SLOT( openFile() ) );
   connect( mw->ui->actionSaveFile, SIGNAL( triggered() ), this, SLOT( saveFile() ) );
   connect( mw->ui->actionSaveAsFile, SIGNAL( triggered() ), this, SLOT( saveAsFile() ) );

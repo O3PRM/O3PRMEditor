@@ -50,14 +50,25 @@ LINK_DIRECTORIES(${AGRUM_LIB_DIR})
 
 ExternalProject_add(GMOCK
     PREFIX gmock
-    SVN_REPOSITORY http://googlemock.googlecode.com/svn/trunk/
-    TIMEOUT 30
+    URL https://googlemock.googlecode.com/files/gmock-1.7.0.zip
+    URL_HASH SHA1=f9d9dd882a25f4069ed9ee48e70aff1b53e3c5a5
     INSTALL_COMMAND mkdir -p <INSTALL_DIR>/lib <INSTALL_DIR>/include
         COMMAND cp -R -f <INSTALL_DIR>/src/GMOCK/include/gmock <INSTALL_DIR>/include
         COMMAND cp -f <BINARY_DIR>/libgmock.a <INSTALL_DIR>/lib
         COMMAND cp -R -f <INSTALL_DIR>/src/GMOCK/gtest/include/gtest <INSTALL_DIR>/include
         COMMAND cp -f <BINARY_DIR>/gtest/libgtest.a <INSTALL_DIR>/lib
 )
+
+#ExternalProject_add(GMOCK
+#    PREFIX gmock
+#    SVN_REPOSITORY http://googlemock.googlecode.com/svn/trunk/
+#    TIMEOUT 30
+#    INSTALL_COMMAND mkdir -p <INSTALL_DIR>/lib <INSTALL_DIR>/include
+#        COMMAND cp -R -f <INSTALL_DIR>/src/GMOCK/include/gmock <INSTALL_DIR>/include
+#        COMMAND cp -f <BINARY_DIR>/libgmock.a <INSTALL_DIR>/lib
+#        COMMAND cp -R -f <INSTALL_DIR>/src/GMOCK/gtest/include/gtest <INSTALL_DIR>/include
+#        COMMAND cp -f <BINARY_DIR>/gtest/libgtest.a <INSTALL_DIR>/lib
+#)
 
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/include)
 LINK_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/lib)
@@ -73,6 +84,8 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/lexers/qscilexero3prml.cpp
             src/lexers/qscilexero3prml2.cpp
             src/lexers/qscilexero3prmr.cpp
+            src/models/treemodel.cpp
+            src/models/treeitem.cpp
             src/parsers/abstractparser.cpp
             src/parsers/o3prmlinterpretation.cpp
             src/parsers/o3prmrinterpretation.cpp
@@ -81,6 +94,7 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/uis/newprojectdialog.cpp
             src/uis/projectproperties.cpp
             src/uis/properties.cpp
+            src/uis/treeview.cpp
             src/prmcompleter.cpp
             src/prmtreemodel.cpp
             src/project.cpp
@@ -97,6 +111,8 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/lexers/qscilexero3prml.h
             src/lexers/qscilexero3prml2.h
             src/lexers/qscilexero3prmr.h
+            src/models/treemodel.h
+            src/models/treeitem.h
             src/parsers/abstractparser.h
             src/parsers/o3prmlinterpretation.h
             src/parsers/o3prmrinterpretation.h
@@ -105,6 +121,7 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/uis/newprojectdialog.h
             src/uis/projectproperties.h
             src/uis/properties.h
+            src/uis/treeview.h
             src/prmcompleter.h
             src/prmtreemodel.h
             src/project.h
@@ -126,7 +143,7 @@ ADD_DEFINITIONS(${QT_DEFINITIONS})
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src)
 
 # Checking for a C++11 compiler and adding flags
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -DNDEBUG -O3")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -DNDEBUG -O0 -g")
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -O3")
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
 FIND_PACKAGE(CXX11)
@@ -137,16 +154,24 @@ ELSE()
 ENDIF()
 
 ## Building the executable
-ADD_EXECUTABLE(o3prmeditor ${O3PRMEDITOR_MAIN} ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
-TARGET_LINK_LIBRARIES(o3prmeditor ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum)
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    SET_TARGET_PROPERTIES(o3prmeditor PROPERTIES LINK_FLAGS "-lstdc++")
-endif()
-
-# Test related stuff
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-ADD_EXECUTABLE(o3prmeditor_test src/test/main.cpp src/test/projectTest.cpp)
-TARGET_LINK_LIBRARIES(o3prmeditor_test gmock gtest)
+
+#ADD_EXECUTABLE(o3prmeditor ${O3PRMEDITOR_MAIN} ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
+#TARGET_LINK_LIBRARIES(o3prmeditor ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum)
+#if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+#    SET_TARGET_PROPERTIES(o3prmeditor PROPERTIES LINK_FLAGS "-lstdc++")
+#endif()
+#
+# Test related stuff
+ADD_EXECUTABLE(o3prmeditor_test src/test/main.cpp src/test/treeItemTest.cpp ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
+TARGET_LINK_LIBRARIES(o3prmeditor_test gmock gtest pthread ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     SET_TARGET_PROPERTIES(o3prmeditor_test PROPERTIES LINK_FLAGS "-lstdc++")
+endif()
+
+# Exe for testing uis
+ADD_EXECUTABLE(view_tester src/main_treeview.cpp ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
+TARGET_LINK_LIBRARIES(view_tester ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum) 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    SET_TARGET_PROPERTIES(view_tester PROPERTIES LINK_FLAGS "-lstdc++")
 endif()

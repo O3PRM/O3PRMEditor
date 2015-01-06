@@ -13,6 +13,8 @@
 #include "uis/newprojectdialog.h"
 #include "uis/projectproperties.h"
 
+#include "models/treemodel.h"
+
 #include <QFile>
 #include <QDir>
 #include <QFileDialog>
@@ -429,6 +431,35 @@ void ProjectController::openProject( QString projectpath ) {
   QTimer::singleShot( 200, mw->ui->projectExplorator, SLOT( expandAll() ) );
 }
 
+///**
+//  Open the project projectpath,
+//  or open a dialog to choose the project directory if projectpath is empty.
+//  */
+//void ProjectController::openProject( QString projectpath ) {
+//  auto currentProj = new o3prm::TreeModel("NewProject", this );
+//
+//  connect( currentProj, SIGNAL( fileRenamed( QString,QString,QString ) ), this, SLOT( onProjectFileRenamed( QString,QString,QString ) ) );
+//  connect( currentProj, SIGNAL( fileMoved( QString,QString ) ), this, SLOT( onProjectFileMoved( QString,QString ) ) );
+//
+//  // Show project arborescence
+//  mw->ui->actionProjectExploratorVisibility->setEnabled( true );
+//  mw->ui->projectExplorator->setModel( currentProj );
+//  //mw->ui->projectExplorator->setRootIndex( currentProj->root() );
+//  mw->vc->setProjectExploratorVisibility( true );
+//
+//  // Enable new specific file creation
+//  mw->ui->actionNewClass->setEnabled( true );
+//  mw->ui->actionNewModel->setEnabled( true );
+//  mw->ui->actionNewRequestFile->setEnabled( true );
+//  //saveProjectsState();
+//
+//  // Enable auto syntax check
+//  mw->bc->setAutoSyntaxCheck( true );
+//
+//  //
+//  QTimer::singleShot( 200, mw->ui->projectExplorator, SLOT( expandAll() ) );
+//}
+//
 
 /**
   Close the current project.
