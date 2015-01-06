@@ -6,14 +6,15 @@
 TreeView::TreeView(QWidget* parent):
     QMainWindow(parent)
 {
-    __model = new o3prm::TreeModel(tr("NewProject"), this);
     setupUi(this);
-    //treeView->setModel(__model);
+    __model = new o3prm::TreeModel(tr("NewProject"), this);
+    treeView->setModel(__model);
 }
 
 TreeView::~TreeView()
 {
-
+    if (__model)
+        delete __model;
 }
 
 void TreeView::setupActions()

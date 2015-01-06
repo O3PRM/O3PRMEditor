@@ -6,7 +6,7 @@
 #include "models/treemodel.h"
 
 class TreeView: public QMainWindow,
-                private Ui::MainWindow
+                private Ui::TreeView
 {
     Q_OBJECT
 
