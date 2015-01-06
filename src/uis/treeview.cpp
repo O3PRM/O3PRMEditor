@@ -6,9 +6,9 @@
 TreeView::TreeView(QWidget* parent):
     QMainWindow(parent)
 {
-    //setupUi(this);
     __model = new o3prm::TreeModel(tr("NewProject"), this);
-    treeView->setModel(__model);
+    setupUi(this);
+    //treeView->setModel(__model);
 }
 
 TreeView::~TreeView()
