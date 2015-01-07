@@ -25,7 +25,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         GIT_TAG master
         CONFIGURE_COMMAND ""
         UPDATE_COMMAND ""
-        BUILD_COMMAND ./act install release -p linux -j 7 -m PRM -d <INSTALL_DIR>
+        BUILD_COMMAND ./act install release -p linux -j 7 -m PRM -d <INSTALL_DIR> # call with python instead of ./
         BUILD_IN_SOURCE 1
         INSTALL_COMMAND ""
     )
@@ -33,7 +33,7 @@ else()
     ExternalProject_Add(AGRUM-SRC
         PREFIX aGrUM
         GIT_REPOSITORY git://forge.lip6.fr/aGrUM 
-        GIT_TAG master
+        GIT_TAG master # Mettre 0.9
         CONFIGURE_COMMAND ""
         UPDATE_COMMAND ""
         BUILD_COMMAND ./act install release -p linux -j 7 -m PRM -d <INSTALL_DIR>

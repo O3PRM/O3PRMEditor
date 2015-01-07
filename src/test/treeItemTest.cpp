@@ -14,6 +14,7 @@ TEST(TreeItemTests, ConstructorDefault)
     o3prm::TreeItem item(name);
     // Assert
     ASSERT_EQ(item.name(), name);
+    ASSERT_TRUE(false);
 }
 
 TEST(TreeItemTests, ConstructorWithParent)
