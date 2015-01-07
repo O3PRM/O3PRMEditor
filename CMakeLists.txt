@@ -59,17 +59,6 @@ ExternalProject_add(GMOCK
         COMMAND cp -f <BINARY_DIR>/gtest/libgtest.a <INSTALL_DIR>/lib
 )
 
-#ExternalProject_add(GMOCK
-#    PREFIX gmock
-#    SVN_REPOSITORY http://googlemock.googlecode.com/svn/trunk/
-#    TIMEOUT 30
-#    INSTALL_COMMAND mkdir -p <INSTALL_DIR>/lib <INSTALL_DIR>/include
-#        COMMAND cp -R -f <INSTALL_DIR>/src/GMOCK/include/gmock <INSTALL_DIR>/include
-#        COMMAND cp -f <BINARY_DIR>/libgmock.a <INSTALL_DIR>/lib
-#        COMMAND cp -R -f <INSTALL_DIR>/src/GMOCK/gtest/include/gtest <INSTALL_DIR>/include
-#        COMMAND cp -f <BINARY_DIR>/gtest/libgtest.a <INSTALL_DIR>/lib
-#)
-
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/include)
 LINK_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/lib)
 
@@ -156,12 +145,12 @@ ENDIF()
 ## Building the executable
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
-#ADD_EXECUTABLE(o3prmeditor ${O3PRMEDITOR_MAIN} ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
-#TARGET_LINK_LIBRARIES(o3prmeditor ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum)
-#if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-#    SET_TARGET_PROPERTIES(o3prmeditor PROPERTIES LINK_FLAGS "-lstdc++")
-#endif()
-#
+ADD_EXECUTABLE(o3prmeditor ${O3PRMEDITOR_MAIN} ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
+TARGET_LINK_LIBRARIES(o3prmeditor ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    SET_TARGET_PROPERTIES(o3prmeditor PROPERTIES LINK_FLAGS "-lstdc++")
+endif()
+
 # Test related stuff
 ADD_EXECUTABLE(o3prmeditor_test src/test/main.cpp src/test/treeItemTest.cpp ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
 TARGET_LINK_LIBRARIES(o3prmeditor_test gmock gtest pthread ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum)
