@@ -18,7 +18,10 @@ class SearchController;
 
 class ViewController;
 
-class ProjectController;
+namespace o3prm 
+{
+    class ProjectController;
+}
 
 class BuildController;
 
@@ -53,7 +56,7 @@ class MainWindow : public QMainWindow {
     EditController * ec;
     SearchController * sc;
     ViewController * vc;
-    ProjectController * pc;
+    o3prm::ProjectController * pc;
     BuildController * bc;
 
     struct PrivateData;
@@ -67,7 +70,7 @@ class MainWindow : public QMainWindow {
 
     friend class ViewController;
 
-    friend class ProjectController;
+    friend class o3prm::ProjectController;
 
     friend class BuildController;
 

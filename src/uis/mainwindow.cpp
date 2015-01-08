@@ -29,7 +29,7 @@ MainWindow::MainWindow( QWidget *parent ) :
   ec = new EditController( this,this );
   sc = new SearchController( this,this );
   vc = new ViewController( this,this );
-  pc = new ProjectController( this,this );
+  pc = new o3prm::ProjectController( this,this );
   bc = new BuildController( this,this );
 
   /* ****************************************************************** */
