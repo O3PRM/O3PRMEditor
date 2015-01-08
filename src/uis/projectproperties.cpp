@@ -4,7 +4,7 @@
 #include <QFileDialog>
 #include <QDebug>
 
-ProjectProperties::ProjectProperties( Project * p, QWidget *parent ) :
+ProjectProperties::ProjectProperties( o3prm::Project * p, QWidget *parent ) :
     QDialog( parent ),
     ui( new Ui::ProjectProperties ),
     p( p ),

@@ -182,7 +182,7 @@ void SearchController::advanceSearch() {
     // PROJECT SEARCH
   } else if ( d->as->isProjectSearch() ) {
 
-    Project * proj = mw->pc->currentProject();
+    o3prm::Project * proj = mw->pc->currentProject();
 
     if ( proj == 0 )
       return;

@@ -276,7 +276,7 @@ void BuildController::parseProject() {
 
   QString document;
 
-  const Project * project = mw->pc->currentProject();
+  const o3prm::Project * project = mw->pc->currentProject();
 
   foreach( QString filename, project->files() )
   if ( filename.endsWith( ".o3prml" ) ) {

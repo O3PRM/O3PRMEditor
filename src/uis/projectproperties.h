@@ -14,7 +14,7 @@ class ProjectProperties : public QDialog {
     Q_OBJECT
 
   public:
-    explicit ProjectProperties( Project * p, QWidget *parent = 0 );
+    explicit ProjectProperties( o3prm::Project * p, QWidget *parent = 0 );
     ~ProjectProperties();
 
   protected slots:
@@ -26,7 +26,7 @@ class ProjectProperties : public QDialog {
 
   private:
     Ui::ProjectProperties *ui;
-    Project * p;
+    o3prm::Project * p;
     QWidget * parent;
 };
 
