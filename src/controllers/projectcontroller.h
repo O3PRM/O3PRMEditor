@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QModelIndex>
 
-#include "project.h"
+#include "models/project.h"
 
 class MainWindow;
 

@@ -75,6 +75,7 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/lexers/qscilexero3prmr.cpp
             src/models/treemodel.cpp
             src/models/treeitem.cpp
+            src/models/project.cpp
             src/parsers/abstractparser.cpp
             src/parsers/o3prmlinterpretation.cpp
             src/parsers/o3prmrinterpretation.cpp
@@ -86,7 +87,6 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/uis/treeview.cpp
             src/prmcompleter.cpp
             src/prmtreemodel.cpp
-            src/project.cpp
             src/qcommandlineedit.cpp
             src/qkeysequencewidget.cpp
             src/qsciscintillaextended.cpp
@@ -102,6 +102,7 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/lexers/qscilexero3prmr.h
             src/models/treemodel.h
             src/models/treeitem.h
+            src/models/project.h
             src/parsers/abstractparser.h
             src/parsers/o3prmlinterpretation.h
             src/parsers/o3prmrinterpretation.h
@@ -113,7 +114,6 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/uis/treeview.h
             src/prmcompleter.h
             src/prmtreemodel.h
-            src/project.h
             src/qcommandlineedit.h
             src/qkeysequencewidget.h
             src/qsciscintillaextended.h

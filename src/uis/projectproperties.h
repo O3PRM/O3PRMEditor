@@ -1,33 +1,33 @@
-#ifndef PROJECTPROPERTIES_H
-#define PROJECTPROPERTIES_H
+#ifndef O3PRM_PROJECTPROPERTIES_H
+#define O3PRM_PROJECTPROPERTIES_H
+
+#include "models/project.h"
+#include "ui_projectproperties.h"
 
 #include <QDialog>
 
-#include "project.h"
+namespace o3prm
+{
+    class ProjectProperties : public QDialog
+    {
+        Q_OBJECT
 
-namespace Ui {
+        public:
+            explicit ProjectProperties( Project * p, QWidget *parent = 0 );
+            ~ProjectProperties();
 
-  class ProjectProperties;
+            protected slots:
+                virtual void onAddButtonClicked();
+            virtual void onDelButtonClicked();
+
+            virtual void accept();
+            virtual void reject();
+
+        private:
+            Ui::ProjectProperties *ui;
+            Project * p;
+            QWidget * parent;
+    };
 }
 
-class ProjectProperties : public QDialog {
-    Q_OBJECT
-
-  public:
-    explicit ProjectProperties( o3prm::Project * p, QWidget *parent = 0 );
-    ~ProjectProperties();
-
-  protected slots:
-    virtual void onAddButtonClicked();
-    virtual void onDelButtonClicked();
-
-    virtual void accept();
-    virtual void reject();
-
-  private:
-    Ui::ProjectProperties *ui;
-    o3prm::Project * p;
-    QWidget * parent;
-};
-
-#endif // PROJECTPROPERTIES_H
+#endif // O3PRM_PROJECTPROPERTIES_H

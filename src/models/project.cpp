@@ -1,4 +1,4 @@
-#include "project.h"
+#include "models/project.h"
 
 #include <QDebug>
 #include <QDir>

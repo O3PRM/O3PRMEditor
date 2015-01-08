@@ -1,57 +1,73 @@
 #include "projectproperties.h"
-#include "ui_projectproperties.h"
 
-#include <QFileDialog>
 #include <QDebug>
+#include <QFileDialog>
 
-ProjectProperties::ProjectProperties( o3prm::Project * p, QWidget *parent ) :
-    QDialog( parent ),
-    ui( new Ui::ProjectProperties ),
-    p( p ),
-    parent( parent ) {
-  ui->setupUi( this );
+namespace o3prm 
+{
+    ProjectProperties::ProjectProperties( Project * p,
+            QWidget *parent ) :
+        QDialog( parent ),
+        ui( new Ui::ProjectProperties ),
+        p( p ),
+        parent( parent )
+    {
+        ui->setupUi( this );
 
-  if ( p ) {
-    ui->listWidget->addItems( p->paths() );
-    ui->listWidget->item( 0 )->setFlags( Qt::NoItemFlags );
-  }
+        if ( p )
+        {
+            ui->listWidget->addItems( p->paths() );
+            ui->listWidget->item( 0 )->setFlags( Qt::NoItemFlags );
+        }
 
-  connect( ui->addButton, SIGNAL( clicked() ), this, SLOT( onAddButtonClicked() ) );
+        connect( ui->addButton, SIGNAL( clicked() ),
+                this, SLOT( onAddButtonClicked() ) );
+        connect( ui->delButton, SIGNAL( clicked() ),
+                this, SLOT( onDelButtonClicked() ) );
+    }
 
-  connect( ui->delButton, SIGNAL( clicked() ), this, SLOT( onDelButtonClicked() ) );
-}
+    ProjectProperties::~ProjectProperties() 
+    {
+        delete ui;
+    }
 
-ProjectProperties::~ProjectProperties() {
-  delete ui;
-}
+    void ProjectProperties::onAddButtonClicked() 
+    {
+        auto msg = tr( "Ajouter un répertoire de classes" );
+        auto dirPath = QFileDialog::getExistingDirectory( parent, msg, QDir::homePath() );
+        ui->listWidget->addItem( dirPath );
+    }
 
-void ProjectProperties::onAddButtonClicked() {
-  QString dirPath = QFileDialog::getExistingDirectory( parent, tr( "Ajouter un répertoire de classes" ), QDir::homePath() );
-  ui->listWidget->addItem( dirPath );
-}
+    void ProjectProperties::onDelButtonClicked()
+    {
+        auto row = ui->listWidget->currentRow();
+        delete ui->listWidget->takeItem( row );
+    }
 
-void ProjectProperties::onDelButtonClicked() {
-  delete ui->listWidget->takeItem( ui->listWidget->currentRow() );
-}
+    void ProjectProperties::accept()
+    {
+        if ( p )
+        {
+            p->clearPaths();
+            auto items = ui->listWidget->findItems( "", Qt::MatchContains );
+            foreach( QListWidgetItem * item, items )
+            {
+                p->addPath( item->text() );
+            }
+        }
+        QDialog::accept();
+    }
 
-void ProjectProperties::accept() {
-  if ( p ) {
-    p->clearPaths();
-    foreach( QListWidgetItem * item, ui->listWidget->findItems( "", Qt::MatchContains ) )
-    p->addPath( item->text() );
-  }
+    void ProjectProperties::reject() 
+    {
+        ui->listWidget->clear();
 
-  QDialog::accept();
-}
+        if ( p )
+        {
+            ui->listWidget->addItems( p->paths() );
+            ui->listWidget->item( 0 )->setFlags( Qt::NoItemFlags );
+        }
 
-
-void ProjectProperties::reject() {
-  ui->listWidget->clear();
-
-  if ( p ) {
-    ui->listWidget->addItems( p->paths() );
-    ui->listWidget->item( 0 )->setFlags( Qt::NoItemFlags );
-  }
-
-  QDialog::reject();
+        QDialog::reject();
+    }
 }
