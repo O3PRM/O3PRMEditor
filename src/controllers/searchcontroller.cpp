@@ -13,6 +13,7 @@
 
 #include <QMessageBox>
 #include <QDebug>
+#include <QDir>
 
 struct Search {
   QString search;

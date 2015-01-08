@@ -14,10 +14,7 @@
 #include <agrum/core/errorsContainer.h>
 #include <agrum/PRM/o3prmr/O3prmrInterpreter.h>
 
-using namespace gum::prm::o3prm;
-
-using namespace gum::prm::o3prmr;
-
+#include <QDir>
 #include <QListWidget>
 #include <QProcess>
 #include <QMessageBox>
@@ -25,6 +22,10 @@ using namespace gum::prm::o3prmr;
 #include <QDebug>
 
 /* ************************************************************************* */
+
+using namespace gum::prm::o3prm;
+
+using namespace gum::prm::o3prmr;
 
 /*
   */

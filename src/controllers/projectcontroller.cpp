@@ -24,6 +24,8 @@
 #include <QSignalMapper>
 #include <QTimer>
 
+#include <QFileSystemModel>
+
 namespace o3prm
 {
     /**
@@ -693,7 +695,7 @@ namespace o3prm
             else if ( a->data().toString() == "execute" and
                     currentProj->fileInfo( index ).suffix() == "o3prmr" ) 
             {
-                mw->bc->execute( index.data( Project::FilePathRole ).toString() );
+                mw->bc->execute( index.data( QFileSystemModel::FilePathRole ).toString() );
             }
         }
     }

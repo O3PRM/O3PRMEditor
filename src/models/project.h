@@ -5,12 +5,13 @@
 #define EXTNAME_O3PRM_RUN "o3prmr"
 #define EXTNAME_O3PRM "o3prm"
 
+#include <QStandardItemModel>
+#include <QFileInfo>
 
-#include <QFileSystemModel>
 namespace o3prm
 {
 
-    class Project : public QFileSystemModel
+    class Project : public QStandardItemModel
     {
         Q_OBJECT
 
@@ -28,6 +29,7 @@ namespace o3prm
              * Return the project name.
              */
             QString name() const;
+
             /**
              * Return the project root directory.
              */
@@ -40,6 +42,31 @@ namespace o3prm
              * Return true if \a filepath is in the project, false otherwise.
              */
             bool isInside( const QString & filePath ) const;
+
+            QString fileName ( const QModelIndex & index ) const;
+
+            QFileInfo fileInfo ( const QModelIndex & index ) const;
+
+            bool isDir(const QModelIndex& index) const;
+
+            QModelIndex mkdir ( const QModelIndex & parent, const QString & name );
+
+            bool remove ( const QModelIndex & index ) const;
+
+            void setNameFilters ( const QStringList & filters );
+
+            void setNameFilterDisables ( bool enable );
+
+            void setReadOnly ( bool enable );
+
+            QModelIndex setRootPath ( const QString & newPath );
+
+            QModelIndex	index ( const QString & path, int column = 0 ) const;
+
+            QString filePath ( const QModelIndex & index ) const;
+
+            bool rmdir ( const QModelIndex & index ) const;
+
             /**
              * Return all o3prml and o3prmr files in the project.
              * \note Compute list each time.
@@ -78,11 +105,11 @@ namespace o3prm
                     int column,
                     const QModelIndex & parent );
 
-        signals:
-            /// This signal is emited when a file is moved by drag and drop in the view.
-            /// For constance with fileRenamed, \a oldFilePath is the complete, absolute,
-            /// filename with its path, \a newPath too.
-            void fileMoved( const QString & oldFilePath, const QString & newPath );
+       signals:
+           /// This signal is emited when a file is moved by drag and drop in the view.
+           /// For constance with fileRenamed, \a oldFilePath is the complete, absolute,
+           /// filename with its path, \a newPath too.
+           void fileMoved( const QString & oldFilePath, const QString & newPath );
 
         private:
             struct PrivateData;

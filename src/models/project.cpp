@@ -27,7 +27,7 @@ namespace o3prm
     };
 
     Project::Project( const QString & projDir, QObject * parent ) :
-        QFileSystemModel( parent ) 
+        QStandardItemModel( parent ) 
     {
         d = new PrivateData;
         d->dir = QDir( projDir );
@@ -94,6 +94,78 @@ namespace o3prm
         {
             return false;
         }
+    }
+
+    /// TODO Implement this !
+    QString	Project::fileName ( const QModelIndex & index ) const
+    {
+        return QString("error");
+    }
+
+    /// TODO Implement this !
+    QFileInfo Project::fileInfo ( const QModelIndex & index ) const
+    {
+        return QFileInfo(fileName(index));
+    }
+
+    /// TODO Implement this !
+    bool Project::isDir(const QModelIndex& index) const
+    {
+        return false;
+    }
+
+    /// TODO Implement this !
+    QModelIndex	Project::mkdir ( const QModelIndex & parent, const QString & name )
+    {
+        return parent;
+    }
+
+    /// TODO Implement this !
+    bool Project::remove ( const QModelIndex & index ) const
+    {
+        return false;
+    }
+
+    /// TODO Implement this !
+    void Project::setNameFilters ( const QStringList & filters )
+    {
+
+    }
+
+    /// TODO Implement this !
+    void Project::setNameFilterDisables ( bool enable )
+    {
+
+    }
+
+    /// TODO Implement this !
+    void Project::setReadOnly ( bool enable )
+    {
+
+    }
+
+    /// TODO Implement this !
+    QModelIndex Project::setRootPath ( const QString & newPath )
+    {
+        return QModelIndex();
+    }
+
+    /// TODO Implement this !
+    QModelIndex	Project::index ( const QString & path, int column) const
+    {
+        return QModelIndex();
+    }
+
+    /// TODO Implement this !
+    QString Project::filePath ( const QModelIndex & index ) const
+    {
+        return QString("error");
+    }
+
+    /// TODO Implement this !
+    bool Project::rmdir ( const QModelIndex & index ) const
+    {
+        return false;
     }
 
     QList<QString> Project::files() const 
@@ -246,6 +318,8 @@ namespace o3prm
         return 1;
     }
 
+
+    /// TODO Implement this !
     QVariant Project::data( const QModelIndex & index, int role ) const 
     {
         if ( role == Qt::DecorationRole && index.data().toString().endsWith( ".o3prml" ) ) 
@@ -256,9 +330,11 @@ namespace o3prm
         {
             return QIcon( ":/icons/icons/gear-icon.png" );
         }
-        return QFileSystemModel::data( index,role );
+        // return QFileSystemModel::data( index,role );
+        return QString("Error");
     }
 
+    /// TODO Implement this !
     QVariant Project::headerData( int section, Qt::Orientation orientation, int role ) const 
     {
         if ( section == 0 && orientation == Qt::Horizontal && role == Qt::DisplayRole )
@@ -267,17 +343,20 @@ namespace o3prm
         }
         else
         {
-            return QFileSystemModel::headerData( section, orientation, role );
+            // return QFileSystemModel::headerData( section, orientation, role );
+            return QString("Error");
         }
     }
 
+    /// TODO Implement this !
     bool Project::dropMimeData( const QMimeData * data,
             Qt::DropAction action,
             int row,
             int column,
             const QModelIndex & parent ) 
     {
-        bool result = QFileSystemModel::dropMimeData( data, action, row, column, parent );
+        // bool result = QFileSystemModel::dropMimeData( data, action, row, column, parent );
+        bool result = false;
 
         if ( result && action == Qt::MoveAction && data->hasUrls() )
         {
@@ -291,9 +370,11 @@ namespace o3prm
         return result;
     }
 
+    /// TODO Implement this !
     Qt::ItemFlags Project::flags( const QModelIndex & index ) const 
     {
-        Qt::ItemFlags flags = QFileSystemModel::flags( index );
+        // Qt::ItemFlags flags = QFileSystemModel::flags( index );
+        Qt::ItemFlags flags = Qt::NoItemFlags;
         if ( ! d->editable )
         {
             flags &= ~ Qt::ItemIsEditable;
