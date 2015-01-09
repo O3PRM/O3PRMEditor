@@ -2,30 +2,16 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
 #include <QCloseEvent>
 
-namespace Ui {
+#include "ui_mainwindow.h"
 
-  class MainWindow;
-}
-
-class FileController;
-
-class EditController;
-
-class SearchController;
-
-class ViewController;
-
-namespace o3prm 
-{
-    class ProjectController;
-}
-
-class BuildController;
-
-class Properties;
+#include "controllers/filecontroller.h"
+#include "controllers/editcontroller.h"
+#include "controllers/searchcontroller.h"
+#include "controllers/viewcontroller.h"
+#include "controllers/projectcontroller.h"
+#include "controllers/buildcontroller.h"
 
 /**
   The program main window.
@@ -33,48 +19,49 @@ class Properties;
   Actions are handle in controllers, that are separated in different files.
 
   This class only handles the quit action.
-  */
+ */
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QMainWindow 
+{
     Q_OBJECT
 
-  public:
-    explicit MainWindow( QWidget * parent = 0 );
-    ~MainWindow();
+    public:
+        explicit MainWindow( QWidget * parent = 0 );
+        ~MainWindow();
 
-  protected:
-    void closeEvent( QCloseEvent * event );
+    protected:
+        void closeEvent( QCloseEvent * event );
 
-  protected slots:
-    void showHelp();
-    void showAboutDialog();
+    protected slots:
+        void showHelp();
+        void showAboutDialog();
 
-  private:
-    Ui::MainWindow * ui;
+    private:
+        Ui::MainWindow *ui;
 
-    FileController * fc;
-    EditController * ec;
-    SearchController * sc;
-    ViewController * vc;
-    o3prm::ProjectController * pc;
-    BuildController * bc;
+        FileController *fc;
+        EditController *ec;
+        SearchController *sc;
+        ViewController *vc;
+        o3prm::ProjectController *pc;
+        BuildController *bc;
 
-    struct PrivateData;
-    PrivateData * d;
+        struct PrivateData;
+        PrivateData * d;
 
-    friend class FileController;
+        friend class FileController;
 
-    friend class EditController;
+        friend class EditController;
 
-    friend class SearchController;
+        friend class SearchController;
 
-    friend class ViewController;
+        friend class ViewController;
 
-    friend class o3prm::ProjectController;
+        friend class o3prm::ProjectController;
 
-    friend class BuildController;
+        friend class BuildController;
 
-    friend class Properties;
+        friend class Properties;
 };
 
 #endif // MAINWINDOW_H
