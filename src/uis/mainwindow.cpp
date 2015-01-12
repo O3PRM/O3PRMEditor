@@ -14,24 +14,45 @@ struct MainWindow::PrivateData {
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ),
-    ui( new Ui::MainWindow ),
-    d( new PrivateData )
+    __data( new PrivateData ),
+    ui( new Ui::MainWindow )
 {
     ui->setupUi( this );
 
-    fc = new FileController( this,this );
-    ec = new EditController( this,this );
-    sc = new SearchController( this,this );
-    vc = new ViewController( this,this );
-    pc = new o3prm::ProjectController( this,this );
-    bc = new BuildController( this,this );
+    __setupControllers();
+    __setupProjectExplorer();
+    __setupTabWidget();
 
-    /* ****************************************************************** */
+    __setupConnections();
+}
 
-    //
-    ui->projectExplorator->resize( 200,ui->projectExplorator->height() );
+MainWindow::~MainWindow()
+{
+    delete __data;
+    delete ui;
+}
 
-    // Expand the tabwidget
+void MainWindow::__setupControllers()
+{
+    fc = new FileController( this, this );
+    ec = new EditController( this, this );
+    sc = new SearchController( this, this );
+    vc = new ViewController( this, this );
+    __setupProjectController();
+    bc = new BuildController( this, this );
+}
+
+void MainWindow::__setupProjectController()
+{
+    pc = new o3prm::ProjectController( this, this );
+    ui->projectExplorator->setVisible( false );
+    ui->projectExplorator->setDragDropMode( QAbstractItemView::InternalMove );
+    ui->actionProjectProperties->setEnabled( false );
+
+}
+
+void MainWindow::__setupTabWidget()
+{
     ui->splitter->setStretchFactor( 1, 128 );
     ui->splitter2->setStretchFactor( 0, 5 );
     ui->splitter2->setStretchFactor( 1, 0 );
@@ -39,46 +60,62 @@ MainWindow::MainWindow( QWidget *parent ) :
 
     vc->setCommandWidgetVisible( false );
 
-    d->dial = new QDialog( this );
-    d->dial->setWindowIcon( QIcon( "qrc:/logo" ) );
-    d->dial->setWindowTitle( tr( "O3prmEditor -- Aide" ) );
-    QVBoxLayout * layout = new QVBoxLayout( d->dial );
-    layout->setSpacing( 0 );
-    layout->setContentsMargins( 0,0,0,0 );
-    d->browser = new QTextBrowser( d->dial );
-    d->browser->setSource( QUrl( "qrc:/doc/index.html" ) );
-    d->browser->setOpenExternalLinks( true );
-    layout->addWidget( d->browser );
-    d->dial->setLayout( layout );
-    d->dial->resize( 1024 + 5, 768 + 5 );
-
     ui->tabBar->addTab( tr( "Search" ) );
     ui->tabBar->addTab( tr( "Build" ) );
     ui->tabBar->addTab( tr( "Execute" ) );
     ui->tabBar->setShape( QTabBar::RoundedSouth );
-
-    connect( ui->tabBar, SIGNAL( currentChanged( int ) ),
-             ui->dockStack, SLOT( setCurrentIndex( int ) ) );
-    connect( ui->dockStack, SIGNAL( currentChanged( int ) ),
-             ui->tabBar, SLOT( setCurrentIndex( int ) ) );
-    connect( ui->tabBar, SIGNAL( currentChanged( int ) ),
-             ui->dockStack, SLOT( show() ) );
-
-    connect( ui->actionQuit, SIGNAL( triggered() ),
-             this, SLOT( close() ) );
-    connect( ui->actionHelp, SIGNAL( triggered() ),
-             this, SLOT( showHelp() ) );
-    connect( ui->actionAbout, SIGNAL( triggered() ),
-             this, SLOT( showAboutDialog() ) );
 }
 
-
-MainWindow::~MainWindow()
+void MainWindow::__setupProjectExplorer()
 {
-    delete d;
-    delete ui;
+    ui->projectExplorator->resize( 200, ui->projectExplorator->height() );
 }
 
+void MainWindow::__setupConnections()
+{
+    // TabBar
+    connect( ui->tabBar, SIGNAL( currentChanged( int ) ),
+            ui->dockStack, SLOT( setCurrentIndex( int ) ) );
+    connect( ui->dockStack, SIGNAL( currentChanged( int ) ),
+            ui->tabBar, SLOT( setCurrentIndex( int ) ) );
+    connect( ui->tabBar, SIGNAL( currentChanged( int ) ),
+            ui->dockStack, SLOT( show() ) );
+
+    // Main ui's various events
+    connect( ui->actionQuit, SIGNAL( triggered() ),
+            this, SLOT( close() ) );
+    connect( ui->actionHelp, SIGNAL( triggered() ),
+            this, SLOT( showHelp() ) );
+    connect( ui->actionAbout, SIGNAL( triggered() ),
+            this, SLOT( showAboutDialog() ) );
+}
+
+void MainWindow::__setupProjectControllerConnections()
+{
+    connect( ui->projectExplorator, SIGNAL( clicked( QModelIndex ) ),
+             pc, SLOT( on_projectExplorator_clicked( QModelIndex ) ) );
+    connect( ui->projectExplorator, SIGNAL( doubleClicked( QModelIndex ) ),
+             pc, SLOT( on_projectExplorator_doubleClicked( QModelIndex ) ) );
+    connect( ui->projectExplorator, SIGNAL( customContextMenuRequested( QPoint ) ),
+             pc, SLOT( onCustomContextMenuRequested( QPoint ) ) );
+    connect( ui->projectExplorator->itemDelegate(), SIGNAL( closeEditor( QWidget* ) ),
+             pc, SLOT( onItemRenameFinished() ) );
+
+    connect( ui->actionNewProject, SIGNAL( triggered() ),
+             pc, SLOT( newProject() ) );
+    connect( ui->actionOpenProject, SIGNAL( triggered() ),
+             pc, SLOT( openProject() ) );
+    connect( ui->actionNewClass, SIGNAL( triggered() ),
+             pc, SLOT( createNewClassFile() ) );
+    connect( ui->actionNewModel, SIGNAL( triggered() ),
+             pc, SLOT( createNewSystemFile() ) );
+    connect( ui->actionNewRequestFile, SIGNAL( triggered() ),
+             pc, SLOT( createNewRequestFile() ) );
+    connect( ui->actionCloseProject, SIGNAL( triggered() ),
+             pc, SLOT( closeProject() ) );
+
+    QTimer::singleShot( 200, pc, SLOT( triggerInit() ) );
+}
 
 void MainWindow::closeEvent( QCloseEvent *event )
 {
@@ -98,7 +135,23 @@ void MainWindow::closeEvent( QCloseEvent *event )
 
 void MainWindow::showHelp()
 {
-    d->dial->open();
+    if (__data->dial == 0)
+    {
+        // Create Help dialog
+        __data->dial = new QDialog( this );
+        __data->dial->setWindowIcon( QIcon( "qrc:/logo" ) );
+        __data->dial->setWindowTitle( tr( "O3prmEditor -- Aide" ) );
+        QVBoxLayout * layout = new QVBoxLayout( __data->dial );
+        layout->setSpacing( 0 );
+        layout->setContentsMargins( 0,0,0,0 );
+        __data->browser = new QTextBrowser( __data->dial );
+        __data->browser->setSource( QUrl( "qrc:/doc/index.html" ) );
+        __data->browser->setOpenExternalLinks( true );
+        layout->addWidget( __data->browser );
+        __data->dial->setLayout( layout );
+        __data->dial->resize( 1024 + 5, 768 + 5 );
+    }
+    __data->dial->open();
 }
 
 void MainWindow::showAboutDialog() 
@@ -112,7 +165,7 @@ void MainWindow::showAboutDialog()
     message += tr( " - Qt, de Nokia;\n" );
     message += tr( " - QScintilla, de Riverbank;\n" );
     message += tr( " - aGrUM, du Lip6 (Pierre-Henri Wuillemin, Christophe Gonzales, "
-                   "Lionel Torti, Vincent Renaudineau).\n" );
+            "Lionel Torti, Vincent Renaudineau).\n" );
     QMessageBox::about( this, tr( "À Propos de O3prmEditor" ), message );
 }
 

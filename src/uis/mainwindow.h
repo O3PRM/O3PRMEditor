@@ -37,6 +37,9 @@ class MainWindow : public QMainWindow
         void showAboutDialog();
 
     private:
+        struct PrivateData;
+        PrivateData *__data;
+
         Ui::MainWindow *ui;
 
         FileController *fc;
@@ -46,22 +49,21 @@ class MainWindow : public QMainWindow
         o3prm::ProjectController *pc;
         BuildController *bc;
 
-        struct PrivateData;
-        PrivateData * d;
-
         friend class FileController;
-
         friend class EditController;
-
         friend class SearchController;
-
         friend class ViewController;
-
-        friend class o3prm::ProjectController;
-
+        //friend class o3prm::ProjectController;
         friend class BuildController;
-
         friend class Properties;
+
+        void __setupControllers();
+        void __setupProjectController();
+        void __setupTabWidget();
+        void __setupProjectExplorer();
+
+        void __setupConnections();
+        void __setupProjectControllerConnections();
 };
 
 #endif // MAINWINDOW_H

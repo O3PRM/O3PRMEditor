@@ -1,6 +1,8 @@
 #include "gmock/gmock.h"
 
 #include <QString>
+#include <QFile>
+#include <QTextStream>
 
 #include "models/project.h"
 #include "models/projectFactory.h"
@@ -52,3 +54,4 @@ TEST(ProjectManagement, NewProject)
     ASSERT_NE((o3prm::Project*)0, project);
     ASSERT_EQ(name, project->name());
 }
+

@@ -203,11 +203,13 @@ namespace o3prm
             void triggerInit();
 
         private:
-            MainWindow * mw;
             Project * currentProj;
 
             struct PrivateData;
             PrivateData * d;
+
+            void __setupRecentProjects();
+            void __setupContextMenus();
     };
 
 } // o3prm
