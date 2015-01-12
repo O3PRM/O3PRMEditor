@@ -7,6 +7,7 @@
 
 #include <QStandardItemModel>
 #include <QFileInfo>
+#include <QDir>
 
 namespace o3prm
 {
@@ -19,21 +20,26 @@ namespace o3prm
             /**
              * Constructor
              */
-            Project( const QString & dir, QObject * parent = 0 );
+            Project( const QString & dir, const QString& name, QObject * parent = 0 ):
+                QStandardItemModel(parent), __dir(dir), __name(name)
+            {
+
+            }
+
             /**
              * Destructor
              */
-            ~Project();
+            ~Project() { }
 
             /**
              * Return the project name.
              */
-            QString name() const;
+            QString name() const { return __name; }
 
             /**
              * Return the project root directory.
              */
-            QString dir() const;
+            QDir dir() const { return QDir(__dir); }
 
             bool isEditable() const;
             void setEditable( bool editable );
@@ -105,15 +111,15 @@ namespace o3prm
                     int column,
                     const QModelIndex & parent );
 
-       signals:
-           /// This signal is emited when a file is moved by drag and drop in the view.
-           /// For constance with fileRenamed, \a oldFilePath is the complete, absolute,
-           /// filename with its path, \a newPath too.
-           void fileMoved( const QString & oldFilePath, const QString & newPath );
+        signals:
+            /// This signal is emited when a file is moved by drag and drop in the view.
+            /// For constance with fileRenamed, \a oldFilePath is the complete, absolute,
+            /// filename with its path, \a newPath too.
+            void fileMoved( const QString & oldFilePath, const QString & newPath );
 
         private:
-            struct PrivateData;
-            PrivateData * d;
+            QString __dir;
+            QString __name;
     };
 
 }

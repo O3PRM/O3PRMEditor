@@ -1,12 +1,5 @@
 #include "mainwindow.h"
 
-#include "ui_mainwindow.h"
-#include "controllers/filecontroller.h"
-#include "controllers/editcontroller.h"
-#include "controllers/searchcontroller.h"
-#include "controllers/viewcontroller.h"
-#include "controllers/projectcontroller.h"
-#include "controllers/buildcontroller.h"
 #include "qsciscintillaextended.h"
 
 #include <QTextBrowser>

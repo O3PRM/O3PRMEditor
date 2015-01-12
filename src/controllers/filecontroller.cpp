@@ -364,7 +364,7 @@ bool FileController::saveAsFile( QsciScintillaExtended * sci, QString dir ) {
   if ( dir.isEmpty() && ! sci->filename().isEmpty() )
     dir = sci->filename();
   else if ( dir.isEmpty() && mw->pc->currentProject() != 0 )
-    dir = mw->pc->currentProject()->dir();
+    dir = mw->pc->currentProject()->dir().absolutePath();
   else if ( dir.isEmpty() )
     dir = d->lastDir;
 

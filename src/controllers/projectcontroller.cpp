@@ -181,17 +181,19 @@ namespace o3prm
             currentProj = 0;
         }
 
-        currentProj = new Project( dial.projectDir(),this );
+        currentProj = new Project( dial.projectDir(), tr("NewProject"), this );
 
         connect( currentProj, SIGNAL( fileRenamed( QString,QString,QString ) ),
                 this, SLOT( onProjectFileRenamed( QString,QString,QString ) ) );
+
         connect( currentProj, SIGNAL( fileMoved( QString,QString ) ),
                 this, SLOT( onProjectFileMoved( QString,QString ) ) );
 
         d->projectProperties = new ProjectProperties( currentProj, mw );
         mw->ui->actionProjectProperties->setEnabled( true );
+
         connect( mw->ui->actionProjectProperties, SIGNAL( triggered() ),
-                d->projectProperties, SLOT( exec() ) );
+                 d->projectProperties, SLOT( exec() ) );
 
         // We change current directory to the project directory
         QDir::setCurrent( dial.projectDir() );
@@ -227,7 +229,7 @@ namespace o3prm
         mw->ui->tabWidget->setCurrentWidget( sci );
         sci->setFocus();
 
-        auto path = currentProj->dir() + tr( "/classes/empty_file.o3prml" );
+        auto path = currentProj->dir().absoluteFilePath("classes/empty_file.o3prml");
         if ( mw->fc->saveAsFile( sci, path ) )
         {
             // and prefill it.
@@ -264,7 +266,7 @@ namespace o3prm
         mw->ui->tabWidget->setCurrentWidget( sci );
         sci->setFocus();
 
-        auto path = currentProj->dir() + tr( "/requests/empty_file.o3prmr" );
+        auto path = currentProj->dir().absoluteFilePath("requests/empty_file.o3prmr");
         if ( mw->fc->saveAsFile( sci, path ) ) {
             // and prefill it.
             QFileInfo info( sci->filename() );
@@ -299,7 +301,8 @@ namespace o3prm
         mw->ui->tabWidget->setCurrentWidget( sci );
         sci->setFocus();
 
-        if ( mw->fc->saveAsFile( sci, currentProj->dir() + tr( "/systems/empty_file.o3prml" ) ) ) {
+        if ( mw->fc->saveAsFile( sci, currentProj->dir().absoluteFilePath("systems/empty_file.o3prml") ) )
+        {
             // and prefill it.
             QFileInfo info( sci->filename() );
             QString systemName = info.baseName();
@@ -361,7 +364,7 @@ namespace o3prm
             closeProject();
         }
 
-        currentProj = new Project( qDir.absolutePath(),this );
+        currentProj = new Project( qDir.absolutePath(), "OpenedProject", this );
 
         connect( currentProj, SIGNAL( fileRenamed( QString,QString,QString ) ),
                 this, SLOT( onProjectFileRenamed( QString,QString,QString ) ) );
@@ -376,7 +379,7 @@ namespace o3prm
                 d->projectProperties, SLOT( exec() ) );
 
         // We change current directory to the project directory
-        QDir::setCurrent( currentProj->dir() );
+        QDir::setCurrent( currentProj->dir().absolutePath() );
 
         removeOfRecentsProjects( qDir.absolutePath() );
 
@@ -407,7 +410,7 @@ namespace o3prm
     void ProjectController::closeProject() 
     {
         if ( currentProj ) {
-            addToRecentsProjects( currentProj->dir() );
+            addToRecentsProjects( currentProj->dir().absolutePath() );
 
             // Tests because can be delete by MainWindow
             disconnect( mw->ui->actionProjectProperties, SIGNAL( triggered() ),
@@ -504,12 +507,12 @@ namespace o3prm
 
         if ( currentProj ) 
         {
-            settings.setValue( "last project",currentProj->dir() );
+            settings.setValue( "last project", currentProj->dir().absolutePath() );
             currentProj->close();
         }
         else
         {
-            settings.setValue( "last project","" );
+            settings.setValue( "last project", "" );
         }
 
         // Save the last closed projects in settings

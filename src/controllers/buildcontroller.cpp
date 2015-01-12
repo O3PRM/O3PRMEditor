@@ -289,7 +289,7 @@ void BuildController::parseProject() {
 
   QsciScintillaExtended * projectDoc = new QsciScintillaExtended( QsciScintillaExtended::O3prmr, mw );
 
-  projectDoc->setFilename( project->dir()+"/projectFile.o3prmr" );
+  projectDoc->setFilename( project->dir().absoluteFilePath("/projectFile.o3prmr") );
   projectDoc->append( document );
   d->projectParser = new O3prmrInterpretation( projectDoc, this );
   d->projectParser->setSyntaxMode( true );
@@ -619,7 +619,7 @@ void BuildController::executeClass( QsciScintillaExtended * sci ) {
 
   // On ouvre un nouveau document système
   QsciScintillaExtended * sys = mw->fc->newDocument( name+"System", QsciScintillaExtended::O3prml );
-  sys->setFilename( mw->pc->currentProject()->dir()+"/systems/"+sys->title()+".o3prml" );
+  sys->setFilename( mw->pc->currentProject()->dir().absoluteFilePath("systems/" + sys->title() + ".o3prml") );
 
   // On met à jour le package dans le document o3prmr,
 
@@ -699,7 +699,7 @@ void BuildController::executeSystem( QsciScintillaExtended * sci ) {
   QString name = QFileInfo( sci->filename() ).baseName();
   // On crée un nouveau document o3prmr qu'on enregistre dans le package du système
   QsciScintillaExtended * req = mw->fc->newDocument( name+"Request", QsciScintillaExtended::O3prmr );
-  req->setFilename( mw->pc->currentProject()->dir()+"/requests/"+req->title()+".o3prmr" );
+  req->setFilename( mw->pc->currentProject()->dir().absoluteFilePath("requests/" + req->title() + ".o3prmr") );
 
   // On met à jour le package dans le document o3prmr,
 

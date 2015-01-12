@@ -190,7 +190,7 @@ void SearchController::advanceSearch() {
 
     QList<QString> parents;
 
-    parents << proj->dir();
+    parents << proj->dir().absolutePath();
 
     while ( ! parents.empty() ) {
       QString current = parents.takeFirst();

@@ -6,7 +6,8 @@
 
 #include "models/project.h"
 
-class MainWindow;
+// Cross reference, do not replace with an include directive
+class MainWindow; // uis/mainwindow.h
 
 /*
  * Réflections sur les interactions dans l'explorateur de projet (EdP) :
