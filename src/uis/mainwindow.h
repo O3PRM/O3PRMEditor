@@ -35,6 +35,7 @@ class MainWindow : public QMainWindow
     protected slots:
         void showHelp();
         void showAboutDialog();
+        void loadProject(o3prm::Project* project);
 
     private:
         struct PrivateData;

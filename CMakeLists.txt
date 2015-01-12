@@ -92,8 +92,9 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/qsciscintillaextended.cpp
             )
 SET(TEST_SOURCES src/test/main.cpp
-                 src/test/projectFactoryTest.cpp
                  src/test/projectTest.cpp
+                 src/test/projectFactoryTest.cpp
+                 src/test/projectControllerTest.cpp
    )
 SET(HEADERS src/controllers/buildcontroller.h
             src/controllers/editcontroller.h

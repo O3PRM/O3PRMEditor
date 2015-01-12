@@ -2,6 +2,7 @@
 
 #include "qsciscintillaextended.h"
 
+#include <QFileDialog>
 #include <QTextBrowser>
 #include <QMessageBox>
 #include <QLayout>
@@ -44,7 +45,7 @@ void MainWindow::__setupControllers()
 
 void MainWindow::__setupProjectController()
 {
-    pc = new o3prm::ProjectController( this, this );
+    pc = new o3prm::ProjectController( this );
     ui->projectExplorator->setVisible( false );
     ui->projectExplorator->setDragDropMode( QAbstractItemView::InternalMove );
     ui->actionProjectProperties->setEnabled( false );
@@ -88,6 +89,8 @@ void MainWindow::__setupConnections()
             this, SLOT( showHelp() ) );
     connect( ui->actionAbout, SIGNAL( triggered() ),
             this, SLOT( showAboutDialog() ) );
+
+    __setupProjectControllerConnections();
 }
 
 void MainWindow::__setupProjectControllerConnections()
@@ -100,9 +103,13 @@ void MainWindow::__setupProjectControllerConnections()
              pc, SLOT( onCustomContextMenuRequested( QPoint ) ) );
     connect( ui->projectExplorator->itemDelegate(), SIGNAL( closeEditor( QWidget* ) ),
              pc, SLOT( onItemRenameFinished() ) );
-
+    
     connect( ui->actionNewProject, SIGNAL( triggered() ),
              pc, SLOT( newProject() ) );
+
+    connect( pc, SIGNAL( projectLoaded(o3prm::Project*) ),
+             this, SLOT(loadProject(o3prm::Project*)));
+
     connect( ui->actionOpenProject, SIGNAL( triggered() ),
              pc, SLOT( openProject() ) );
     connect( ui->actionNewClass, SIGNAL( triggered() ),
@@ -167,5 +174,23 @@ void MainWindow::showAboutDialog()
     message += tr( " - aGrUM, du Lip6 (Pierre-Henri Wuillemin, Christophe Gonzales, "
             "Lionel Torti, Vincent Renaudineau).\n" );
     QMessageBox::about( this, tr( "À Propos de O3prmEditor" ), message );
+}
+
+void MainWindow::loadProject(o3prm::Project* project)
+{
+    // Show project arborescence
+    ui->actionProjectExploratorVisibility->setEnabled( true );
+    ui->projectExplorator->setModel( project );
+    ui->projectExplorator->setRootIndex( project->root() );
+    vc->setProjectExploratorVisibility( true );
+    ui->projectExplorator->expandAll();
+
+    // Enable new specific file creation
+    ui->actionNewClass->setEnabled( true );
+    ui->actionNewModel->setEnabled( true );
+    ui->actionNewRequestFile->setEnabled( true );
+
+    // Enable auto syntax check
+    bc->setAutoSyntaxCheck( true );
 }
 

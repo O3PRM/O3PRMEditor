@@ -1,5 +1,7 @@
 #include "projectcontroller.h"
 
+#include <iostream>
+
 #include "buildcontroller.h"
 #include "editcontroller.h"
 #include "filecontroller.h"
@@ -17,7 +19,6 @@
 #include <QDir>
 #include <QEventLoop>
 #include <QFile>
-#include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QSettings>
@@ -51,9 +52,10 @@ namespace o3prm
             QMenu * rootMenu;
     };
 
-    ProjectController::ProjectController( MainWindow * mw, QObject *parent ) :
+    ProjectController::ProjectController(QWidget *parent ) :
         QObject( parent ),
-        currentProj( 0 ),
+        __currentProj( 0 ),
+        __mainWidget(parent),
         d(new PrivateData(this))
     {
         __setupRecentProjects();
@@ -141,67 +143,57 @@ namespace o3prm
 
     Project * ProjectController::currentProject() const
     {
-        return currentProj;
+        return __currentProj;
     }
 
     bool ProjectController::isOpenProject() const
     {
-        return currentProj != 0;
+        return __currentProj != 0;
     }
 
     void ProjectController::newProject()
     {
-        //NewProjectDialog dial( this );
+        NewProjectDialog dial( __mainWidget );
 
-        //// If user cancel, do nothing
-        //if ( ! dial.exec() )
-        //{
-        //    return;
-        //}
+        // If user cancel, do nothing
+        if ( dial.exec() )
+        {
+            __closeProject();
 
-        //if ( currentProj )
-        //{
-        //    currentProj->close();
-        //    currentProj->deleteLater();
-        //    currentProj = 0;
-        //}
+            __currentProj = new Project( dial.projectDir(), tr("NewProject"), this );
+            emit projectLoaded(__currentProj);
 
-        //currentProj = new Project( dial.projectDir(), tr("NewProject"), this );
+            // connect( currentProj, SIGNAL( fileRenamed( QString,QString,QString ) ),
+            //         this, SLOT( onProjectFileRenamed( QString,QString,QString ) ) );
+            // connect( currentProj, SIGNAL( fileMoved( QString,QString ) ),
+            //         this, SLOT( onProjectFileMoved( QString,QString ) ) );
 
-        //connect( currentProj, SIGNAL( fileRenamed( QString,QString,QString ) ),
-        //        this, SLOT( onProjectFileRenamed( QString,QString,QString ) ) );
+            // d->projectProperties = new ProjectProperties( currentProj, mw );
+            // mw->ui->actionProjectProperties->setEnabled( true );
 
-        //connect( currentProj, SIGNAL( fileMoved( QString,QString ) ),
-        //        this, SLOT( onProjectFileMoved( QString,QString ) ) );
+            // connect( mw->ui->actionProjectProperties, SIGNAL( triggered() ),
+            //         d->projectProperties, SLOT( exec() ) );
 
-        //d->projectProperties = new ProjectProperties( currentProj, mw );
-        //mw->ui->actionProjectProperties->setEnabled( true );
+            // // We change current directory to the project directory
+            // QDir::setCurrent( dial.projectDir() );
 
-        //connect( mw->ui->actionProjectProperties, SIGNAL( triggered() ),
-        //        d->projectProperties, SLOT( exec() ) );
+            // Create empty files
+            //createNewClassFile();
 
-        //// We change current directory to the project directory
-        //QDir::setCurrent( dial.projectDir() );
 
-        //// Create empty files
-        ////createNewClassFile();
+            saveProjectsState();
+        }
+    }
 
-        //// Show project arborescence
-        //mw->ui->actionProjectExploratorVisibility->setEnabled( true );
-        //mw->ui->projectExplorator->setModel( currentProj );
-        //mw->ui->projectExplorator->setRootIndex( currentProj->root() );
-        //mw->vc->setProjectExploratorVisibility( true );
-        //mw->ui->projectExplorator->expandAll();
-
-        //// Enable new specific file creation
-        //mw->ui->actionNewClass->setEnabled( true );
-        //mw->ui->actionNewModel->setEnabled( true );
-        //mw->ui->actionNewRequestFile->setEnabled( true );
-
-        //// Enable auto syntax check
-        //mw->bc->setAutoSyntaxCheck( true );
-
-        //saveProjectsState();
+    void ProjectController::__closeProject()
+    {
+        // Close existing projects
+        // if ( currentProj )
+        // {
+        //     currentProj->close();
+        //     currentProj->deleteLater();
+        //     currentProj = 0;
+        // }
     }
 
     void ProjectController::createNewClassFile()

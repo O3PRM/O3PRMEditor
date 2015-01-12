@@ -66,7 +66,8 @@ namespace o3prm
             /**
              * Constructor
              */
-            explicit ProjectController( MainWindow * mw, QObject *parent = 0 );
+            explicit ProjectController( QWidget *parent = 0 ); 
+
             /**
              * Destructor
              */
@@ -82,17 +83,22 @@ namespace o3prm
              */
             bool isOpenProject() const;
 
+        signals:
+            void projectLoaded(o3prm::Project* project);
+
         public slots:
             /**
              * Create a new project.
              * Open a dialog and ask the name and the directory of the project.
              */
             void newProject();
+
             /**
              * Open the project projectpath,
              * or open a dialog to choose the project directory if projectpath is empty.
              */
             void openProject( QString projectpath = QString() );
+
             /**
              * Close the current project.
              */
@@ -203,13 +209,16 @@ namespace o3prm
             void triggerInit();
 
         private:
-            Project * currentProj;
+            Project *__currentProj;
+            QWidget *__mainWidget;
 
             struct PrivateData;
             PrivateData * d;
 
             void __setupRecentProjects();
             void __setupContextMenus();
+
+            void __closeProject();
     };
 
 } // o3prm

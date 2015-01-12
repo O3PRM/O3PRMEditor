@@ -1,3 +1,6 @@
+#ifndef O3PRM_TEST_MOCK_QDIR
+#define O3PRM_TEST_MOCK_QDIR
+
 #include <QDir>
 
 class MockQDir : public QDir {
@@ -73,3 +76,5 @@ class MockQDir : public QDir {
         MOCK_CONST_METHOD0(refresh,
                 void());
 };
+
+#endif // O3PRM_TEST_MOCK_QDIR
