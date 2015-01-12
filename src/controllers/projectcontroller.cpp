@@ -6,7 +6,6 @@
 #include "editcontroller.h"
 #include "filecontroller.h"
 #include "lexers/qscilexero3prml2.h"
-#include "models/treemodel.h"
 #include "qsciscintillaextended.h"
 #include "searchcontroller.h"
 #include "ui_mainwindow.h"

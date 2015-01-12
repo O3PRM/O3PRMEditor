@@ -2,7 +2,7 @@
 #include <QTextCodec>
 #include <QDebug>
 
-#include <agrum/config.h>
+#include <agrum/core/utils.h>
 
 #include <iostream>
 

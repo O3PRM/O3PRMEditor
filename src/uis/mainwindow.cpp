@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 
+#include <iostream>
+
 #include "qsciscintillaextended.h"
 
 #include <QFileDialog>
@@ -49,7 +51,6 @@ void MainWindow::__setupProjectController()
     ui->projectExplorator->setVisible( false );
     ui->projectExplorator->setDragDropMode( QAbstractItemView::InternalMove );
     ui->actionProjectProperties->setEnabled( false );
-
 }
 
 void MainWindow::__setupTabWidget()
@@ -181,9 +182,10 @@ void MainWindow::loadProject(o3prm::Project* project)
     // Show project arborescence
     ui->actionProjectExploratorVisibility->setEnabled( true );
     ui->projectExplorator->setModel( project );
-    ui->projectExplorator->setRootIndex( project->root() );
-    vc->setProjectExploratorVisibility( true );
+    //ui->projectExplorator->setRootIndex( project->root() );
+    //vc->setProjectExploratorVisibility( true );
     ui->projectExplorator->expandAll();
+    ui->projectExplorator->show();
 
     // Enable new specific file creation
     ui->actionNewClass->setEnabled( true );

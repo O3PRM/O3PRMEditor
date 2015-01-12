@@ -18,29 +18,16 @@ FIND_PACKAGE(Qscintilla REQUIRED)
 INCLUDE_DIRECTORIES(${QSCINTILLA_INCLUDE_DIRS})
 
 INCLUDE(ExternalProject)
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    ExternalProject_Add(AGRUM-SRC
+ExternalProject_Add(AGRUM-SRC
         PREFIX aGrUM
-        GIT_REPOSITORY git://forge.lip6.fr/aGrUM 
-        GIT_TAG master
+        GIT_REPOSITORY file:////Users/lto/Projets/aGrUM-dev/
+        GIT_TAG static_lib
         CONFIGURE_COMMAND ""
         UPDATE_COMMAND ""
         BUILD_COMMAND ./act install release -p linux -j 7 -m PRM -d <INSTALL_DIR> # call with python instead of ./
         BUILD_IN_SOURCE 1
         INSTALL_COMMAND ""
-    )
-else()
-    ExternalProject_Add(AGRUM-SRC
-        PREFIX aGrUM
-        GIT_REPOSITORY git://forge.lip6.fr/aGrUM 
-        GIT_TAG master # Mettre 0.9
-        CONFIGURE_COMMAND ""
-        UPDATE_COMMAND ""
-        BUILD_COMMAND ./act install release -p linux -j 7 -m PRM -d <INSTALL_DIR>
-        BUILD_IN_SOURCE 1
-        INSTALL_COMMAND ""
-    )
-endif()
+        )
 
 SET(AGRUM_INCLUDE_DIR "${PROJECT_BINARY_DIR}/aGrUM/include/")
 SET(AGRUM_LIB_DIR "${PROJECT_BINARY_DIR}/aGrUM/lib/")
@@ -73,8 +60,6 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/lexers/qscilexero3prml.cpp
             src/lexers/qscilexero3prml2.cpp
             src/lexers/qscilexero3prmr.cpp
-            src/models/treemodel.cpp
-            src/models/treeitem.cpp
             src/models/project.cpp
             src/parsers/abstractparser.cpp
             src/parsers/o3prmlinterpretation.cpp
@@ -84,7 +69,6 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/uis/newprojectdialog.cpp
             src/uis/projectproperties.cpp
             src/uis/properties.cpp
-            src/uis/treeview.cpp
             src/prmcompleter.cpp
             src/prmtreemodel.cpp
             src/qcommandlineedit.cpp
@@ -93,8 +77,6 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             )
 SET(TEST_SOURCES src/test/main.cpp
                  src/test/projectTest.cpp
-                 src/test/projectFactoryTest.cpp
-                 src/test/projectControllerTest.cpp
    )
 SET(HEADERS src/controllers/buildcontroller.h
             src/controllers/editcontroller.h
@@ -105,8 +87,6 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/lexers/qscilexero3prml.h
             src/lexers/qscilexero3prml2.h
             src/lexers/qscilexero3prmr.h
-            src/models/treemodel.h
-            src/models/treeitem.h
             src/models/project.h
             src/parsers/abstractparser.h
             src/parsers/o3prmlinterpretation.h
@@ -116,7 +96,6 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/uis/newprojectdialog.h
             src/uis/projectproperties.h
             src/uis/properties.h
-            src/uis/treeview.h
             src/prmcompleter.h
             src/prmtreemodel.h
             src/qcommandlineedit.h
