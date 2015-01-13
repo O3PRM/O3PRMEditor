@@ -69,6 +69,7 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/uis/newprojectdialog.cpp
             src/uis/projectproperties.cpp
             src/uis/properties.cpp
+            src/uis/asknamedialog.cpp
             src/prmcompleter.cpp
             src/prmtreemodel.cpp
             src/qcommandlineedit.cpp
@@ -96,6 +97,7 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/uis/newprojectdialog.h
             src/uis/projectproperties.h
             src/uis/properties.h
+            src/uis/asknamedialog.h
             src/prmcompleter.h
             src/prmtreemodel.h
             src/qcommandlineedit.h

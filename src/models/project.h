@@ -51,6 +51,18 @@ namespace o3prm
                 __type = (ItemType) type;
             }
 
+            // Returns the path to parent using / as separators.
+            QString path() const
+            {
+                QString path = text();
+                int type_value = (int)ItemType::Directory;
+                for (auto iter = parent(); iter != 0 and iter->type() == type_value; iter = iter->parent())
+                {
+                    path = iter->text() + "/" + path;
+                }
+                return path;
+            }
+
         private:
             ItemType __type;
     };
@@ -80,6 +92,8 @@ namespace o3prm
              */
             QDir dir() const;
 
+            /// Legacy methods that I still need to implement
+
             /**
              * Return true if \a filepath is in the project, false otherwise.
              */
@@ -100,7 +114,7 @@ namespace o3prm
              */
             QList<QString> paths() const;
 
-        signals:
+signals:
             /// This signal is emited when a file is moved by drag and drop in the view.
             /// For constance with fileRenamed, \a oldFilePath is the complete, absolute,
             /// filename with its path, \a newPath too.

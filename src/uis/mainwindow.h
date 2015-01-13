@@ -28,6 +28,7 @@ class MainWindow : public QMainWindow
     public:
         explicit MainWindow( QWidget * parent = 0 );
         ~MainWindow();
+        Ui::MainWindow* mainwindow();
 
     protected:
         void closeEvent( QCloseEvent * event );
@@ -54,7 +55,7 @@ class MainWindow : public QMainWindow
         friend class EditController;
         friend class SearchController;
         friend class ViewController;
-        friend class o3prm::ProjectController;
+        //friend class o3prm::ProjectController;
         friend class BuildController;
         friend class Properties;
 

@@ -35,6 +35,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+Ui::MainWindow* MainWindow::mainwindow()
+{
+    return ui;
+}
+
 void MainWindow::__setupControllers()
 {
     fc = new FileController( this, this );

@@ -66,7 +66,7 @@ namespace o3prm
             /**
              * Constructor
              */
-            explicit ProjectController( QWidget *parent = 0 ); 
+            explicit ProjectController( MainWindow *parent = 0 ); 
 
             /**
              * Destructor
@@ -214,7 +214,7 @@ namespace o3prm
 
         private:
             Project *__currentProj;
-            QWidget *__mainWidget;
+            MainWindow *__mainWidget;
 
             struct PrivateData;
             PrivateData * d;
@@ -223,6 +223,9 @@ namespace o3prm
             void __setupContextMenus();
 
             void __closeProject();
+
+            QString __askForName(ProjectItem::ItemType type);
+            void __addFile(QString name, ProjectItem* parent);
     };
 
 } // o3prm

@@ -51,7 +51,7 @@ namespace o3prm
             QMenu * rootMenu;
     };
 
-    ProjectController::ProjectController(QWidget *parent ) :
+    ProjectController::ProjectController(MainWindow *parent ) :
         QObject( parent ),
         __currentProj( 0 ),
         __mainWidget(parent),
@@ -561,7 +561,7 @@ namespace o3prm
 
     void ProjectController::onCustomContextMenuRequested( const QPoint & pos ) 
     {
-        auto view = ((MainWindow*)__mainWidget)->ui->projectExplorator;
+        auto view = __mainWidget->mainwindow()->projectExplorator;
         auto index = view->indexAt(pos);
         auto item = static_cast<QStandardItem*>(index.internalPointer());
 
@@ -572,37 +572,54 @@ namespace o3prm
         {
             return;
         }
-        auto parent = item->hasChildren()?item->child(0):item;
-        QString path = "";
-        for (auto iter = parent; iter != 0; iter = iter->parent())
-        {
-            path = iter->text() + "/" + path;
-        }
+        ProjectItem* parent = item->type() >= 1000?static_cast<ProjectItem*>(item):0;
         QDir dir(__currentProj->dir());
         if ( a->data().toString() == "package" ) 
         {
             auto package = new ProjectItem(ProjectItem::ItemType::Directory, "new_package/");
             parent->appendRow(package);
-            dir.mkpath(QString(path));
+            dir.mkpath(parent->path());
         }
         else if ( a->data().toString() == "file" )
         {
-            auto file = new ProjectItem(ProjectItem::ItemType::File, "new_file.o3prm");
-            parent->appendRow(file);
-            dir.cd(path);
-            auto file_path = dir.absoluteFilePath(file->text());
-            QFile data(file_path);
-            if (data.open(QFile::WriteOnly | QFile::Truncate)) 
-            {
-                QTextStream out(&data);
-                path = path.replace('/', '.').trimmed();
-                while (path.size() > 0 and path.endsWith('.'))
-                {
-                    path.truncate(path.size() - 1);
-                }
-                out << "namespace " << path << ';' << '\n';
-            }
+            auto file_name = __askForName(ProjectItem::ItemType::File);
+            __addFile(file_name, static_cast<ProjectItem*>(parent));
+        }
+    }
 
+    QString ProjectController::__askForName(ProjectItem::ItemType type)
+    {
+        QString type_name = "";
+        switch (type)
+        {
+            case ProjectItem::ItemType::Directory:
+                type_name = tr("package");
+                break;
+            case ProjectItem::ItemType::File:
+                type_name = tr("file");
+            default:
+                type_name = tr("unknown");
+        }
+        return type_name;
+    }
+    
+    void ProjectController::__addFile(QString name, ProjectItem* parent)
+    {
+        auto file = new ProjectItem(ProjectItem::ItemType::File, name);
+        parent->appendRow(file);
+        QDir dir(__currentProj->dir());
+        dir.cd(parent->path());
+        auto file_path = dir.absoluteFilePath(file->text());
+        QFile data(file_path);
+        if (data.open(QFile::WriteOnly | QFile::Truncate)) 
+        {
+            QTextStream out(&data);
+            auto ns = file->path().replace('/', '.').trimmed();
+            while (ns.size() > 0 and ns.endsWith('.'))
+            {
+                ns.truncate(ns.size() - 1);
+            }
+            out << "namespace " << ns << ';' << '\n';
         }
     }
 
