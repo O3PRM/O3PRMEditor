@@ -176,10 +176,12 @@ namespace o3prm
              * Switch to this file if it is open.
              */
             bool on_projectExplorator_clicked( QModelIndex index );
+
             /**
              * Open the file or switch to it if it is already open.
              */
             bool on_projectExplorator_doubleClicked( QModelIndex index );
+
             /**
              * When files are renamed, change the document filename if it is open;
              */
@@ -190,6 +192,7 @@ namespace o3prm
              * When files are moved, change the document filename if it is open;
              */
             void onProjectFileMoved( const QString & oldFilePath, const QString & newPath );
+
             /**
              * Propose a menu when users ask for it.  Users can:
              *  - remove a package or a file,
@@ -198,6 +201,7 @@ namespace o3prm
              *  - execute a o3prmr file.
              */
             void onCustomContextMenuRequested( const QPoint & pos );
+
             /**
              * This slot is called when user has called "rename" in the project explorator,
              * and the editing is finished.

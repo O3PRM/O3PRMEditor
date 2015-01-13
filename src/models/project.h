@@ -12,6 +12,49 @@
 namespace o3prm
 {
 
+    class ProjectItem: public QStandardItem
+    {
+        public :
+            enum ItemType {
+                Directory = 1000,
+                File = 1001
+            };
+
+            ProjectItem(ItemType type):
+                QStandardItem(), __type(type)
+            {
+
+            }
+            
+            ProjectItem(ItemType type, const QString &text):
+                QStandardItem(text), __type(type)
+            {
+            }
+
+            ProjectItem(ItemType type, const QIcon &icon, const QString &text):
+                QStandardItem(icon, text), __type(type)
+            {
+            }
+
+            explicit ProjectItem(ItemType type, int rows, int columns = 1):
+                QStandardItem(rows, columns), __type(type)
+            {
+            }
+
+            int type() const 
+            {
+                return (int)__type;
+            }
+
+            void setType(int type)
+            {
+                __type = (ItemType) type;
+            }
+
+        private:
+            ItemType __type;
+    };
+
     class Project : public QStandardItemModel
     {
         Q_OBJECT

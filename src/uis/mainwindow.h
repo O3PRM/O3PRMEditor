@@ -54,7 +54,7 @@ class MainWindow : public QMainWindow
         friend class EditController;
         friend class SearchController;
         friend class ViewController;
-        //friend class o3prm::ProjectController;
+        friend class o3prm::ProjectController;
         friend class BuildController;
         friend class Properties;
 
