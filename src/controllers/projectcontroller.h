@@ -224,11 +224,18 @@ namespace o3prm
 
             void __closeProject();
 
+            /// Shows a Dialog and ask user to type a filename.
             QString __askForName(ProjectItem::ItemType type);
-            void __addFile(QString name, ProjectItem* parent);
+
             /// Returns true if name is a child of parent in the current project
             /// and warns the user the his name is unusable.
-            bool __existsAndWarn(QString name, ProjectItem* parent);
+            bool __existsAndWarn(QString name, ProjectItem* parent, ProjectItem::ItemType type);
+
+            /// Add a file to the project and the filesystem.
+            void __addFile(ProjectItem* parent);
+
+            /// Add a directory (package) to the project and the filesystem.
+            void __addPackage(ProjectItem* parent);
     };
 
 } // o3prm

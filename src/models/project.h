@@ -5,6 +5,8 @@
 #define EXTNAME_O3PRM_RUN "o3prmr"
 #define EXTNAME_O3PRM "o3prm"
 
+#include <string>
+
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
@@ -19,6 +21,9 @@ namespace o3prm
                 Directory = 1000,
                 File = 1001
             };
+
+            /// Values used by ProjectItem must be above or equal to 1000.
+            static int minItemTypeInt() { return (int)ItemType::Directory; }
 
             ProjectItem(ItemType type):
                 QStandardItem(), __type(type)
@@ -72,6 +77,16 @@ namespace o3prm
         Q_OBJECT
 
         public:
+            static QString itemType2String(ProjectItem::ItemType type) 
+            {
+                switch (type)
+                {
+                    case ProjectItem::ItemType::Directory: { return tr("Package"); }
+                    case ProjectItem::ItemType::File:      { return tr("File"); }
+                    default: { return tr("Unknown"); }
+                }
+            }
+
             /**
              * Constructor
              */

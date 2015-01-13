@@ -568,36 +568,37 @@ namespace o3prm
         auto map = view->mapToGlobal( pos ) ;
         QAction * a = d->rootMenu->exec(map);
 
-        if ( a == 0 )
+        if ( a == 0 ) return;
+
+        ProjectItem* parent = 0;
+        if (item->type() >= ProjectItem::minItemTypeInt())
         {
-            return;
+            parent = static_cast<ProjectItem*>(item);
         }
-        ProjectItem* parent = item->type() >= 1000?static_cast<ProjectItem*>(item):__currentProj->root();
-        QDir dir(__currentProj->dir());
+        else
+        {
+            parent = __currentProj->root();
+        }
+
         if ( a->data().toString() == "package" ) 
         {
-            auto package = new ProjectItem(ProjectItem::ItemType::Directory, "new_package/");
-            parent->appendRow(package);
-            dir.mkpath(parent->path());
+            __addPackage(parent);
         }
         else if ( a->data().toString() == "file" )
         {
-            auto file_name = __askForName(ProjectItem::ItemType::File);
-            if (not __existsAndWarn(file_name, parent))
-            {
-                __addFile(file_name, parent);
-            }
+            __addFile(parent);
         }
     }
 
-    bool ProjectController::__existsAndWarn(QString name, ProjectItem* parent)
+    bool ProjectController::__existsAndWarn(QString name, ProjectItem* parent, ProjectItem::ItemType type)
     {
         QDir dir(__currentProj->dir());
         dir.cd(parent->path());
         if (dir.exists(name))
         {
-            QString title = tr("Name already used!");
-            QString msg = tr("The filename %1 is already used in package %2").arg(name, parent->text());
+            auto type_name = Project::itemType2String(type).toLower();
+            auto title = tr("Name already used!");
+            auto msg = tr("The %1 %2 is already used in package %3").arg(type_name, name, parent->text());
             QMessageBox::warning(__mainWidget, title, msg);
             return true;
         }
@@ -606,110 +607,107 @@ namespace o3prm
 
     QString ProjectController::__askForName(ProjectItem::ItemType type)
     {
+        auto type_name = Project::itemType2String(type);
+        auto title = tr("Choose a name for this new %1").arg(type_name.toLower());
+        auto msg = tr("%1 name:").arg(type_name);
+        auto default_value = tr("new_%1").arg(type_name);
+
         bool ok;
-        QString title, msg, default_value;
-        switch (type)
-        {
-            case ProjectItem::ItemType::Directory:
-            {
-                title = tr("Choose a name for this new package");
-                msg = tr("Package name:");
-                default_value = tr("package");
-                break;
-            }
-            case ProjectItem::ItemType::File:
-            {
-                title = tr("Chosse a name for this new file");
-                msg = tr("File name:");
-                default_value = tr("new_file.o3prm");
-                break;
-            }
-            default:
-            {
-                title = tr("Choose a name for this unknown element");
-                msg = tr("Name:");
-                default_value = tr("unknown");
-            }
-        }
-        QString name = QInputDialog::getText(__mainWidget,
-                                             title,
-                                             msg,
-                                             QLineEdit::Normal,
-                                             default_value,
-                                             &ok);
+        auto name = QInputDialog::getText(__mainWidget,
+                title, msg,
+                QLineEdit::Normal, default_value,
+                &ok);
+
         if (type == ProjectItem::ItemType::File and not name.endsWith(".o3prm"))
         {
             name = name + ".o3prm";
         }
         return name;
     }
-    
-    void ProjectController::__addFile(QString name, ProjectItem* parent)
+
+    void ProjectController::__addPackage(ProjectItem* parent)
     {
-        auto file = new ProjectItem(ProjectItem::ItemType::File, name);
-        parent->appendRow(file);
-        QDir dir(__currentProj->dir());
-        dir.cd(parent->path());
-        auto file_path = dir.absoluteFilePath(file->text());
-        QFile data(file_path);
-        if (data.open(QFile::WriteOnly | QFile::Truncate)) 
+        auto name = __askForName(ProjectItem::ItemType::Directory);
+        if (not __existsAndWarn(name, parent, ProjectItem::ItemType::Directory))
         {
-            QTextStream out(&data);
-            auto ns = file->path().replace('/', '.').trimmed();
-            while (ns.size() > 0 and ns.endsWith('.'))
-            {
-                ns.truncate(ns.size() - 1);
-            }
-            out << "namespace " << ns << ';' << '\n';
+            QDir dir(__currentProj->dir());
+            dir.cd(parent->path());
+            dir.mkdir(name);
+            auto package = new ProjectItem(ProjectItem::ItemType::Directory, name);
+            parent->appendRow(package);
         }
     }
 
-//    void ProjectController::onCustomContextMenuRequested( const QPoint & pos ) 
-//    {
-//        auto view = ((MainWindow*)__mainWidget)->ui->projectExplorator;
-//        auto selection = view->selectionModel()->selectedIndexes();
-//        if (selection.count() == 0)
-//        {
-//            std::cout << "nothing" << std::endl;
-//            return;
-//        }
-//        std::cout << "Selection count: " << selection.count() << std::endl;
-//        auto first = selection[0];
-//
-//        auto item = static_cast<QStandardItem*>(first.internalPointer());
-//
-//        std::cout << "Item: " << item << std::endl;
-//        std::cout << "Type: " << item->type() << std::endl;
-//        std::cout << "Has children " << item->hasChildren() << std::endl;
-//
-//        // If it's a dir
-//        // if ( item->type() == ProjectItem::ItemType::Directory ) 
-//        // {
-//        auto map = view->viewport()->mapToGlobal( pos ) ;
-//        QAction * a = d->rootMenu->exec(map);
-//
-//        if ( a == 0 )
-//        {
-//            return;
-//        }
-//
-//        if ( a->data().toString() == "package" ) 
-//        {
-//            auto package = new ProjectItem(ProjectItem::ItemType::Directory, "new_package");
-//            if (item->hasChildren())
-//                item->child(0)->appendRow(package);
-//            else
-//                item->appendRow(package);
-//            // QModelIndex newPackage = currentProj->mkdir( currentProj->root(),"new_package" );
-//            // // setEditable is set to false when editing is finished. See onItemRenameFinished()
-//            // currentProj->setEditable( true ); 
-//            // mw->ui->projectExplorator->edit( newPackage );
-//        }
-//        else if ( a->data().toString() == "execute" ) 
-//        {
-//            // qDebug() << "execute project !";
-//        }
-//    }
+    void ProjectController::__addFile(ProjectItem* parent)
+    {
+        auto name = __askForName(ProjectItem::ItemType::File);
+        if (not __existsAndWarn(name, parent, ProjectItem::ItemType::File))
+        {
+            auto file = new ProjectItem(ProjectItem::ItemType::File, name);
+            parent->appendRow(file);
+            QDir dir(__currentProj->dir());
+            dir.cd(parent->path());
+            auto file_path = dir.absoluteFilePath(file->text());
+            QFile data(file_path);
+            if (data.open(QFile::WriteOnly | QFile::Truncate)) 
+            {
+                QTextStream out(&data);
+                auto ns = file->path().replace('/', '.').trimmed();
+                while (ns.size() > 0 and ns.endsWith('.'))
+                {
+                    ns.truncate(ns.size() - 1);
+                }
+                out << "namespace " << ns << ';' << '\n';
+            }
+        }
+    }
+
+    //    void ProjectController::onCustomContextMenuRequested( const QPoint & pos ) 
+    //    {
+    //        auto view = ((MainWindow*)__mainWidget)->ui->projectExplorator;
+    //        auto selection = view->selectionModel()->selectedIndexes();
+    //        if (selection.count() == 0)
+    //        {
+    //            std::cout << "nothing" << std::endl;
+    //            return;
+    //        }
+    //        std::cout << "Selection count: " << selection.count() << std::endl;
+    //        auto first = selection[0];
+    //
+    //        auto item = static_cast<QStandardItem*>(first.internalPointer());
+    //
+    //        std::cout << "Item: " << item << std::endl;
+    //        std::cout << "Type: " << item->type() << std::endl;
+    //        std::cout << "Has children " << item->hasChildren() << std::endl;
+    //
+    //        // If it's a dir
+    //        // if ( item->type() == ProjectItem::ItemType::Directory ) 
+    //        // {
+    //        auto map = view->viewport()->mapToGlobal( pos ) ;
+    //        QAction * a = d->rootMenu->exec(map);
+    //
+    //        if ( a == 0 )
+    //        {
+    //            return;
+    //        }
+    //
+    //        if ( a->data().toString() == "package" ) 
+    //        {
+    //            auto package = new ProjectItem(ProjectItem::ItemType::Directory, "new_package");
+    //            if (item->hasChildren())
+    //                item->child(0)->appendRow(package);
+    //            else
+    //                item->appendRow(package);
+    //            // QModelIndex newPackage = currentProj->mkdir( currentProj->root(),"new_package" );
+    //            // // setEditable is set to false when editing is finished. See onItemRenameFinished()
+    //            // currentProj->setEditable( true ); 
+    //            // mw->ui->projectExplorator->edit( newPackage );
+    //        }
+    //        else if ( a->data().toString() == "execute" ) 
+    //        {
+    //            // qDebug() << "execute project !";
+    //        }
+    //    }
 
     //void ProjectController::onCustomContextMenuRequested( const QPoint & pos ) 
     //{
