@@ -564,9 +564,6 @@ namespace o3prm
         auto view = ((MainWindow*)__mainWidget)->ui->projectExplorator;
         auto index = view->indexAt(pos);
         auto item = static_cast<QStandardItem*>(index.internalPointer());
-        std::cout << "Item: " << item << std::endl;
-        std::cout << "Type: " << item->type() << std::endl;
-        std::cout << "Has children " << item->hasChildren() << std::endl;
 
         auto map = view->mapToGlobal( pos ) ;
         QAction * a = d->rootMenu->exec(map);

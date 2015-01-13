@@ -18,12 +18,8 @@ namespace o3prm
     Project::Project( const QString & dir, const QString& name, QObject * parent ) :
         QStandardItemModel(parent), __dir(dir), __name(name)
     {
-        //this->setHorizontalHeaderItem(0, new QStandardItem(name));
         auto rootItem = this->invisibleRootItem();
-        std::cout << "Root item: " << rootItem << std::endl;
-
         auto project_dir = new ProjectItem(ProjectItem::ItemType::Directory, name);
-        std::cout << "Root dir: " << project_dir << std::endl;
         rootItem->appendRow(project_dir);
     }
 
