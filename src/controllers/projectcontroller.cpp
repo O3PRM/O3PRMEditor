@@ -98,7 +98,7 @@ namespace o3prm
 
         d->rootMenu = new QMenu();
         d->rootMenu->addAction( tr( "Ajouter un &package" ) )->setData( "package" );
-        d->rootMenu->addAction( tr( "Éxecuter" ) )->setData( "execute" );
+        d->rootMenu->addAction( tr( "Ajouter un fichier" ) )->setData( "file" );
     }
 
     ProjectController::~ProjectController()
@@ -575,13 +575,37 @@ namespace o3prm
         {
             return;
         }
-        else if ( a->data().toString() == "package" ) 
+        auto parent = item->hasChildren()?item->child(0):item;
+        QString path = "";
+        for (auto iter = parent; iter != 0; iter = iter->parent())
         {
-            auto package = new ProjectItem(ProjectItem::ItemType::Directory, "new_package");
-            if (item->hasChildren())
-                item->child(0)->appendRow(package);
-            else
-                item->appendRow(package);
+            path = iter->text() + "/" + path;
+        }
+        QDir dir(__currentProj->dir());
+        if ( a->data().toString() == "package" ) 
+        {
+            auto package = new ProjectItem(ProjectItem::ItemType::Directory, "new_package/");
+            parent->appendRow(package);
+            dir.mkpath(QString(path));
+        }
+        else if ( a->data().toString() == "file" )
+        {
+            auto file = new ProjectItem(ProjectItem::ItemType::File, "new_file.o3prm");
+            parent->appendRow(file);
+            dir.cd(path);
+            auto file_path = dir.absoluteFilePath(file->text());
+            QFile data(file_path);
+            if (data.open(QFile::WriteOnly | QFile::Truncate)) 
+            {
+                QTextStream out(&data);
+                path = path.replace('/', '.').trimmed();
+                while (path.size() > 0 and path.endsWith('.'))
+                {
+                    path.truncate(path.size() - 1);
+                }
+                out << "namespace " << path << ';' << '\n';
+            }
+
         }
     }
 
