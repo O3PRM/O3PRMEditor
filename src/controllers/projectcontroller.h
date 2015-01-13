@@ -226,6 +226,9 @@ namespace o3prm
 
             QString __askForName(ProjectItem::ItemType type);
             void __addFile(QString name, ProjectItem* parent);
+            /// Returns true if name is a child of parent in the current project
+            /// and warns the user the his name is unusable.
+            bool __existsAndWarn(QString name, ProjectItem* parent);
     };
 
 } // o3prm

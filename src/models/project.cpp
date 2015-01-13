@@ -19,8 +19,8 @@ namespace o3prm
         QStandardItemModel(parent), __dir(dir), __name(name)
     {
         auto rootItem = this->invisibleRootItem();
-        auto project_dir = new ProjectItem(ProjectItem::ItemType::Directory, name);
-        rootItem->appendRow(project_dir);
+        __root = new ProjectItem(ProjectItem::ItemType::Directory, name);
+        rootItem->appendRow(__root);
     }
 
     Project::~Project()
@@ -36,6 +36,12 @@ namespace o3prm
     {
         return QDir(__dir);
     }
+
+    ProjectItem* Project::root()
+    {
+        return __root;
+    }
+
 
     bool Project::isInside( const QString & filePath ) const 
     {

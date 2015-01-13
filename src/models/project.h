@@ -92,6 +92,8 @@ namespace o3prm
              */
             QDir dir() const;
 
+            ProjectItem* root();
+
             /// Legacy methods that I still need to implement
 
             /**
@@ -123,6 +125,7 @@ signals:
         private:
             QString __dir;
             QString __name;
+            ProjectItem* __root;
     };
 
 }

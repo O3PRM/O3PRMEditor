@@ -572,7 +572,7 @@ namespace o3prm
         {
             return;
         }
-        ProjectItem* parent = item->type() >= 1000?static_cast<ProjectItem*>(item):0;
+        ProjectItem* parent = item->type() >= 1000?static_cast<ProjectItem*>(item):__currentProj->root();
         QDir dir(__currentProj->dir());
         if ( a->data().toString() == "package" ) 
         {
@@ -583,24 +583,65 @@ namespace o3prm
         else if ( a->data().toString() == "file" )
         {
             auto file_name = __askForName(ProjectItem::ItemType::File);
-            __addFile(file_name, static_cast<ProjectItem*>(parent));
+            if (not __existsAndWarn(file_name, parent))
+            {
+                __addFile(file_name, parent);
+            }
         }
+    }
+
+    bool ProjectController::__existsAndWarn(QString name, ProjectItem* parent)
+    {
+        QDir dir(__currentProj->dir());
+        dir.cd(parent->path());
+        if (dir.exists(name))
+        {
+            QString title = tr("Name already used!");
+            QString msg = tr("The filename %1 is already used in package %2").arg(name, parent->text());
+            QMessageBox::warning(__mainWidget, title, msg);
+            return true;
+        }
+        return false;
     }
 
     QString ProjectController::__askForName(ProjectItem::ItemType type)
     {
-        QString type_name = "";
+        bool ok;
+        QString title, msg, default_value;
         switch (type)
         {
             case ProjectItem::ItemType::Directory:
-                type_name = tr("package");
+            {
+                title = tr("Choose a name for this new package");
+                msg = tr("Package name:");
+                default_value = tr("package");
                 break;
+            }
             case ProjectItem::ItemType::File:
-                type_name = tr("file");
+            {
+                title = tr("Chosse a name for this new file");
+                msg = tr("File name:");
+                default_value = tr("new_file.o3prm");
+                break;
+            }
             default:
-                type_name = tr("unknown");
+            {
+                title = tr("Choose a name for this unknown element");
+                msg = tr("Name:");
+                default_value = tr("unknown");
+            }
         }
-        return type_name;
+        QString name = QInputDialog::getText(__mainWidget,
+                                             title,
+                                             msg,
+                                             QLineEdit::Normal,
+                                             default_value,
+                                             &ok);
+        if (type == ProjectItem::ItemType::File and not name.endsWith(".o3prm"))
+        {
+            name = name + ".o3prm";
+        }
+        return name;
     }
     
     void ProjectController::__addFile(QString name, ProjectItem* parent)
