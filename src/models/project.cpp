@@ -19,7 +19,7 @@ namespace o3prm
         QStandardItemModel(parent), __dir(dir), __name(name)
     {
         auto rootItem = this->invisibleRootItem();
-        __root = new ProjectItem(ProjectItem::ItemType::Directory, name);
+        __root = new ProjectItem(ProjectItem::ItemType::Project, name);
         rootItem->appendRow(__root);
     }
 
@@ -66,9 +66,28 @@ namespace o3prm
         return QList<QString>();
     }
 
+    QDomElement Project::__asXml(QDomDocument& doc, ProjectItem* item) 
+    {
+        auto name = Project::itemType2String(item->type()).toLower();
+        auto element = doc.createElement(name);
+        element.setAttribute("name", item->text());
+        for (int i = 0; i < item->rowCount(); ++i)
+        {
+            auto child = __asXml(doc, static_cast<ProjectItem*>(item->child(i)));
+            element.appendChild(child);
+        }
+        return element;
+    }
+
     QDomDocument Project::asXml()
     {
         QDomDocument doc(name());
+        auto xml_root = doc.createElement("o3prmproject");
+        xml_root.setAttribute("name", name());
+
+        doc.appendChild(xml_root);
+        xml_root.appendChild(__asXml(doc, this->root()));
+
         return doc;
     }
 

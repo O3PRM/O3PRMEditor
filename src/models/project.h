@@ -20,7 +20,8 @@ namespace o3prm
         public :
             enum ItemType {
                 Directory = 1000,
-                File = 1001
+                File = 1001,
+                Project = 1002
             };
 
             /// Values used by ProjectItem must be above or equal to 1000.
@@ -84,6 +85,18 @@ namespace o3prm
                 {
                     case ProjectItem::ItemType::Directory: { return tr("Package"); }
                     case ProjectItem::ItemType::File:      { return tr("File"); }
+                    case ProjectItem::ItemType::Project:   { return tr("Project"); }
+                    default: { return tr("Unknown"); }
+                }
+            }
+
+            static QString itemType2String(int type) 
+            {
+                switch (type)
+                {
+                    case (int)ProjectItem::ItemType::Directory: { return tr("Package"); }
+                    case (int)ProjectItem::ItemType::File:      { return tr("File"); }
+                    case (int)ProjectItem::ItemType::Project:   { return tr("Project"); }
                     default: { return tr("Unknown"); }
                 }
             }
@@ -134,7 +147,8 @@ namespace o3prm
 
             /// Save a Project in XML as a .o3prmproject file
             QDomDocument asXml();
-signals:
+
+        signals:
             /// This signal is emited when a file is moved by drag and drop in the view.
             /// For constance with fileRenamed, \a oldFilePath is the complete, absolute,
             /// filename with its path, \a newPath too.
@@ -144,6 +158,8 @@ signals:
             QString __dir;
             QString __name;
             ProjectItem* __root;
+
+            QDomElement __asXml(QDomDocument& doc, ProjectItem* item);
     };
 
 }
