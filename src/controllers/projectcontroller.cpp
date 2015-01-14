@@ -135,39 +135,41 @@ namespace o3prm
             __closeProject();
 
             __currentProj = new Project( dial.projectDir(), tr("NewProject"), this );
+            __saveProject();
+
             emit projectLoaded(__currentProj);
-
-            // connect( currentProj, SIGNAL( fileRenamed( QString,QString,QString ) ),
-            //         this, SLOT( onProjectFileRenamed( QString,QString,QString ) ) );
-            // connect( currentProj, SIGNAL( fileMoved( QString,QString ) ),
-            //         this, SLOT( onProjectFileMoved( QString,QString ) ) );
-
-            // d->projectProperties = new ProjectProperties( currentProj, mw );
-            // mw->ui->actionProjectProperties->setEnabled( true );
-
-            // connect( mw->ui->actionProjectProperties, SIGNAL( triggered() ),
-            //         d->projectProperties, SLOT( exec() ) );
-
-            // // We change current directory to the project directory
-            // QDir::setCurrent( dial.projectDir() );
-
-            // Create empty files
-            //createNewClassFile();
-
-
-            saveProjectsState();
         }
+    }
+
+    bool ProjectController::__saveProject()
+    {
+        QString name = "%1.o3prmproject";
+        name = name.arg(__currentProj->name());
+
+        QDir dir(__currentProj->dir());
+        QFile file(dir.absoluteFilePath(name));
+
+        if( file.open( QIODevice::WriteOnly | QIODevice::Truncate) )
+        {
+            auto dom = __currentProj->asXml();
+
+            QTextStream ts( &file );
+            ts << dom.toString();
+
+            file.close();
+            return true;
+        }
+        return false;
     }
 
     void ProjectController::__closeProject()
     {
-        // Close existing projects
-        // if ( currentProj )
-        // {
-        //     currentProj->close();
-        //     currentProj->deleteLater();
-        //     currentProj = 0;
-        // }
+        if ( __currentProj )
+        {
+            delete __currentProj;
+            __currentProj = 0;
+            emit projectClosed();
+        }
     }
 
     void ProjectController::createNewClassFile()
@@ -450,35 +452,6 @@ namespace o3prm
         //}
     }
 
-    void ProjectController::saveProjectsState() 
-    {
-        //QSettings settings;
-        //settings.beginGroup( "project" );
-
-        //if ( currentProj ) 
-        //{
-        //    settings.setValue( "last project", currentProj->dir().absolutePath() );
-        //    currentProj->close();
-        //}
-        //else
-        //{
-        //    settings.setValue( "last project", "" );
-        //}
-
-        //// Save the last closed projects in settings
-        //int size = d->recentsProjects->actions().size();
-
-        //settings.beginWriteArray( "recentsProjects",size );
-
-        //for ( int i = 0 ; i < size ; i++ ) 
-        //{
-        //    settings.setArrayIndex( i );
-        //    settings.setValue( "project",d->recentsProjects->actions().at( i )->data() );
-        //}
-
-        //settings.endArray();
-    }
-
     bool ProjectController::on_projectExplorator_clicked( QModelIndex index ) 
     {
         //QString filename = index.data( QFileSystemModel::FilePathRole ).toString();
@@ -610,6 +583,8 @@ namespace o3prm
             dir.mkdir(name);
             auto package = new ProjectItem(ProjectItem::ItemType::Directory, name);
             parent->appendRow(package);
+
+            __saveProject();
         }
     }
 
@@ -634,6 +609,7 @@ namespace o3prm
                 }
                 out << "namespace " << ns << ';' << '\n';
             }
+            __saveProject();
         }
     }
 

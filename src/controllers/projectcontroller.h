@@ -84,7 +84,11 @@ namespace o3prm
             bool isOpenProject() const;
 
         signals:
+            // Emitted when a project is loaded
             void projectLoaded(o3prm::Project* project);
+
+            // Emitted when a project is closed
+            void projectClosed();
 
         public slots:
             /**
@@ -222,6 +226,9 @@ namespace o3prm
             void __setupRecentProjects();
             void __setupContextMenu();
 
+            bool __saveProject();
+
+            // Close the project without saving it
             void __closeProject();
 
             /// Shows a Dialog and ask user to type a filename.
