@@ -23,6 +23,48 @@ namespace o3prm
         rootItem->appendRow(__root);
     }
 
+    Project* Project::load(const QString& dir, const QDomElement& project_node, QObject* parent)
+    {
+        auto name = project_node.attribute("name");
+        auto project = new Project(dir, name, parent);
+        auto root = project->root();
+
+        QList<QPair<ProjectItem*, QDomNode>> list;
+        for (int i = 0; i < project_node.childNodes().count(); ++i)
+        {
+            auto pair = qMakePair(root, project_node.childNodes().at(i));
+            list.append(pair);
+        }
+
+        while (list.size())
+        {
+            auto pair = list.first();
+            list.removeFirst();
+
+            ProjectItem *item = 0;
+            auto node = static_cast<QDomElement*>(&(pair.second));
+            auto text = node->attribute("name");
+
+            if (node->tagName() == itemType2String(ProjectItem::ItemType::Directory).toLower())
+            {
+                item = new ProjectItem(ProjectItem::ItemType::Directory, text); 
+            }
+            else if (node->tagName() == itemType2String(ProjectItem::ItemType::File).toLower())
+            {
+                item = new ProjectItem(ProjectItem::ItemType::File, text);
+            }
+
+            pair.first->appendRow(item);
+
+            for (int i = 0; i < node->childNodes().count(); ++i)
+            {
+                list.append(qMakePair(item, node->childNodes().at(i)));
+            }
+        }
+
+        return project;
+    }
+
     Project::~Project()
     {
     }

@@ -94,3 +94,63 @@ TEST(Project, TestSerialization)
     ASSERT_EQ("file", xml_printers->tagName().toStdString());
     ASSERT_EQ("printers.o3prm", xml_printers->attribute("name").toStdString());
 }
+
+TEST(Project, TestDeserialisation)
+{
+    // Arrange
+    QDomDocument dom("MyCoolProject");
+    auto xml_root = dom.createElement("o3prmproject");
+    xml_root.setAttribute("name", "MyCoolProject");
+    dom.appendChild(xml_root);
+
+    auto xml_project = dom.createElement("project");
+    xml_project.setAttribute("name", "MyCoolProject");
+    xml_root.appendChild(xml_project);
+
+    auto xml_readme = dom.createElement("file");
+    xml_readme.setAttribute("name", "README.txt");
+    xml_project.appendChild(xml_readme);
+
+    auto xml_org = dom.createElement("package");
+    xml_org.setAttribute("name", "org/");
+    xml_project.appendChild(xml_org);
+
+    auto xml_lip6 = dom.createElement("package");
+    xml_lip6.setAttribute("name", "lip6/");
+    xml_org.appendChild(xml_lip6);
+
+    auto xml_printers = dom.createElement("file");
+    xml_printers.setAttribute("name", "printers.o3prm");
+    xml_lip6.appendChild(xml_printers);
+
+    // Act
+    o3prm::Project* project = o3prm::Project::load("/some/path", xml_project);
+
+    // Assert
+    auto root = project->root();
+    ASSERT_EQ("MyCoolProject", root->text().toStdString());
+    ASSERT_EQ((int)o3prm::ProjectItem::ItemType::Project, root->type());
+    ASSERT_EQ(2, root->rowCount());
+
+    auto readme = static_cast<o3prm::ProjectItem*>(root->child(0));
+    ASSERT_EQ("README.txt", readme->text().toStdString());
+    ASSERT_EQ((int)o3prm::ProjectItem::ItemType::File, readme->type());
+    ASSERT_EQ(0, readme->rowCount());
+
+    auto org = static_cast<o3prm::ProjectItem*>(root->child(1));
+    ASSERT_EQ("org/", org->text().toStdString());
+    ASSERT_EQ((int)o3prm::ProjectItem::ItemType::Directory, org->type());
+    ASSERT_EQ(1, org->rowCount());
+
+    auto lip6 = static_cast<o3prm::ProjectItem*>(org->child(0));
+    ASSERT_EQ("lip6/", lip6->text().toStdString());
+    ASSERT_EQ((int)o3prm::ProjectItem::ItemType::Directory, lip6->type());
+    ASSERT_EQ(1, lip6->rowCount());
+
+    auto printers = static_cast<o3prm::ProjectItem*>(lip6->child(0));
+    ASSERT_EQ("printers.o3prm", printers->text().toStdString());
+    ASSERT_EQ((int)o3prm::ProjectItem::ItemType::File, printers->type());
+    ASSERT_EQ(0, printers->rowCount());
+
+    delete project;
+}

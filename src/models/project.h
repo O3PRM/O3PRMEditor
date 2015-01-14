@@ -106,6 +106,8 @@ namespace o3prm
              */
             Project( const QString & dir, const QString& name, QObject * parent = 0 );
 
+            static Project* load(const QString& dir, const QDomElement& dom, QObject* parent = 0);
+
             /**
              * Destructor
              */
