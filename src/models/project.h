@@ -125,6 +125,11 @@ namespace o3prm
 
             ProjectItem* root();
 
+            bool isEditable() const;
+
+            /// Save a Project in XML as a .o3prmproject file
+            QDomDocument asXml();
+
             /// Legacy methods that I still need to implement
 
             /**
@@ -147,8 +152,6 @@ namespace o3prm
              */
             QList<QString> paths() const;
 
-            /// Save a Project in XML as a .o3prmproject file
-            QDomDocument asXml();
 
         signals:
             /// This signal is emited when a file is moved by drag and drop in the view.

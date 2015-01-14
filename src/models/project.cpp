@@ -133,5 +133,9 @@ namespace o3prm
         return doc;
     }
 
+    bool Project::isEditable() const
+    {
+        return false;
+    }
 
 }

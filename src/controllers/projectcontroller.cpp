@@ -442,17 +442,27 @@ namespace o3prm
 
     bool ProjectController::on_projectExplorator_doubleClicked( QModelIndex index ) 
     {
-        // // Return false if index is a dir
-        // if ( currentProj->isDir( index ) )
-        // {
-        //     return false;
-        // }
-        // else // Else open the file
-        // {
-        //     return mw->fc->openFile( index.data( QFileSystemModel::FilePathRole ).toString() );
-        // }
-
-        return false;
+        std::cout << "double clicked !" << std::endl;
+        auto item = static_cast<ProjectItem*>(index.internalPointer());
+        std::cout << "On : " << item->text().toStdString() << std::endl;
+        switch (item->type())
+        {
+            case ProjectItem::ItemType::Directory:
+                {
+                    return false;
+                }
+            case ProjectItem::ItemType::File:
+                {
+                    QDir dir(__currentProj->dir());
+                    auto path = dir.absoluteFilePath(item->path());
+                    std::cout << path.toStdString() << std::endl;
+                    return __mainWidget->fc->openFile(path);
+                }
+            default:
+                {
+                    return false;
+                }
+        }
     }
 
     void ProjectController::onProjectFileRenamed( const QString & path,

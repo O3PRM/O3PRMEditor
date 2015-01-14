@@ -55,6 +55,7 @@ void MainWindow::__setupProjectController()
     pc = new o3prm::ProjectController( this );
     ui->projectExplorator->setVisible( false );
     ui->projectExplorator->setDragDropMode( QAbstractItemView::InternalMove );
+    ui->projectExplorator->setEditTriggers( QAbstractItemView::NoEditTriggers );
     ui->actionProjectProperties->setEnabled( false );
 }
 
