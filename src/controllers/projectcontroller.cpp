@@ -18,6 +18,7 @@
 #include <QDir>
 #include <QEventLoop>
 #include <QFile>
+#include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QSettings>
@@ -280,84 +281,53 @@ namespace o3prm
         //}
     }
 
-    void ProjectController::openProject( QString projectpath )
+    void ProjectController::openProject( QString path )
     {
-        //if ( projectpath.isEmpty() )
-        //{
-        //    // Retrieve the project dir
-        //    auto msg = tr( "Sélectionnez le répertoire du projet" );
-        //    projectpath = QFileDialog::getExistingDirectory( mw, msg, QDir::homePath() );
-        //}
+        __closeProject();
 
-        //QDir qDir( projectpath );
+        if ( path.isEmpty() )
+        {
+            path = QFileDialog::getOpenFileName ( __mainWidget,
+                    tr( "Open project file" ),
+                    QDir::home().absolutePath(),
+                    tr("O3PRM project Files (*.o3prmproject)")
+                    );
+        }
 
-        //// TODO : Warning are not ?
-        //if ( projectpath.isEmpty() || ! qDir.exists() )
-        //{
-        //    return;
-        //}
+        QFile file(path);
 
-        //if ( ! qDir.exists( qDir.dirName()+".o3prmp" ) ) 
-        //{
-        //    auto msg = tr( "Ce répertoire ne contient pas de fichier projet.\nLe créer ?" );
-        //    int rep = QMessageBox::warning( mw,
-        //            tr( "Attention" ),
-        //            msg,
-        //            QMessageBox::Cancel,
-        //            QMessageBox::Ok );
+        if ( path.isEmpty() or not file.exists() )
+        {
+            return;
+        }
 
-        //    if ( rep == QMessageBox::Cancel )
-        //    {
-        //        return;
-        //    }
-        //}
+        if( !file.open( QIODevice::ReadOnly ) )
+        {
+            return;
+        }
 
-        //if ( currentProj )
-        //{
-        //    closeProject();
-        //}
+        QDomDocument doc("o3prmproject");
+        if( !doc.setContent( &file ) )
+        {
+            file.close();
+            return;
+        }
+        file.close();
 
-        //currentProj = new Project( qDir.absolutePath(), "OpenedProject", this );
+        QFileInfo info(file);
+        auto tag = Project::itemType2String(ProjectItem::ItemType::Project).toLower();
+        auto projects = doc.elementsByTagName(tag);
 
-        //connect( currentProj, SIGNAL( fileRenamed( QString,QString,QString ) ),
-        //        this, SLOT( onProjectFileRenamed( QString,QString,QString ) ) );
-        //connect( currentProj, SIGNAL( fileMoved( QString,QString ) ),
-        //        this, SLOT( onProjectFileMoved( QString,QString ) ) );
+        if (not projects.size())
+        {
+            return;
+        }
 
-        //d->projectProperties = new ProjectProperties( currentProj, mw );
+        auto node = projects.at(0);
+        auto elt = static_cast<QDomElement*>(&node);
+        __currentProj = Project::load(info.absoluteDir().absolutePath(), *elt, this);
 
-        //mw->ui->actionProjectProperties->setEnabled( true );
-
-        //connect( mw->ui->actionProjectProperties, SIGNAL( triggered() ),
-        //        d->projectProperties, SLOT( exec() ) );
-
-        //// We change current directory to the project directory
-        //QDir::setCurrent( currentProj->dir().absolutePath() );
-
-        //removeOfRecentsProjects( qDir.absolutePath() );
-
-        //// Show project arborescence
-        //mw->ui->actionProjectExploratorVisibility->setEnabled( true );
-
-        //mw->ui->projectExplorator->setModel( currentProj );
-
-        //mw->ui->projectExplorator->setRootIndex( currentProj->root() );
-
-        //mw->vc->setProjectExploratorVisibility( true );
-
-        //// Enable new specific file creation
-        //mw->ui->actionNewClass->setEnabled( true );
-
-        //mw->ui->actionNewModel->setEnabled( true );
-
-        //mw->ui->actionNewRequestFile->setEnabled( true );
-
-        //saveProjectsState();
-
-        //// Enable auto syntax check
-        //mw->bc->setAutoSyntaxCheck( true );
-
-        //QTimer::singleShot( 200, mw->ui->projectExplorator, SLOT( expandAll() ) );
+        emit projectLoaded(__currentProj);
     }
 
     void ProjectController::closeProject() 
