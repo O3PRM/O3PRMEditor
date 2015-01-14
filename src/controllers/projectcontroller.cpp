@@ -58,7 +58,7 @@ namespace o3prm
         d(new PrivateData(this))
     {
         __setupRecentProjects();
-        __setupContextMenus();
+        __setupContextMenu();
     }
 
     void ProjectController::__setupRecentProjects()
@@ -69,35 +69,10 @@ namespace o3prm
         //        this, SLOT( pc->openProject( QString ) ) );
     }
 
-    void ProjectController::__setupContextMenus()
+    void ProjectController::__setupContextMenu()
     {
-        d->fileMenu = new QMenu();
-        d->fileMenu->addAction( tr( "Re&nommer" ) )->setData( "rename" );
-        d->fileMenu->addAction( tr( "&Supprimer" ) )->setData( "remove" );
-        d->fileMenu->addAction( tr( "&Éxécuter" ) )->setData( "execute" );
-
-        // QMenu * m = d->fileMenu->addMenu(tr("&Refactoring"));
-        // m->addAction(tr("Re&nommer"))->setData("refact-rename");
-        // m->addAction(tr("&Déplacer"))->setData("refact-move");
-        // m->addAction(tr("&Supprimer"))->setData("refact-remove");
-
-        d->dirMenu = new QMenu();
-        d->dirMenu->addAction( tr( "Re&nommer" ) )->setData( "rename" );
-        // Don't work for moment:
-        d->dirMenu->addAction( tr( "&Supprimer" ) )->setData( "remove" ); 
-
-        QMenu * m = d->dirMenu->addMenu( tr( "Ajouter" ) );
-        m->addAction( tr( "&Package" ) )->setData( "addPackage" );
-        // m->addAction(tr("&Classe"))->setData("addClass");
-        // m->addAction(tr("&Système"))->setData("addSystem");
-        // m->addAction(tr("&Requête"))->setData("addRequest");
-        m = d->dirMenu->addMenu( tr( "&Refactoring" ) );
-        // m->addAction(tr("Re&nommer"))->setData("refact-rename");
-        // m->addAction(tr("&Déplacer"))->setData("refact-move");
-        // m->addAction(tr("&Supprimer"))->setData("refact-remove");
-
-        d->rootMenu = new QMenu();
-        d->rootMenu->addAction( tr( "Ajouter un &package" ) )->setData( "package" );
+        d->rootMenu = new QMenu(__mainWidget);
+        //d->rootMenu->addAction( tr( "Ajouter un &package" ) )->setData( "package" );
         d->rootMenu->addAction( tr( "Ajouter un fichier" ) )->setData( "file" );
     }
 

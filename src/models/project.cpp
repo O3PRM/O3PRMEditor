@@ -66,4 +66,11 @@ namespace o3prm
         return QList<QString>();
     }
 
+    QDomDocument Project::asXml()
+    {
+        QDomDocument doc(name());
+        return doc;
+    }
+
+
 }

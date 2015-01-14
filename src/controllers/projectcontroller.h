@@ -220,7 +220,7 @@ namespace o3prm
             PrivateData * d;
 
             void __setupRecentProjects();
-            void __setupContextMenus();
+            void __setupContextMenu();
 
             void __closeProject();
 

@@ -10,6 +10,7 @@
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
+#include <QtXml>
 
 namespace o3prm
 {
@@ -131,6 +132,8 @@ namespace o3prm
              */
             QList<QString> paths() const;
 
+            /// Save a Project in XML as a .o3prmproject file
+            QDomDocument asXml();
 signals:
             /// This signal is emited when a file is moved by drag and drop in the view.
             /// For constance with fileRenamed, \a oldFilePath is the complete, absolute,
