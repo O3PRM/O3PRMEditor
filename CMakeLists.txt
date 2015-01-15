@@ -12,6 +12,12 @@ LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 # Dependencies
+#set(Boost_USE_STATIC_LIBS ON) 
+#set(Boost_USE_MULTITHREADED OFF)  
+#set(Boost_USE_STATIC_RUNTIME OFF) 
+#find_package(Boost 1.45.0 REQUIRED COMPONENTS filesystem) 
+#include_directories(${Boost_INCLUDE_DIRS}) 
+
 FIND_PACKAGE(Qt4 REQUIRED)
 SET(QT_USE_QTXML TRUE)
 
@@ -140,7 +146,7 @@ endif()
 
 # Test related stuff
 ADD_EXECUTABLE(o3prmeditor_test ${TEST_SOURCES} ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
-TARGET_LINK_LIBRARIES(o3prmeditor_test gmock gtest pthread ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum)
+TARGET_LINK_LIBRARIES(o3prmeditor_test gmock gtest pthread ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum)  #${Boost_LIBRARIES}
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     SET_TARGET_PROPERTIES(o3prmeditor_test PROPERTIES LINK_FLAGS "-lstdc++")
 endif()

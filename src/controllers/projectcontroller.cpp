@@ -482,30 +482,27 @@ namespace o3prm
         {
             auto view = __mainWidget->mainwindow()->projectExplorator;
             auto index = view->indexAt(pos);
-            auto item = static_cast<QStandardItem*>(index.internalPointer());
-
-            auto map = view->mapToGlobal( pos ) ;
-            QAction * a = d->rootMenu->exec(map);
-
-            if ( a == 0 ) return;
-
-            ProjectItem* parent = 0;
-            if (item->type() >= ProjectItem::minItemTypeInt())
+            if (index.isValid())
             {
-                parent = static_cast<ProjectItem*>(item);
-            }
-            else
-            {
-                parent = __currentProj->root();
-            }
+                auto parent = static_cast<QStandardItem*>(index.internalPointer());
+                // Only the invisible root is of type QStandardItem
+                auto item = static_cast<ProjectItem*>(parent->child(index.row()));
 
-            if ( a->data().toString() == "package" ) 
-            {
-                __addPackage(parent);
-            }
-            else if ( a->data().toString() == "file" )
-            {
-                __addFile(parent);
+                if (item->type() == (int)ProjectItem::ItemType::Directory
+                    or item->type() == (int)ProjectItem::ItemType::Project)
+                {
+                    auto map = view->mapToGlobal( pos ) ;
+                    QAction * action = d->rootMenu->exec(map);
+
+                    if (action and action->data().toString() == "package")
+                    {
+                        __addPackage(item);
+                    }
+                    else if (action and action->data().toString() == "file")
+                    {
+                        __addFile(item);
+                    }
+                }
             }
         }
     }
@@ -523,6 +520,18 @@ namespace o3prm
             return true;
         }
         return false;
+    }
+
+    bool ProjectController::__validNameAndWarn(QString name)
+    {
+        if (name.isEmpty() or name == ".o3prm") //not boost::filesystem::portable_name(name.toStdString()))
+        {
+            QMessageBox::warning ( __mainWidget,
+                tr("Invalid name"),
+                tr("%1 is not a valid choice for this action, please chose another name.").arg(name));
+            return false;
+        }
+        return true;
     }
 
     QString ProjectController::__askForName(ProjectItem::ItemType type)
@@ -553,6 +562,7 @@ namespace o3prm
             QDir dir(__currentProj->dir());
             dir.cd(parent->path());
             dir.mkdir(name);
+
             auto package = new ProjectItem(ProjectItem::ItemType::Directory, name);
             parent->appendRow(package);
 
@@ -563,14 +573,19 @@ namespace o3prm
     void ProjectController::__addFile(ProjectItem* parent)
     {
         auto name = __askForName(ProjectItem::ItemType::File);
-        if (not __existsAndWarn(name, parent, ProjectItem::ItemType::File))
+
+        if (__validNameAndWarn(name)
+            and not __existsAndWarn(name, parent, ProjectItem::ItemType::File))
         {
             auto file = new ProjectItem(ProjectItem::ItemType::File, name);
             parent->appendRow(file);
+
             QDir dir(__currentProj->dir());
             dir.cd(parent->path());
+
             auto file_path = dir.absoluteFilePath(file->text());
             QFile data(file_path);
+
             if (data.open(QFile::WriteOnly | QFile::Truncate)) 
             {
                 QTextStream out(&data);
@@ -581,6 +596,7 @@ namespace o3prm
                 }
                 out << "namespace " << ns << ';' << '\n';
             }
+
             __saveProject();
         }
     }

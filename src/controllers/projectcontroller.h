@@ -238,6 +238,9 @@ namespace o3prm
             /// and warns the user the his name is unusable.
             bool __existsAndWarn(QString name, ProjectItem* parent, ProjectItem::ItemType type);
 
+            /// Returns true if name is a valid name, i.e. could be a file name and is not empty
+            bool __validNameAndWarn(QString name);
+
             /// Add a file to the project and the filesystem.
             void __addFile(ProjectItem* parent);
 
