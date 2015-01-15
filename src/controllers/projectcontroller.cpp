@@ -128,14 +128,18 @@ namespace o3prm
 
     void ProjectController::newProject()
     {
+        if (isOpenProject())
+        {
+            __saveProject();
+            __closeProject();
+        }
+
         NewProjectDialog dial( __mainWidget );
 
         // If user cancel, do nothing
         if ( dial.exec() )
         {
-            __closeProject();
-
-            __currentProj = new Project( dial.projectDir(), tr("NewProject"), this );
+            __currentProj = new Project( dial.projectDir(), dial.projectName(), this );
             __saveProject();
 
             emit projectLoaded(__currentProj);
@@ -167,7 +171,7 @@ namespace o3prm
     {
         if ( __currentProj )
         {
-            delete __currentProj;
+            __currentProj->deleteLater();
             __currentProj = 0;
             emit projectClosed();
         }
@@ -283,7 +287,11 @@ namespace o3prm
 
     void ProjectController::openProject( QString path )
     {
-        __closeProject();
+        if (isOpenProject())
+        {
+            __saveProject();
+            __closeProject();
+        }
 
         if ( path.isEmpty() )
         {
@@ -295,80 +303,58 @@ namespace o3prm
         }
 
         QFile file(path);
+        if (file.open(QIODevice::ReadOnly))
+        { 
+            QDomDocument doc("o3prmproject");
+            if( doc.setContent( &file ) )
+            {
+                QFileInfo info(file);
+                auto tag = Project::itemType2String(ProjectItem::ItemType::Project).toLower();
+                auto projects = doc.elementsByTagName(tag);
 
-        if ( path.isEmpty() or not file.exists() )
-        {
-            return;
-        }
+                if (not projects.size())
+                {
+                    return;
+                }
 
-        if( !file.open( QIODevice::ReadOnly ) )
-        {
-            return;
-        }
+                auto node = projects.at(0);
+                auto elt = static_cast<QDomElement*>(&node);
+                __currentProj = Project::load(info.absoluteDir().absolutePath(), *elt, this);
 
-        QDomDocument doc("o3prmproject");
-        if( !doc.setContent( &file ) )
-        {
+                emit projectLoaded(__currentProj);
+            }
             file.close();
-            return;
         }
-        file.close();
-
-        QFileInfo info(file);
-        auto tag = Project::itemType2String(ProjectItem::ItemType::Project).toLower();
-        auto projects = doc.elementsByTagName(tag);
-
-        if (not projects.size())
-        {
-            return;
-        }
-
-        auto node = projects.at(0);
-        auto elt = static_cast<QDomElement*>(&node);
-        __currentProj = Project::load(info.absoluteDir().absolutePath(), *elt, this);
-
-        emit projectLoaded(__currentProj);
     }
 
     void ProjectController::closeProject() 
     {
-        //if ( currentProj ) {
-        //    addToRecentsProjects( currentProj->dir().absolutePath() );
+        if (isOpenProject())
+        {
+            addToRecentsProjects( __currentProj->dir().absolutePath() );
+            __saveProject();
+            __closeProject();
+            QDir::setCurrent( QDir::homePath() );
+        }
 
-        //    // Tests because can be delete by MainWindow
-        //    disconnect( mw->ui->actionProjectProperties, SIGNAL( triggered() ),
-        //            d->projectProperties, SLOT( exec() ) );
-        //    d->projectProperties->close();
-        //    d->projectProperties->deleteLater();
-        //    d->projectProperties = 0;
-
-        //    currentProj->deleteLater();
-        //    currentProj = 0;
-
-        //    mw->ui->actionProjectProperties->setEnabled( false );
-        //    QDir::setCurrent( QDir::homePath() );
-        //}
-
-        //mw->ui->projectExplorator->setModel( currentProj );
-        //mw->vc->setProjectExploratorVisibility( false );
+        __mainWidget->vc->setProjectExploratorVisibility( false );
 
         //// Disable new specific file creation
-        //mw->ui->actionNewClass->setEnabled( false );
-        //mw->ui->actionNewModel->setEnabled( false );
-        //mw->ui->actionNewRequestFile->setEnabled( false );
-        //mw->ui->actionProjectExploratorVisibility->setEnabled( false );
+        __mainWidget->ui->actionNewClass->setEnabled( false );
+        __mainWidget->ui->actionNewModel->setEnabled( false );
+        __mainWidget->ui->actionNewRequestFile->setEnabled( false );
+        __mainWidget->ui->actionProjectExploratorVisibility->setEnabled( false );
+        __mainWidget->ui->projectExplorator->hide();
 
         //// Disable auto syntax check
-        //mw->bc->setAutoSyntaxCheck( false );
-
-        //saveProjectsState();
+        __mainWidget->bc->setAutoSyntaxCheck( false );
     }
 
     void ProjectController::refactor( const QString & fromFilePath, const QString & toFilePath ) 
     {
-        qWarning() << "Project::refactor() was called but is not yet implemented.\n"
-            "For moment, this method do nothing.";
-        return;
+        // qWarning() << "Project::refactor() was called but is not yet implemented.\n"
+        //     "For moment, this method do nothing.";
+        // return;
     } 
 
     void ProjectController::addToRecentsProjects( const QString & projetPath )
@@ -442,26 +428,30 @@ namespace o3prm
 
     bool ProjectController::on_projectExplorator_doubleClicked( QModelIndex index ) 
     {
-        auto parent = static_cast<ProjectItem*>(index.internalPointer());
-        auto item = parent->child(index.row());
-        switch (item->type())
+        if (isOpenProject())
         {
-            case ProjectItem::ItemType::Directory:
-                {
-                    return false;
-                }
-            case ProjectItem::ItemType::File:
-                {
-                    QDir dir(__currentProj->dir());
-                    auto path = dir.absoluteFilePath(item->path());
-                    std::cout << path.toStdString() << std::endl;
-                    return __mainWidget->fc->openFile(path);
-                }
-            default:
-                {
-                    return false;
-                }
+            auto parent = static_cast<ProjectItem*>(index.internalPointer());
+            auto item = parent->child(index.row());
+            switch (item->type())
+            {
+                case ProjectItem::ItemType::Directory:
+                    {
+                        return false;
+                    }
+                case ProjectItem::ItemType::File:
+                    {
+                        QDir dir(__currentProj->dir());
+                        auto path = dir.absoluteFilePath(item->path());
+                        std::cout << path.toStdString() << std::endl;
+                        return __mainWidget->fc->openFile(path);
+                    }
+                default:
+                    {
+                        return false;
+                    }
+            }
         }
+        return false;
     }
 
     void ProjectController::onProjectFileRenamed( const QString & path,
@@ -488,32 +478,35 @@ namespace o3prm
 
     void ProjectController::onCustomContextMenuRequested( const QPoint & pos ) 
     {
-        auto view = __mainWidget->mainwindow()->projectExplorator;
-        auto index = view->indexAt(pos);
-        auto item = static_cast<QStandardItem*>(index.internalPointer());
-
-        auto map = view->mapToGlobal( pos ) ;
-        QAction * a = d->rootMenu->exec(map);
-
-        if ( a == 0 ) return;
-
-        ProjectItem* parent = 0;
-        if (item->type() >= ProjectItem::minItemTypeInt())
+        if (isOpenProject())
         {
-            parent = static_cast<ProjectItem*>(item);
-        }
-        else
-        {
-            parent = __currentProj->root();
-        }
+            auto view = __mainWidget->mainwindow()->projectExplorator;
+            auto index = view->indexAt(pos);
+            auto item = static_cast<QStandardItem*>(index.internalPointer());
 
-        if ( a->data().toString() == "package" ) 
-        {
-            __addPackage(parent);
-        }
-        else if ( a->data().toString() == "file" )
-        {
-            __addFile(parent);
+            auto map = view->mapToGlobal( pos ) ;
+            QAction * a = d->rootMenu->exec(map);
+
+            if ( a == 0 ) return;
+
+            ProjectItem* parent = 0;
+            if (item->type() >= ProjectItem::minItemTypeInt())
+            {
+                parent = static_cast<ProjectItem*>(item);
+            }
+            else
+            {
+                parent = __currentProj->root();
+            }
+
+            if ( a->data().toString() == "package" ) 
+            {
+                __addPackage(parent);
+            }
+            else if ( a->data().toString() == "file" )
+            {
+                __addFile(parent);
+            }
         }
     }
 
