@@ -27,8 +27,8 @@ INCLUDE_DIRECTORIES(${QSCINTILLA_INCLUDE_DIRS})
 INCLUDE(ExternalProject)
 ExternalProject_Add(AGRUM-SRC
         PREFIX aGrUM
-        GIT_REPOSITORY file:////Users/lto/Projets/aGrUM-dev/
-        GIT_TAG static_lib
+        GIT_REPOSITORY git://forge.lip6.fr/aGrUM 
+        GIT_TAG 0.9.0
         CONFIGURE_COMMAND ""
         UPDATE_COMMAND ""
         BUILD_COMMAND ./act install release -p linux -j 7 -m PRM -d <INSTALL_DIR> # call with python instead of ./
