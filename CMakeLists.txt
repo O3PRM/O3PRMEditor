@@ -75,6 +75,7 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/qcommandlineedit.cpp
             src/qkeysequencewidget.cpp
             src/qsciscintillaextended.cpp
+            src/treeview.cpp
             )
 SET(TEST_SOURCES src/test/main.cpp
                  src/test/projectTest.cpp
@@ -102,6 +103,7 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/qcommandlineedit.h
             src/qkeysequencewidget.h
             src/qsciscintillaextended.h
+            src/treeview.h
     )
 FILE(GLOB_RECURSE FORMS *.ui)
 FILE(GLOB_RECURSE RESSOURCES *.qrc)

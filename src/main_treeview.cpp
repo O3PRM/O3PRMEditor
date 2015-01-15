@@ -1,5 +1,7 @@
 #include <QtGui>
 
+#include "treeview.h"
+
 int withQStdItem(int argc, char *argv[])
 {
     QStandardItemModel model;
@@ -23,8 +25,10 @@ int withQStdItem(int argc, char *argv[])
     QTreeView view;
     view.setModel(&model);
     view.expandAll();
-    view.show();
 
+    MyController controller(&view);
+
+    view.show();
     return app.exec();
 }
 
