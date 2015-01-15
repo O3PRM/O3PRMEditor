@@ -246,6 +246,21 @@ namespace o3prm
 
             /// Add a directory (package) to the project and the filesystem.
             void __addPackage(ProjectItem* parent);
+
+            /// Handles custom contex menu for projects
+            void __projectCustomContextMenu(const QPoint& pos, ProjectItem* item);
+
+            /// Handles custom contex menu for package
+            void __packageCustomContextMenu(const QPoint& pos, ProjectItem* item);
+
+            /// Handles custom contex menu for package
+            void __fileCustomContextMenu(const QPoint& pos, ProjectItem* item);
+
+            // Show the rename dialog and rename the corresponding ProjectItem
+            // and saves the project
+            void __rename(ProjectItem* item);
+
+            
     };
 
 } // o3prm

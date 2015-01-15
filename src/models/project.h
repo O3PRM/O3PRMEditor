@@ -53,6 +53,11 @@ namespace o3prm
                 return (int)__type;
             }
 
+            int itemType() const 
+            {
+                return __type;
+            }
+
             void setType(int type)
             {
                 __type = (ItemType) type;

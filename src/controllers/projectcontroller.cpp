@@ -48,7 +48,7 @@ namespace o3prm
             QSignalMapper * recentsProjectsMapper;
             ProjectProperties * projectProperties;
             QMenu * fileMenu;
-            QMenu * dirMenu;
+            QMenu * packageMenu;
             QMenu * rootMenu;
     };
 
@@ -73,8 +73,18 @@ namespace o3prm
     void ProjectController::__setupContextMenu()
     {
         d->rootMenu = new QMenu(__mainWidget);
-        //d->rootMenu->addAction( tr( "Ajouter un &package" ) )->setData( "package" );
-        d->rootMenu->addAction( tr( "Ajouter un fichier" ) )->setData( "file" );
+        d->rootMenu->addAction( tr( "Add a package" ) )->setData( "package" );
+        d->rootMenu->addAction( tr( "Add a file" ) )->setData( "file" );
+
+        d->packageMenu = new QMenu(__mainWidget);
+        d->packageMenu->addAction( tr( "Add a package" ) )->setData( "package" );
+        d->packageMenu->addAction( tr( "Add a file" ) )->setData( "file" );
+        d->packageMenu->addAction( tr( "Rename" ) )->setData( "rename" );
+        d->packageMenu->addAction( tr( "Delete" ) )->setData( "delete" );
+
+        d->fileMenu = new QMenu(__mainWidget);
+        d->fileMenu->addAction( tr( "Rename" ) )->setData( "rename" );
+        d->fileMenu->addAction( tr( "Delete" ) )->setData( "delete" );
     }
 
     ProjectController::~ProjectController()
@@ -488,21 +498,111 @@ namespace o3prm
                 // Only the invisible root is of type QStandardItem
                 auto item = static_cast<ProjectItem*>(parent->child(index.row()));
 
-                if (item->type() == (int)ProjectItem::ItemType::Directory
-                    or item->type() == (int)ProjectItem::ItemType::Project)
+                switch (item->type())
                 {
-                    auto map = view->mapToGlobal( pos ) ;
-                    QAction * action = d->rootMenu->exec(map);
-
-                    if (action and action->data().toString() == "package")
+                    case (int)ProjectItem::ItemType::Project:
                     {
-                        __addPackage(item);
+                        __projectCustomContextMenu(pos, item);
+                        break;
                     }
-                    else if (action and action->data().toString() == "file")
+                    case (int)ProjectItem::ItemType::Directory:
                     {
-                        __addFile(item);
+                        __packageCustomContextMenu(pos, item);
+                        break;
+                    }
+                    case (int)ProjectItem::ItemType::File:
+                    {
+                        __fileCustomContextMenu(pos, item);
+                        break;
+                    }
+
+                    default:
+                    {
+                        // Don't know what to do
+                        return;
                     }
                 }
+
+            }
+        }
+    }
+
+    void ProjectController::__projectCustomContextMenu(const QPoint& pos, ProjectItem* item)
+    {
+        auto view = __mainWidget->mainwindow()->projectExplorator;
+        auto map = view->mapToGlobal( pos ) ;
+        QAction * action = d->rootMenu->exec(map);
+
+        if (action and action->data().toString() == "package")
+        {
+            __addPackage(item);
+        }
+        else if (action and action->data().toString() == "file")
+        {
+            __addFile(item);
+        }
+    }
+
+    void ProjectController::__packageCustomContextMenu(const QPoint& pos, ProjectItem* item)
+    {
+        auto view = __mainWidget->mainwindow()->projectExplorator;
+        auto map = view->mapToGlobal( pos ) ;
+        QAction * action = d->packageMenu->exec(map);
+
+        if (action and action->data().toString() == "package")
+        {
+            __addPackage(item);
+        }
+        else if (action and action->data().toString() == "file")
+        {
+            __addFile(item);
+        }
+        else if (action and action->data().toString() == "rename")
+        {
+            __rename(item);
+        }
+        else if (action and action->data().toString() == "delete")
+        {
+        }
+
+    }
+
+    void ProjectController::__fileCustomContextMenu(const QPoint& pos, ProjectItem* item)
+    {
+        auto view = __mainWidget->mainwindow()->projectExplorator;
+        auto map = view->mapToGlobal( pos ) ;
+        QAction * action = d->fileMenu->exec(map);
+
+        if (action and action->data().toString() == "rename")
+        {
+            __rename(item);
+        }
+        else if (action and action->data().toString() == "delete")
+        {
+        }
+    }
+
+    void ProjectController::__rename(ProjectItem* item)
+    {
+        // TODO: need to refresh editor, fot the moment does not work as intended
+        auto msg = tr("Warning: close file(s) before renaming !");
+        QMessageBox::warning(__mainWidget, msg, msg);
+        auto new_name = __askForName((ProjectItem::ItemType) item->type());
+        if (__validNameAndWarn(new_name))
+        {
+            QDir dir(__currentProj->dir());
+            dir.cd(item->path());
+            if (dir.rename(item->text(), new_name))
+            {
+                item->setText(new_name);
+                __saveProject();
+            }
+            else
+            {
+                auto title = tr("Name already used!");
+                auto type_name = Project::itemType2String(item->type());
+                auto msg = tr("The %1 %2 is already used.").arg(type_name, new_name);
+                QMessageBox::warning(__mainWidget, title, msg);
             }
         }
     }
@@ -600,184 +700,6 @@ namespace o3prm
             __saveProject();
         }
     }
-
-    //    void ProjectController::onCustomContextMenuRequested( const QPoint & pos ) 
-    //    {
-    //        auto view = ((MainWindow*)__mainWidget)->ui->projectExplorator;
-    //        auto selection = view->selectionModel()->selectedIndexes();
-    //        if (selection.count() == 0)
-    //        {
-    //            std::cout << "nothing" << std::endl;
-    //            return;
-    //        }
-    //        std::cout << "Selection count: " << selection.count() << std::endl;
-    //        auto first = selection[0];
-    //
-    //        auto item = static_cast<QStandardItem*>(first.internalPointer());
-    //
-    //        std::cout << "Item: " << item << std::endl;
-    //        std::cout << "Type: " << item->type() << std::endl;
-    //        std::cout << "Has children " << item->hasChildren() << std::endl;
-    //
-    //        // If it's a dir
-    //        // if ( item->type() == ProjectItem::ItemType::Directory ) 
-    //        // {
-    //        auto map = view->viewport()->mapToGlobal( pos ) ;
-    //        QAction * a = d->rootMenu->exec(map);
-    //
-    //        if ( a == 0 )
-    //        {
-    //            return;
-    //        }
-    //
-    //        if ( a->data().toString() == "package" ) 
-    //        {
-    //            auto package = new ProjectItem(ProjectItem::ItemType::Directory, "new_package");
-    //            if (item->hasChildren())
-    //                item->child(0)->appendRow(package);
-    //            else
-    //                item->appendRow(package);
-    //            // QModelIndex newPackage = currentProj->mkdir( currentProj->root(),"new_package" );
-    //            // // setEditable is set to false when editing is finished. See onItemRenameFinished()
-    //            // currentProj->setEditable( true ); 
-    //            // mw->ui->projectExplorator->edit( newPackage );
-    //        }
-    //        else if ( a->data().toString() == "execute" ) 
-    //        {
-    //            // qDebug() << "execute project !";
-    //        }
-    //    }
-
-    //void ProjectController::onCustomContextMenuRequested( const QPoint & pos ) 
-    //{
-    //    auto view = ((MainWindow*)__mainWidget)->ui->projectExplorator;
-    //    auto index = view->indexAt( pos );
-    //    auto item = static_cast<QStandardItem*>(index.internalPointer());
-
-    //    std::cout << "Item: " << item << std::endl;
-    //    std::cout << "Type: " << item->type() << std::endl;
-
-    //    // If it's a dir
-    //    // if ( item->type() == ProjectItem::ItemType::Directory ) 
-    //    // {
-    //        auto map = view->viewport()->mapToGlobal( pos ) ;
-    //        QAction * a = d->rootMenu->exec(map);
-
-    //        if ( a == 0 )
-    //        {
-    //            return;
-    //        }
-
-    //        if ( a->data().toString() == "package" ) 
-    //        {
-    //            auto package = new ProjectItem(ProjectItem::ItemType::Directory, "new_package");
-    //            item->appendRow(package);
-    //            // QModelIndex newPackage = currentProj->mkdir( currentProj->root(),"new_package" );
-    //            // // setEditable is set to false when editing is finished. See onItemRenameFinished()
-    //            // currentProj->setEditable( true ); 
-    //            // mw->ui->projectExplorator->edit( newPackage );
-    //        }
-    //        else if ( a->data().toString() == "execute" ) 
-    //        {
-    //            // qDebug() << "execute project !";
-    //        }
-    //    //}
-    //    //else if ( currentProj->isDir( index ) ) 
-    //    //{
-    //    //    QAction * a = d->dirMenu->exec( mw->ui->projectExplorator->viewport()->mapToGlobal( pos ) );
-
-    //    //    if ( a == 0 )
-    //    //    {
-    //    //        return;
-    //    //    }
-
-    //    //    if ( a->data().toString() == "rename" ) 
-    //    //    {
-    //    //        // setEditable is set to false when editing is finished. See onItemRenameFinished()
-    //    //        currentProj->setEditable( true );
-    //    //        mw->ui->projectExplorator->edit( index );
-    //    //    }
-    //    //    else if ( a->data().toString() == "remove" ) 
-    //    //    {
-    //    //        auto msg = tr( "Voulez-vous vraiment supprimer définitivement le package"
-    //    //                "%1 ainsi que tout son contenu ?" );
-    //    //        msg = msg.arg( currentProj->fileName( index ) );
-    //    //        int ret = QMessageBox::question( mw,
-    //    //                tr( "Supprimer le package" ),
-    //    //                msg,
-    //    //                QMessageBox::Ok,
-    //    //                QMessageBox::Cancel );
-
-    //    //        if ( ret != QMessageBox::Ok )
-    //    //        {
-    //    //            return;
-    //    //        }
-
-    //    //        currentProj->rmdirRec( index );
-    //    //    }
-    //    //    else if ( a->data().toString() == "addPackage" ) 
-    //    //    {
-    //    //        QModelIndex newPackage = currentProj->mkdir( index,"new_package" );
-    //    //        // setEditable is set to false when editing is finished. See onItemRenameFinished()
-    //    //        currentProj->setEditable( true ); 
-    //    //        mw->ui->projectExplorator->edit( newPackage );
-    //    //    }
-    //    //    else if ( a->data().toString() == "addClass" ) 
-    //    //    {
-    //    //        //createNewClassFile();
-    //    //    }
-    //    //    else if ( a->data().toString() == "addSystem" ) 
-    //    //    {
-    //    //        //createNewSystemFile();
-    //    //    }
-    //    //    else if ( a->data().toString() == "addRequest" ) 
-    //    //    {
-    //    //        //createNewRequestFile();
-    //    //    }
-    //    //}
-    //    //else
-    //    //{
-    //    //    // Hide or show execute action (show only with o3prmr files).
-    //    //    auto filter = index.data().toString().endsWith( ".o3prmr",Qt::CaseInsensitive );
-    //    //    d->fileMenu->actions().last()->setVisible( filter );
-
-    //    //    QAction * a = d->fileMenu->exec( mw->ui->projectExplorator->viewport()->mapToGlobal( pos ) );
-
-    //    //    if ( a == 0 )
-    //    //    {
-    //    //        return;
-    //    //    }
-
-    //    //    if ( a->data().toString() == "rename" ) 
-    //    //    {
-    //    //        // setEditable is set to false when editing is finished. See onItemRenameFinished()
-    //    //        currentProj->setEditable( true ); 
-    //    //        mw->ui->projectExplorator->edit( index );
-    //    //    }
-    //    //    else if ( a->data().toString() == "remove" ) 
-    //    //    {
-    //    //        auto msg = tr( "Voulez-vous vraiment supprimer définitivement le fichier\n%1 ?" );
-    //    //        msg = msg.arg( currentProj->fileName( index ) );
-    //    //        int ret = QMessageBox::question( mw,
-    //    //                tr( "Supprimer le fichier" ),
-    //    //                msg,
-    //    //                QMessageBox::Ok,
-    //    //                QMessageBox::Cancel );
-
-    //    //        if ( ret != QMessageBox::Ok )
-    //    //        {
-    //    //            return;
-    //    //        }
-
-    //    //        currentProj->remove( index );
-    //    //    }
-    //    //    else if ( a->data().toString() == "execute" and
-    //    //            currentProj->fileInfo( index ).suffix() == "o3prmr" ) 
-    //    //    {
-    //    //        mw->bc->execute( index.data( QFileSystemModel::FilePathRole ).toString() );
-    //    //    }
-    //    //}
-    //}
 
     void ProjectController::onItemRenameFinished() 
     {
