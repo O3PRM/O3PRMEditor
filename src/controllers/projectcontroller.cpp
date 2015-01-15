@@ -442,9 +442,8 @@ namespace o3prm
 
     bool ProjectController::on_projectExplorator_doubleClicked( QModelIndex index ) 
     {
-        std::cout << "double clicked !" << std::endl;
-        auto item = static_cast<ProjectItem*>(index.internalPointer());
-        std::cout << "On : " << item->text().toStdString() << std::endl;
+        auto parent = static_cast<ProjectItem*>(index.internalPointer());
+        auto item = parent->child(index.row());
         switch (item->type())
         {
             case ProjectItem::ItemType::Directory:

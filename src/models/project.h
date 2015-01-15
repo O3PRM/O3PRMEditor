@@ -70,6 +70,12 @@ namespace o3prm
                 return path;
             }
 
+            ProjectItem* child(int row, int column=0) const
+            {
+                return static_cast<ProjectItem*>(QStandardItem::child(row, column));
+            }
+
+
         private:
             ItemType __type;
     };

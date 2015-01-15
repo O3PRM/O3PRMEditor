@@ -20,8 +20,11 @@ MyController::~MyController()
 
 void MyController::clicked(const QModelIndex& index)
 {
-    auto item = static_cast<QStandardItem*>(index.internalPointer());
-    std::cout << "Clicked : " << item->text().toStdString()  << std::endl;
+    //auto item = static_cast<QStandardItem*>(index.internalPointer());
+    std::cout << "Clicked : " << index.data().toString().toStdString() << std::endl;
+    std::cout << "Row : " << index.row()  << std::endl;
+    std::cout << "Column : " << index.column()  << std::endl;
+    std::cout << "IsValid : " << index.isValid()  << std::endl;
 }
 
 void MyController::doubleClicked(const QModelIndex& index)

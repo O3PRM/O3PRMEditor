@@ -21,6 +21,9 @@ int withQStdItem(int argc, char *argv[])
     auto printers = new QStandardItem("printers.o3prm");
     lip6->appendRow(printers);
 
+    auto rooms = new QStandardItem("rooms.o3prm");
+    lip6->appendRow(rooms);
+
     QApplication app(argc, argv);
     QTreeView view;
     view.setModel(&model);
