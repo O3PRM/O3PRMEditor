@@ -98,6 +98,9 @@ void MainWindow::__setupConnections()
             this, SLOT( showAboutDialog() ) );
 
     __setupProjectControllerConnections();
+
+    connect( pc, SIGNAL(projectClosed()),
+             fc, SLOT(closeAllFiles()));
 }
 
 void MainWindow::__setupProjectControllerConnections()
