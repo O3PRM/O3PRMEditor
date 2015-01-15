@@ -1,5 +1,7 @@
 #include "editcontroller.h"
 
+#include <iostream>
+
 #include "uis/mainwindow.h"
 #include "ui_mainwindow.h"
 #include "filecontroller.h"
@@ -148,13 +150,24 @@ void EditController::onProjectModelChanged() {
 
   d->prmModel = newPRMModel;
 
-  d->prmModel->setKeywords( QString( mw->fc->currentDocument()->lexer()->keywords( 1 ) ).split( QChar( ' ' ) ) );
+  auto currentdoc = mw->fc->currentDocument();
+  auto lexer = currentdoc->lexer();
+  if (lexer)
+  {
+    auto keywords = lexer->keywords( 1 );
 
-  d->prmModel->sort( 0 );
+    auto keys = QString(keywords).split(QChar(' '));
 
-  d->completer->setModel( d->prmModel.data() );
+    d->prmModel->setKeywords(keys);
 
-  d->completer->setModelSorting( QCompleter::CaseSensitivelySortedModel );
+    //d->prmModel->setKeywords( QString( mw->fc->currentDocument()->lexer()->keywords( 1 ) ).split( QChar( ' ' ) ) );
 
-  emit completerChanged();
+    d->prmModel->sort( 0 );
+
+    d->completer->setModel( d->prmModel.data() );
+
+    d->completer->setModelSorting( QCompleter::CaseSensitivelySortedModel );
+
+    emit completerChanged();
+  }
 }
