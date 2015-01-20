@@ -9,7 +9,7 @@
 class MainWindow;
 
 /**
-  The FileController class provides methods for files managment.
+  FileController provides methods for managing files.
   All slots have an entry in the File menu.
   Public methods are for other controllers.
   This class controls the last open files too.
@@ -23,6 +23,10 @@ class FileController : public QObject {
   public:
     FileController( MainWindow * mw, QObject * parent = 0 );
     ~FileController();
+
+    // Setup connections, call this once after all controlles in MainWindow
+    // were properly initialised.
+    void setupConnections();
 
     /// Return all open documents.
     QList<QsciScintillaExtended *> openDocuments() const;

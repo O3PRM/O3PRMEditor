@@ -72,6 +72,10 @@ namespace o3prm
              * Destructor
              */
             ~ProjectController();
+            
+            // Call this to setup connection after all other controllers
+            // have been properly initalised.
+            void setupConnections();
 
             /**
              * Return the current project
@@ -86,6 +90,9 @@ namespace o3prm
         signals:
             // Emitted when a project is loaded
             void projectLoaded(o3prm::Project* project);
+
+            // Emitted when a project is saved
+            void projectSaved(o3prm::Project* project);
 
             // Emitted when a project is closed
             void projectClosed();
@@ -232,7 +239,8 @@ namespace o3prm
             void __closeProject();
 
             /// Shows a Dialog and ask user to type a filename.
-            QString __askForName(ProjectItem::ItemType type);
+            /// If ok is false, then the user cancelled the operation.
+            QString __askForName(ProjectItem::ItemType type, bool& ok);
 
             /// Returns true if name is a child of parent in the current project
             /// and warns the user the his name is unusable.
@@ -259,7 +267,6 @@ namespace o3prm
             // Show the rename dialog and rename the corresponding ProjectItem
             // and saves the project
             void __rename(ProjectItem* item);
-
             
     };
 

@@ -83,55 +83,50 @@ void MainWindow::__setupConnections()
 {
     // TabBar
     connect( ui->tabBar, SIGNAL( currentChanged( int ) ),
-            ui->dockStack, SLOT( setCurrentIndex( int ) ) );
+             ui->dockStack, SLOT( setCurrentIndex( int ) ) );
     connect( ui->dockStack, SIGNAL( currentChanged( int ) ),
-            ui->tabBar, SLOT( setCurrentIndex( int ) ) );
+             ui->tabBar, SLOT( setCurrentIndex( int ) ) );
     connect( ui->tabBar, SIGNAL( currentChanged( int ) ),
-            ui->dockStack, SLOT( show() ) );
+             ui->dockStack, SLOT( show() ) );
 
     // Main ui's various events
     connect( ui->actionQuit, SIGNAL( triggered() ),
-            this, SLOT( close() ) );
+             this, SLOT( close() ) );
     connect( ui->actionHelp, SIGNAL( triggered() ),
-            this, SLOT( showHelp() ) );
+             this, SLOT( showHelp() ) );
     connect( ui->actionAbout, SIGNAL( triggered() ),
-            this, SLOT( showAboutDialog() ) );
-
-    __setupProjectControllerConnections();
-
-    connect( pc, SIGNAL(projectClosed()),
-             fc, SLOT(closeAllFiles()));
-}
-
-void MainWindow::__setupProjectControllerConnections()
-{
-    connect( ui->projectExplorator, SIGNAL( clicked( QModelIndex ) ),
-             pc, SLOT( on_projectExplorator_clicked( QModelIndex ) ) );
-    connect( ui->projectExplorator, SIGNAL( doubleClicked( QModelIndex ) ),
-             pc, SLOT( on_projectExplorator_doubleClicked( QModelIndex ) ) );
-    connect( ui->projectExplorator, SIGNAL( customContextMenuRequested( QPoint ) ),
-             pc, SLOT( onCustomContextMenuRequested( QPoint ) ) );
-    connect( ui->projectExplorator->itemDelegate(), SIGNAL( closeEditor( QWidget* ) ),
-             pc, SLOT( onItemRenameFinished() ) );
-    
-    connect( ui->actionNewProject, SIGNAL( triggered() ),
-             pc, SLOT( newProject() ) );
+             this, SLOT( showAboutDialog() ) );
 
     connect( pc, SIGNAL( projectLoaded(o3prm::Project*) ),
              this, SLOT(loadProject(o3prm::Project*)));
+    connect( pc, SIGNAL( projectSaved(o3prm::Project*) ),
+             this, SLOT(saveProject(o3prm::Project*)));
+    connect( pc, SIGNAL( projectClosed() ),
+             this, SLOT(closeProject()));
 
-    connect( ui->actionOpenProject, SIGNAL( triggered() ),
-             pc, SLOT( openProject() ) );
-    connect( ui->actionNewClass, SIGNAL( triggered() ),
-             pc, SLOT( createNewClassFile() ) );
-    connect( ui->actionNewModel, SIGNAL( triggered() ),
-             pc, SLOT( createNewSystemFile() ) );
-    connect( ui->actionNewRequestFile, SIGNAL( triggered() ),
-             pc, SLOT( createNewRequestFile() ) );
-    connect( ui->actionCloseProject, SIGNAL( triggered() ),
-             pc, SLOT( closeProject() ) );
+    // Setting up connections of each controller
+    fc->setupConnections();
+    pc->setupConnections();
+}
 
-    QTimer::singleShot( 200, pc, SLOT( triggerInit() ) );
+void MainWindow::saveProject(o3prm::Project* project)
+{
+    // TODO: Refresh buttons accordingly
+}
+
+void MainWindow::closeProject()
+{
+    vc->setProjectExploratorVisibility( false );
+
+    //// Disable new specific file creation
+    ui->actionNewClass->setEnabled( false );
+    ui->actionNewModel->setEnabled( false );
+    ui->actionNewRequestFile->setEnabled( false );
+    ui->actionProjectExploratorVisibility->setEnabled( false );
+    ui->projectExplorator->hide();
+
+    //// Disable auto syntax check
+    bc->setAutoSyntaxCheck( false );
 }
 
 void MainWindow::closeEvent( QCloseEvent *event )

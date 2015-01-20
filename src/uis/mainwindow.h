@@ -37,6 +37,8 @@ class MainWindow : public QMainWindow
         void showHelp();
         void showAboutDialog();
         void loadProject(o3prm::Project* project);
+        void saveProject(o3prm::Project* project);
+        void closeProject();
 
     private:
         struct PrivateData;
@@ -65,7 +67,6 @@ class MainWindow : public QMainWindow
         void __setupProjectExplorer();
 
         void __setupConnections();
-        void __setupProjectControllerConnections();
 };
 
 #endif // MAINWINDOW_H

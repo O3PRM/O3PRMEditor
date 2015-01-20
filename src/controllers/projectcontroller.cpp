@@ -87,6 +87,35 @@ namespace o3prm
         d->fileMenu->addAction( tr( "Delete" ) )->setData( "delete" );
     }
 
+    void ProjectController::setupConnections()
+    {
+        connect( __mainWidget->ui->projectExplorator, SIGNAL( clicked( QModelIndex ) ),
+                this, SLOT( on_projectExplorator_clicked( QModelIndex ) ) );
+        connect( __mainWidget->ui->projectExplorator, SIGNAL( doubleClicked( QModelIndex ) ),
+                this, SLOT( on_projectExplorator_doubleClicked( QModelIndex ) ) );
+        connect( __mainWidget->ui->projectExplorator, SIGNAL( customContextMenuRequested( QPoint ) ),
+                this, SLOT( onCustomContextMenuRequested( QPoint ) ) );
+        connect( __mainWidget->ui->projectExplorator->itemDelegate(), SIGNAL( closeEditor( QWidget* ) ),
+                this, SLOT( onItemRenameFinished() ) );
+
+        connect( __mainWidget->ui->actionNewProject, SIGNAL( triggered() ),
+                this, SLOT( newProject() ) );
+
+
+        connect( __mainWidget->ui->actionOpenProject, SIGNAL( triggered() ),
+                this, SLOT( openProject() ) );
+        connect( __mainWidget->ui->actionNewClass, SIGNAL( triggered() ),
+                this, SLOT( createNewClassFile() ) );
+        connect( __mainWidget->ui->actionNewModel, SIGNAL( triggered() ),
+                this, SLOT( createNewSystemFile() ) );
+        connect( __mainWidget->ui->actionNewRequestFile, SIGNAL( triggered() ),
+                this, SLOT( createNewRequestFile() ) );
+        connect( __mainWidget->ui->actionCloseProject, SIGNAL( triggered() ),
+                this, SLOT( closeProject() ) );
+
+        QTimer::singleShot( 200, this, SLOT( triggerInit() ) );
+    }
+
     ProjectController::~ProjectController()
     {
     }
@@ -172,6 +201,7 @@ namespace o3prm
             ts << dom.toString();
 
             file.close();
+            emit projectSaved(__currentProj);
             return true;
         }
         return false;
@@ -347,17 +377,6 @@ namespace o3prm
             QDir::setCurrent( QDir::homePath() );
         }
 
-        __mainWidget->vc->setProjectExploratorVisibility( false );
-
-        //// Disable new specific file creation
-        __mainWidget->ui->actionNewClass->setEnabled( false );
-        __mainWidget->ui->actionNewModel->setEnabled( false );
-        __mainWidget->ui->actionNewRequestFile->setEnabled( false );
-        __mainWidget->ui->actionProjectExploratorVisibility->setEnabled( false );
-        __mainWidget->ui->projectExplorator->hide();
-
-        //// Disable auto syntax check
-        __mainWidget->bc->setAutoSyntaxCheck( false );
     }
 
     void ProjectController::refactor( const QString & fromFilePath, const QString & toFilePath ) 
@@ -468,12 +487,12 @@ namespace o3prm
             const QString & oldName,
             const QString & newName ) 
     {
-         //QsciScintillaExtended * sci = mw->fc->fileToDocument( path + "/" + oldName );
+        //QsciScintillaExtended * sci = mw->fc->fileToDocument( path + "/" + oldName );
 
-         //if ( sci != 0 )
-         //{
-         //    sci->setFilename( path + "/" + newName );
-         //}
+        //if ( sci != 0 )
+        //{
+        //    sci->setFilename( path + "/" + newName );
+        //}
     }
 
     void ProjectController::onProjectFileMoved( const QString & oldFilePath, const QString & newFilePath ) 
@@ -501,26 +520,26 @@ namespace o3prm
                 switch (item->type())
                 {
                     case (int)ProjectItem::ItemType::Project:
-                    {
-                        __projectCustomContextMenu(pos, item);
-                        break;
-                    }
+                        {
+                            __projectCustomContextMenu(pos, item);
+                            break;
+                        }
                     case (int)ProjectItem::ItemType::Directory:
-                    {
-                        __packageCustomContextMenu(pos, item);
-                        break;
-                    }
+                        {
+                            __packageCustomContextMenu(pos, item);
+                            break;
+                        }
                     case (int)ProjectItem::ItemType::File:
-                    {
-                        __fileCustomContextMenu(pos, item);
-                        break;
-                    }
+                        {
+                            __fileCustomContextMenu(pos, item);
+                            break;
+                        }
 
                     default:
-                    {
-                        // Don't know what to do
-                        return;
-                    }
+                        {
+                            // Don't know what to do
+                            return;
+                        }
                 }
 
             }
@@ -587,8 +606,9 @@ namespace o3prm
         // TODO: need to refresh editor, fot the moment does not work as intended
         auto msg = tr("Warning: close file(s) before renaming !");
         QMessageBox::warning(__mainWidget, msg, msg);
-        auto new_name = __askForName((ProjectItem::ItemType) item->type());
-        if (__validNameAndWarn(new_name))
+        bool ok;
+        auto new_name = __askForName((ProjectItem::ItemType) item->type(), ok);
+        if (ok and __validNameAndWarn(new_name))
         {
             QDir dir(__currentProj->dir());
             dir.cd(item->path());
@@ -626,22 +646,26 @@ namespace o3prm
     {
         if (name.isEmpty() or name == ".o3prm") //not boost::filesystem::portable_name(name.toStdString()))
         {
+            if (name.isEmpty())
+            {
+                name = "Empty name";
+            }
             QMessageBox::warning ( __mainWidget,
-                tr("Invalid name"),
-                tr("%1 is not a valid choice for this action, please chose another name.").arg(name));
+                    tr("Invalid name"),
+                    tr("%1 is not a valid choice for this action, please chose another name.").arg(name));
             return false;
         }
         return true;
     }
 
-    QString ProjectController::__askForName(ProjectItem::ItemType type)
+    QString ProjectController::__askForName(ProjectItem::ItemType type, bool& ok)
     {
+        ok = false;
         auto type_name = Project::itemType2String(type);
         auto title = tr("Choose a name for this new %1").arg(type_name.toLower());
         auto msg = tr("%1 name:").arg(type_name);
         auto default_value = tr("new_%1").arg(type_name);
 
-        bool ok;
         auto name = QInputDialog::getText(__mainWidget,
                 title, msg,
                 QLineEdit::Normal, default_value,
@@ -656,8 +680,11 @@ namespace o3prm
 
     void ProjectController::__addPackage(ProjectItem* parent)
     {
-        auto name = __askForName(ProjectItem::ItemType::Directory);
-        if (not __existsAndWarn(name, parent, ProjectItem::ItemType::Directory))
+        bool ok;
+        auto name = __askForName(ProjectItem::ItemType::Directory, ok);
+        if (ok
+            and __validNameAndWarn(name)
+            and not __existsAndWarn(name, parent, ProjectItem::ItemType::Directory))
         {
             QDir dir(__currentProj->dir());
             dir.cd(parent->path());
@@ -672,9 +699,11 @@ namespace o3prm
 
     void ProjectController::__addFile(ProjectItem* parent)
     {
-        auto name = __askForName(ProjectItem::ItemType::File);
+        bool ok;
+        auto name = __askForName(ProjectItem::ItemType::File, ok);
 
-        if (__validNameAndWarn(name)
+        if (ok
+            and __validNameAndWarn(name)
             and not __existsAndWarn(name, parent, ProjectItem::ItemType::File))
         {
             auto file = new ProjectItem(ProjectItem::ItemType::File, name);
