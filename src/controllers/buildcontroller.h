@@ -8,7 +8,8 @@
 #include "qsciscintillaextended.h"
 #include "prmtreemodel.h"
 
-class MainWindow;
+/// Cross reference, do not replace by an include directive
+class MainWindow; // uis/mainwindow.h
 
 namespace gum {
 

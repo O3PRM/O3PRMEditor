@@ -7,7 +7,8 @@
 #include<QAction>
 #include "uis/properties.h"
 
-class MainWindow;
+/// Cross reference, do not replace by an include directive
+class MainWindow; // "uis/mainwindow.h"
 
 class EditController : public QObject {
     Q_OBJECT

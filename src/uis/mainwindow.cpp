@@ -3,6 +3,12 @@
 #include <iostream>
 
 #include "qsciscintillaextended.h"
+#include "controllers/filecontroller.h"
+#include "controllers/editcontroller.h"
+#include "controllers/searchcontroller.h"
+#include "controllers/projectcontroller.h"
+#include "controllers/viewcontroller.h"
+#include "controllers/buildcontroller.h"
 
 #include <QFileDialog>
 #include <QTextBrowser>

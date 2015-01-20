@@ -6,21 +6,24 @@
 
 #include "qsciscintillaextended.h"
 
-class MainWindow;
+// Cross reference, do not replace by an include directive.
+class MainWindow; // uis/mainwindow.h
 
 /**
   FileController provides methods for managing files.
   All slots have an entry in the File menu.
   Public methods are for other controllers.
   This class controls the last open files too.
-  */
-
-class FileController : public QObject {
+ */
+class FileController : public QObject 
+{
     Q_OBJECT
 
-    Q_PROPERTY( int numberMaxOfRecentsFiles READ numberMaxOfRecentsFiles WRITE setNumberMaxOfRecentsFiles );
+    Q_PROPERTY( int numberMaxOfRecentsFiles \
+                READ numberMaxOfRecentsFiles \
+                WRITE setNumberMaxOfRecentsFiles );
 
-  public:
+    public:
     FileController( MainWindow * mw, QObject * parent = 0 );
     ~FileController();
 
@@ -46,8 +49,8 @@ class FileController : public QObject {
     ///
     QsciScintillaExtended * newDocument( const QString & title, QsciScintillaExtended::Lexer lexer = QsciScintillaExtended::None );
 
-  public slots:
-    void newO3prmlFile();
+    public slots:
+        void newO3prmlFile();
     void newO3prmrFile();
     bool openFile( const QString & file = QString() );
     bool saveFile( QsciScintillaExtended * sci = 0, bool force = false );
@@ -58,22 +61,22 @@ class FileController : public QObject {
     void updateMetadata( QsciScintillaExtended * sci = 0 );
     bool quit();
 
-  signals:
+signals:
     void fileOpened( const QString & filename, QsciScintillaExtended * document );
     void fileSaved( const QString & filename, QsciScintillaExtended * document );
     void fileRenamed( const QString & oldFilename, const QString & newFilename, QsciScintillaExtended * document );
     void fileClosed( const QString & filename );
 
-  protected :
+    protected :
     /**
       Return a hashmap of open files,
       with the filename as key,
       and a pointer on the QsciScintillaExtended widget as value.
-      */
+     */
     const QHash<QString, QsciScintillaExtended *> & openFiles() const;
 
-  protected slots:
-    void addToRecentFiles( const QString & filename );
+    protected slots:
+        void addToRecentFiles( const QString & filename );
     void removeOfRecentFiles( const QString & filename );
     void saveFilesState();
 
@@ -81,7 +84,7 @@ class FileController : public QObject {
     void onDocumentRenamed( const QString & oldFilename, const QString & newFilename );
     void triggerInit();
 
-  private:
+    private:
     MainWindow * mw;
 
     struct PrivateData;

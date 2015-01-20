@@ -5,13 +5,25 @@
 #include <QCloseEvent>
 
 #include "ui_mainwindow.h"
+#include "models/project.h"
 
-#include "controllers/filecontroller.h"
-#include "controllers/editcontroller.h"
-#include "controllers/searchcontroller.h"
-#include "controllers/viewcontroller.h"
-#include "controllers/projectcontroller.h"
-#include "controllers/buildcontroller.h"
+// #include "controllers/filecontroller.h"
+// #include "controllers/editcontroller.h"
+// #include "controllers/searchcontroller.h"
+// #include "controllers/projectcontroller.h"
+// #include "controllers/viewcontroller.h"
+// #include "controllers/buildcontroller.h"
+
+namespace o3prm
+{
+    class ProjectController;   
+}
+
+class ViewController;
+class EditController;
+class SearchController;
+class BuildController;
+class FileController;
 
 /**
   The program main window.

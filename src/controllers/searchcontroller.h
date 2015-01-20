@@ -4,7 +4,8 @@
 #include <QObject>
 #include <QTreeWidgetItem>
 
-class MainWindow;
+/// Cross reference, do not replace by an include directive
+class MainWindow; // "uis/mainwindow.h"
 
 class QsciScintillaExtended;
 

@@ -3,7 +3,8 @@
 
 #include <QObject>
 
-class MainWindow;
+/// Cross reference, do not replace by an include directive
+class MainWindow; // "uis/mainwindow.h"
 
 class ViewController : public QObject {
     Q_OBJECT
