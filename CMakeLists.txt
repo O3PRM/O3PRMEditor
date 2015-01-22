@@ -83,7 +83,6 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/qcommandlineedit.cpp
             src/qkeysequencewidget.cpp
             src/qsciscintillaextended.cpp
-            src/treeview.cpp
             )
 SET(TEST_SOURCES src/test/main.cpp
                  src/test/projectTest.cpp
@@ -111,7 +110,6 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/qcommandlineedit.h
             src/qkeysequencewidget.h
             src/qsciscintillaextended.h
-            src/treeview.h
     )
 FILE(GLOB_RECURSE FORMS *.ui)
 FILE(GLOB_RECURSE RESSOURCES *.qrc)
@@ -153,9 +151,3 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     SET_TARGET_PROPERTIES(o3prmeditor_test PROPERTIES LINK_FLAGS "-lstdc++")
 endif()
 
-# Exe for testing uis
-ADD_EXECUTABLE(view_tester src/main_treeview.cpp ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
-TARGET_LINK_LIBRARIES(view_tester ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum) 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    SET_TARGET_PROPERTIES(view_tester PROPERTIES LINK_FLAGS "-lstdc++")
-endif()
