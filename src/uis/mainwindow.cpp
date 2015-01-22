@@ -48,7 +48,7 @@ Ui::MainWindow* MainWindow::mainwindow()
 
 void MainWindow::__setupControllers()
 {
-    fc = new FileController( this, this );
+    fc = new o3prm::FileController( this, this );
     ec = new EditController( this, this );
     sc = new SearchController( this, this );
     vc = new ViewController( this, this );

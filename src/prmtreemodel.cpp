@@ -26,7 +26,7 @@ PRMTreeModel::PRMTreeModel( const PRM<double> * prm, const o3prmr::O3prmrContext
     // Foreach labels
     const gum::DiscreteVariable & var = type->variable();
 
-    for ( int i = 0 ; i < var.domainSize() ; i++ ) {
+    for ( gum::Size i = 0 ; i < var.domainSize() ; i++ ) {
       // Create the PRMTreeItem2 for the label (at the root)
       QStandardItem * label = createChild( QString::fromStdString( var.label( i ) ), root );
       label->setData( Label, ObjectRole );

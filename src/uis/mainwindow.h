@@ -17,13 +17,13 @@
 namespace o3prm
 {
     class ProjectController;   
+    class FileController;
 }
 
 class ViewController;
 class EditController;
 class SearchController;
 class BuildController;
-class FileController;
 
 /**
   The program main window.
@@ -58,14 +58,14 @@ class MainWindow : public QMainWindow
 
         Ui::MainWindow *ui;
 
-        FileController *fc;
+        o3prm::FileController *fc;
         EditController *ec;
         SearchController *sc;
         ViewController *vc;
         o3prm::ProjectController *pc;
         BuildController *bc;
 
-        friend class FileController;
+        friend class o3prm::FileController;
         friend class EditController;
         friend class SearchController;
         friend class ViewController;

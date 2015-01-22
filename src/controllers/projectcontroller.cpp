@@ -98,9 +98,10 @@ namespace o3prm
         connect( __mainWidget->ui->projectExplorator->itemDelegate(), SIGNAL( closeEditor( QWidget* ) ),
                 this, SLOT( onItemRenameFinished() ) );
 
+        connect(__mainWidget->ui->actionNewFileProject, SIGNAL( triggered() ),
+                this, SLOT( newProject() ) );
         connect( __mainWidget->ui->actionNewProject, SIGNAL( triggered() ),
                 this, SLOT( newProject() ) );
-
 
         connect( __mainWidget->ui->actionOpenProject, SIGNAL( triggered() ),
                 this, SLOT( openProject() ) );

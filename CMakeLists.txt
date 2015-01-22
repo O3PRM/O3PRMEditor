@@ -27,7 +27,7 @@ INCLUDE_DIRECTORIES(${QSCINTILLA_INCLUDE_DIRS})
 INCLUDE(ExternalProject)
 ExternalProject_Add(AGRUM-SRC
         PREFIX aGrUM
-        GIT_REPOSITORY file:////Users/lto/Projets/aGrUM-dev
+        GIT_REPOSITORY file:///Users/lto/Projets/aGrUM-dev
         GIT_TAG static_lib
         #GIT_REPOSITORY git://forge.lip6.fr/aGrUM 
         #GIT_TAG 0.9.0
