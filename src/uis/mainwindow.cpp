@@ -53,7 +53,7 @@ void MainWindow::__setupControllers()
     sc = new SearchController( this, this );
     vc = new ViewController( this, this );
     __setupProjectController();
-    bc = new BuildController( this, this );
+    bc = new o3prm::BuildController( this, this );
 }
 
 void MainWindow::__setupProjectController()
@@ -113,6 +113,7 @@ void MainWindow::__setupConnections()
     // Setting up connections of each controller
     fc->setupConnections();
     pc->setupConnections();
+    bc->setupConnections();
 }
 
 void MainWindow::saveProject(o3prm::Project* project)

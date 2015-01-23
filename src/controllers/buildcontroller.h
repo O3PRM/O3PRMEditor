@@ -1,9 +1,10 @@
-#ifndef BUILDCONTROLLER_H
-#define BUILDCONTROLLER_H
+#ifndef O3PRM_BUILDCONTROLLER_H
+#define O3PRM_BUILDCONTROLLER_H
 
 #include <QObject>
 #include <QModelIndex>
 #include <QSharedPointer>
+#include <QListWidget>
 
 #include "qsciscintillaextended.h"
 #include "prmtreemodel.h"
@@ -16,61 +17,78 @@ namespace gum {
   class ErrorsContainer;
 }
 
-class BuildController : public QObject {
-    Q_OBJECT
-  public:
-    explicit BuildController( MainWindow * mw, QObject *parent = 0 );
-    ~BuildController();
+namespace o3prm
+{
+    class BuildController : public QObject 
+    {
+        Q_OBJECT
 
-    bool isAutoSyntaxCheck() const;
+        public:
 
-    QSharedPointer<PRMTreeModel> projectModel();
-    const QSharedPointer<PRMTreeModel> projectModel() const;
+            explicit BuildController( MainWindow * mw, QObject *parent = 0 );
+            ~BuildController();
 
-  public slots:
-    void setAutoSyntaxCheck( bool isAuto );
+            void setupConnections();
 
-    void checkSyntax( QsciScintillaExtended * sci = 0 );
-    void checkSyntax( const QString & filename );
-    void execute( QsciScintillaExtended * sci = 0 );
-    void execute( const QString & filename );
+            bool isAutoSyntaxCheck() const;
 
-    /// Parse all o3prml files in project.
-    void parseProject();
-    /// Update project model with newer information if possible.
-    void updateModel();
+            QSharedPointer<PRMTreeModel> projectModel();
+            const QSharedPointer<PRMTreeModel> projectModel() const;
 
-    void hideBuildMessage();
+            public slots:
+                void setAutoSyntaxCheck( bool isAuto );
 
-  signals:
-    void projectModelChanged();
-    void modelCanBeUpdated();
+            void checkSyntax( QsciScintillaExtended * sci = 0 );
+            void checkSyntax( const QString & filename );
+            void execute( QsciScintillaExtended * sci = 0 );
+            void execute( const QString & filename );
 
-  protected slots:
-    void startParsing( bool isAuto = true, bool isExecution = false );
-    void onParsingFinished();
-    void onExecutionFinished();
-    void onProjectParseFinished();
+            /// Parse all o3prml files in project.
+            void parseProject();
+            /// Update project model with newer information if possible.
+            void updateModel();
 
-    void onCommandValided();
-    void onCommandParsed();
+            void hideBuildMessage();
 
-    void onMsgDoubleClick( QModelIndex index );
-    void onDocumentClosed( const QString & filename );
+        signals:
+            void projectModelChanged();
+            void modelCanBeUpdated();
 
-    void executeClass( QsciScintillaExtended * sci );
-    void executeSystem( QsciScintillaExtended * sci );
+        protected slots:
+            /// Ce slot est appelé quand on change de document ou quand la correction est fini.
+            void startParsing( bool isAuto = true, bool isExecution = false );
+            void onParsingFinished();
+            void onExecutionFinished();
+            void onProjectParseFinished();
 
-  private slots:
-    void triggerInit();
+            void onCommandValided();
+            void onCommandParsed();
 
-  private:
-    void createNewParser();
+            void onMsgDoubleClick( QModelIndex index );
+            void onDocumentClosed( const QString & filename );
 
-    MainWindow * mw;
+            void executeClass( QsciScintillaExtended * sci );
+            void executeSystem( QsciScintillaExtended * sci );
+            void executeRequest(QsciScintillaExtended* sci);
 
-    struct PrivateData;
-    PrivateData * d;
-};
+        private slots:
+            void triggerInit();
 
-#endif // BUILDCONTROLLER_H
+        private:
+            bool __createNewParser();
+
+            MainWindow * mw;
+
+            struct PrivateData;
+            PrivateData * d;
+
+            QsciScintillaExtended* __checkDocument(QsciScintillaExtended* sci, bool &ok);
+            void __startParsing(bool isAuto, bool isExecution);
+            void __parseErrors(const gum::ErrorsContainer& errors);
+            void __execInterupted(QListWidget* list);
+    };
+
+} // o3prm
+
+#endif // O3PRM_BUILDCONTROLLER_H
+
