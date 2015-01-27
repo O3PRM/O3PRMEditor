@@ -89,14 +89,19 @@ namespace o3prm
             bool isOpenProject() const;
 
         signals:
-            // Emitted when a project is loaded
+            /// Emitted when a project is loaded
             void projectLoaded(o3prm::Project* project);
 
-            // Emitted when a project is saved
+            /// Emitted when a project is saved
             void projectSaved(o3prm::Project* project);
 
-            // Emitted when a project is closed
+            /// Emitted when a project is closed
             void projectClosed();
+
+            void fileOpened(QString path);
+
+            /// Emitted when a file is renamed.
+            void fileRenamed(QString oldPath, QString newPath);
 
         public slots:
             /**
@@ -116,62 +121,6 @@ namespace o3prm
              */
             void closeProject();
 
-            /**
-             * Create an empty o3prml file with a class architecture,
-             * and ask the filename.
-             */
-            void createNewClassFile();
-            /**
-             * Create an empty o3prmr file with a request architecture,
-             * and ask the filename.
-             */
-            void createNewRequestFile();
-            /**
-             * Create an empty o3prml file with a system architecture,
-             * and ask the filename.
-             */
-            void createNewSystemFile();
-
-            /**
-             * This method change a filename, a package in all file in the project.
-             * It change package in the file when it is moved,
-             * class or system name when it is renamed,
-             * and imports in others files in both cases.
-
-             * If \a fromFilePath is a file, it can be :
-             *     - renamed, if only filename change in \a toFilePath;
-             *     - moved, if only path change in \a toFilePath;
-             *     - moved and renamed, if both path and filename change;
-             *     - removed, if \a toFilePath is an empty string;
-
-             * If \a fromFilePath is a directory, it can be :
-             *     - renamed, if only dirname change in \a toFilePath;
-             *     - moved, if only path change in \a toFilePath;
-             *     - moved and renamed, if both path and dirname change;
-             *     - removed, if \a toFilePath is an empty string;
-
-             * This method do nothing if fromFilePath is not a valid file in the project.
-
-             * Les imports dans les autres fichiers peuvent être
-             * relatifs (ex : dans le même répertoire juste le
-             * nom de la classe).
-
-             * Peut être RELATIFS, que si c'est le MÊME package
-             * ou un SUR dossier.
-             * Sinon forcément ABSOLU par rapport au projet.
-
-             * CLASSPATHS ? Il n'y a rien à changer dans le
-             * classPath car si on fait appelle à lui c'est
-             * qu'il ne fait pas appelle à nous.
-
-             * WARNING : "import dir.*;" pas géré.
-             * Pas de changement dans ces fichiers.
-             * 
-             * WARNING : Suppose qu'un fichier n'importe pas
-             * plusieurs fichiers ayant le même nom.
-             */
-            void refactor( const QString & fromFilePath, const QString & toFilePath );
-
         protected:
             /**
              * Add the project the "recentsProjects" list.
@@ -187,12 +136,12 @@ namespace o3prm
             /**
              * Switch to this file if it is open.
              */
-            bool on_projectExplorator_clicked( QModelIndex index );
+            bool _onClick( QModelIndex index );
 
             /**
              * Open the file or switch to it if it is already open.
              */
-            bool on_projectExplorator_doubleClicked( QModelIndex index );
+            bool _onDoubleClick( QModelIndex index );
 
             /**
              * When files are renamed, change the document filename if it is open;

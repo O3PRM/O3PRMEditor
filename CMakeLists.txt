@@ -66,6 +66,7 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/controllers/projectcontroller.cpp
             src/controllers/searchcontroller.cpp
             src/controllers/viewcontroller.cpp
+            src/controllers/editorcontroller.cpp
             src/lexers/qscilexero3prml.cpp
             src/lexers/qscilexero3prml2.cpp
             src/lexers/qscilexero3prmr.cpp
@@ -95,6 +96,7 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/controllers/projectcontroller.h
             src/controllers/searchcontroller.h
             src/controllers/viewcontroller.h
+            src/controllers/editorcontroller.h
             src/lexers/qscilexero3prml.h
             src/lexers/qscilexero3prml2.h
             src/lexers/qscilexero3prmr.h

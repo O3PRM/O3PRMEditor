@@ -19,6 +19,7 @@ namespace o3prm
     class ProjectController;   
     class FileController;
     class BuildController;
+    class EditorController;
 }
 
 class ViewController;
@@ -42,6 +43,10 @@ class MainWindow : public QMainWindow
         ~MainWindow();
         Ui::MainWindow* mainwindow();
 
+        o3prm::ProjectController* projectController();
+        ViewController* viewController() { return vc; }
+        Ui::MainWindow* mainWindow() { return ui; }
+
     protected:
         void closeEvent( QCloseEvent * event );
 
@@ -64,6 +69,8 @@ class MainWindow : public QMainWindow
         ViewController *vc;
         o3prm::ProjectController *pc;
         o3prm::BuildController *bc;
+
+        o3prm::EditorController* __editorController;
 
         friend class o3prm::FileController;
         friend class EditController;

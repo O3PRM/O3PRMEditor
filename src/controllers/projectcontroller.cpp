@@ -100,9 +100,9 @@ namespace o3prm
     void ProjectController::setupConnections()
     {
         connect( __mainWidget->ui->projectExplorator, SIGNAL( clicked( QModelIndex ) ),
-                this, SLOT( on_projectExplorator_clicked( QModelIndex ) ) );
+                this, SLOT( _onClick( QModelIndex ) ) );
         connect( __mainWidget->ui->projectExplorator, SIGNAL( doubleClicked( QModelIndex ) ),
-                this, SLOT( on_projectExplorator_doubleClicked( QModelIndex ) ) );
+                this, SLOT( _onDoubleClick( QModelIndex ) ) );
         connect( __mainWidget->ui->projectExplorator, SIGNAL( customContextMenuRequested( QPoint ) ),
                 this, SLOT( onCustomContextMenuRequested( QPoint ) ) );
         connect( __mainWidget->ui->projectExplorator->itemDelegate(), SIGNAL( closeEditor( QWidget* ) ),
@@ -115,12 +115,6 @@ namespace o3prm
 
         connect( __mainWidget->ui->actionOpenProject, SIGNAL( triggered() ),
                 this, SLOT( openProject() ) );
-        connect( __mainWidget->ui->actionNewClass, SIGNAL( triggered() ),
-                this, SLOT( createNewClassFile() ) );
-        connect( __mainWidget->ui->actionNewModel, SIGNAL( triggered() ),
-                this, SLOT( createNewSystemFile() ) );
-        connect( __mainWidget->ui->actionNewRequestFile, SIGNAL( triggered() ),
-                this, SLOT( createNewRequestFile() ) );
         connect( __mainWidget->ui->actionCloseProject, SIGNAL( triggered() ),
                 this, SLOT( closeProject() ) );
 
@@ -228,114 +222,6 @@ namespace o3prm
         }
     }
 
-    void ProjectController::createNewClassFile()
-    {
-        //// We add a new o3prml empty file,
-        //auto sci = mw->fc->newDocument( tr( "Nouveau o3prml" ), QsciScintillaExtended::O3prml );
-        //sci->setLexer( QsciScintillaExtended::O3prml );
-
-        //// give it the focus,
-        //mw->ui->tabWidget->setCurrentWidget( sci );
-        //sci->setFocus();
-
-        //auto path = currentProj->dir().absoluteFilePath("classes/empty_file.o3prml");
-        //if ( mw->fc->saveAsFile( sci, path ) )
-        //{
-        //    // and prefill it.
-        //    QFileInfo info( sci->filename() );
-        //    QString className = info.baseName();
-        //    auto packageRelativePath = QDir( currentProj->dir() ).relativeFilePath( info.path() );
-        //    QString packageName = packageRelativePath.replace( "/","." );
-        //    QString text;
-
-        //    if ( ! packageName.isEmpty() )
-        //    {
-        //        text += "\npackage "+ packageName +";\n";
-        //    }
-        //    text += "\n//\nclass "+ className + " {\n}\n";
-
-        //    sci->setText( text );
-        //    sci->setCursorPosition( 2,6 );
-
-        //    mw->fc->saveFile( sci );
-        //}
-        //else
-        //{
-        //    mw->fc->closeFile( mw->ui->tabWidget->indexOf( sci ) );
-        //}
-    }
-
-    void ProjectController::createNewRequestFile()
-    {
-        //// We add a new o3prmr empty file,
-        //auto sci = mw->fc->newDocument( tr( "Nouveau o3prmr" ), QsciScintillaExtended::O3prmr );
-        //sci->setLexer( QsciScintillaExtended::O3prmr );
-
-        //// give it the focus,
-        //mw->ui->tabWidget->setCurrentWidget( sci );
-        //sci->setFocus();
-
-        //auto path = currentProj->dir().absoluteFilePath("requests/empty_file.o3prmr");
-        //if ( mw->fc->saveAsFile( sci, path ) ) {
-        //    // and prefill it.
-        //    QFileInfo info( sci->filename() );
-        //    QString blockName = info.baseName();
-        //    auto packageRelativePath = QDir( currentProj->dir() ).relativeFilePath( info.path() );
-        //    QString packageName = packageRelativePath.replace( "/","." );
-        //    QString text;
-
-        //    if ( ! packageName.isEmpty() )
-        //    {
-        //        text += "\npackage "+ packageName +";\n";
-        //    }
-        //    text += "\n//\nrequest "+ blockName + " {\n}\n";
-
-        //    sci->setText( text );
-        //    sci->setCursorPosition( 2,8 );
-
-        //    mw->fc->saveFile( sci );
-        //}
-        //else
-        //{
-        //    mw->fc->closeFile( mw->ui->tabWidget->indexOf( sci ) );
-        //}
-    }
-
-    void ProjectController::createNewSystemFile()
-    {
-        //auto sci = mw->fc->newDocument( tr( "Nouveau o3prml" ), QsciScintillaExtended::O3prml );
-        //sci->setLexer( QsciScintillaExtended::O3prml );
-
-        //// give it the focus,
-        //mw->ui->tabWidget->setCurrentWidget( sci );
-        //sci->setFocus();
-
-        //if ( mw->fc->saveAsFile( sci, currentProj->dir().absoluteFilePath("systems/empty_file.o3prml") ) )
-        //{
-        //    // and prefill it.
-        //    QFileInfo info( sci->filename() );
-        //    QString systemName = info.baseName();
-        //    auto packageRelativePath = QDir( currentProj->dir() ).relativeFilePath( info.path() );
-        //    QString packageName = packageRelativePath.replace( "/","." );
-        //    QString text;
-
-        //    if ( ! packageName.isEmpty() )
-        //    {
-        //        text += "\npackage "+ packageName +";\n";
-        //    }
-        //    text += "\n//\nsystem "+ systemName + " {\n}\n";
-
-        //    sci->setText( text );
-        //    sci->setCursorPosition( 2,7 );
-
-        //    mw->fc->saveFile( sci );
-        //}
-        //else
-        //{
-        //    mw->fc->closeFile( mw->ui->tabWidget->indexOf( sci ) );
-        //}
-    }
-
     void ProjectController::openProject( QString path )
     {
         if (isOpenProject())
@@ -390,13 +276,6 @@ namespace o3prm
 
     }
 
-    void ProjectController::refactor( const QString & fromFilePath, const QString & toFilePath ) 
-    {
-        // qWarning() << "Project::refactor() was called but is not yet implemented.\n"
-        //     "For moment, this method do nothing.";
-        // return;
-    } 
-
     void ProjectController::addToRecentsProjects( const QString & projetPath )
     {
         //if ( projetPath.isEmpty() || d->recentsProjectsList.contains( projetPath ) )
@@ -448,25 +327,12 @@ namespace o3prm
         //}
     }
 
-    bool ProjectController::on_projectExplorator_clicked( QModelIndex index ) 
+    bool ProjectController::_onClick( QModelIndex index ) 
     {
-        //QString filename = index.data( QFileSystemModel::FilePathRole ).toString();
-
-        //if ( mw->fc->isOpenFile( filename ) )
-        //{
-        //    mw->ui->tabWidget->setCurrentWidget( mw->fc->fileToDocument( filename ) );
-        //}
-        //else
-        //{
-        //    return false;
-        //}
-
-        //return true;
-
         return false;
     }
 
-    bool ProjectController::on_projectExplorator_doubleClicked( QModelIndex index ) 
+    bool ProjectController::_onDoubleClick( QModelIndex index ) 
     {
         if (isOpenProject())
         {
@@ -483,7 +349,8 @@ namespace o3prm
                     {
                         QDir dir(__currentProj->dir());
                         auto path = dir.absoluteFilePath(item->path());
-                        return __mainWidget->fc->openFile(path);
+                        emit fileOpened(path);
+                        return true;
                     }
                 default:
                     {
@@ -649,6 +516,7 @@ namespace o3prm
         auto msg = tr("Warning: close file(s) before renaming !");
         QMessageBox::warning(__mainWidget, msg, msg);
         bool ok;
+        auto old_name = item->path();
         auto new_name = __askForName((ProjectItem::ItemType) item->type(), ok);
         if (ok and __validNameAndWarn(new_name))
         {
@@ -658,6 +526,20 @@ namespace o3prm
             {
                 item->setText(new_name);
                 __saveProject();
+                switch (item->type())
+                {
+                    case (int) ProjectItem::ItemType::File:
+                    case (int) ProjectItem::ItemType::Request:
+                        {
+                            emit fileRenamed(old_name, item->path());
+                            break;
+                        }
+                    default:
+                        {
+                            // do nothing
+                            break;
+                        }
+                }
             }
             else
             {

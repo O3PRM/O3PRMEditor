@@ -9,6 +9,7 @@
 #include "controllers/projectcontroller.h"
 #include "controllers/viewcontroller.h"
 #include "controllers/buildcontroller.h"
+#include "controllers/editorcontroller.h"
 
 #include <QFileDialog>
 #include <QTextBrowser>
@@ -54,6 +55,8 @@ void MainWindow::__setupControllers()
     vc = new ViewController( this, this );
     __setupProjectController();
     bc = new o3prm::BuildController( this, this );
+
+    __editorController = new o3prm::EditorController(this, this);
 }
 
 void MainWindow::__setupProjectController()
@@ -114,6 +117,7 @@ void MainWindow::__setupConnections()
     fc->setupConnections();
     pc->setupConnections();
     bc->setupConnections();
+    __editorController->setupConnections();
 }
 
 void MainWindow::saveProject(o3prm::Project* project)
@@ -205,5 +209,10 @@ void MainWindow::loadProject(o3prm::Project* project)
 
     // Enable auto syntax check
     bc->setAutoSyntaxCheck( true );
+}
+
+o3prm::ProjectController* MainWindow::projectController()
+{
+    return pc;
 }
 
