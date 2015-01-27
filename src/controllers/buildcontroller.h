@@ -35,8 +35,8 @@ namespace o3prm
             QSharedPointer<PRMTreeModel> projectModel();
             const QSharedPointer<PRMTreeModel> projectModel() const;
 
-            public slots:
-                void setAutoSyntaxCheck( bool isAuto );
+        public slots:
+            void setAutoSyntaxCheck( bool isAuto );
 
             void checkSyntax( QsciScintillaExtended * sci = 0 );
             void checkSyntax( const QString & filename );

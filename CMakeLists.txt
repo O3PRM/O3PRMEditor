@@ -70,6 +70,7 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/lexers/qscilexero3prml2.cpp
             src/lexers/qscilexero3prmr.cpp
             src/models/project.cpp
+            src/models/buildmodel.cpp
             src/parsers/abstractparser.cpp
             src/parsers/o3prmlinterpretation.cpp
             src/parsers/o3prmrinterpretation.cpp
@@ -86,6 +87,7 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             )
 SET(TEST_SOURCES src/test/main.cpp
                  src/test/projectTest.cpp
+                 src/test/buildmodelTest.cpp
    )
 SET(HEADERS src/controllers/buildcontroller.h
             src/controllers/editcontroller.h
@@ -97,6 +99,7 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/lexers/qscilexero3prml2.h
             src/lexers/qscilexero3prmr.h
             src/models/project.h
+            src/models/buildmodel.h
             src/parsers/abstractparser.h
             src/parsers/o3prmlinterpretation.h
             src/parsers/o3prmrinterpretation.h
