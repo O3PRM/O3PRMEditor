@@ -5,6 +5,7 @@
 #include <QModelIndex>
 
 #include "models/project.h"
+#include "models/buildmodel.h"
 
 // Cross reference, do not replace with an include directive
 class MainWindow; // uis/mainwindow.h
@@ -225,6 +226,8 @@ namespace o3prm
 
         private:
             Project *__currentProj;
+            BuildModel *__build;
+
             MainWindow *__mainWidget;
 
             struct PrivateData;
@@ -252,22 +255,33 @@ namespace o3prm
             /// Add a file to the project and the filesystem.
             void __addFile(ProjectItem* parent);
 
+            /// Add a request to the project and the filesystem.
+            void __addRequest(ProjectItem* parent);
+
             /// Add a directory (package) to the project and the filesystem.
             void __addPackage(ProjectItem* parent);
 
-            /// Handles custom contex menu for projects
+            /// Handles custom context menu for projects.
             void __projectCustomContextMenu(const QPoint& pos, ProjectItem* item);
 
-            /// Handles custom contex menu for package
+            /// Handles custom context menu for packages.
             void __packageCustomContextMenu(const QPoint& pos, ProjectItem* item);
 
-            /// Handles custom contex menu for package
+            /// Handles custom context menu for files.
             void __fileCustomContextMenu(const QPoint& pos, ProjectItem* item);
+
+            /// Handles custom context menu for requests.
+            void __requestCustomContextMenu(const QPoint& pos, ProjectItem* item);
 
             // Show the rename dialog and rename the corresponding ProjectItem
             // and saves the project
             void __rename(ProjectItem* item);
             
+            // Returns the default package declaration for item.
+            QString __defaultPackage(ProjectItem* item);
+
+            /// Executes the given item if its a Request.
+            void __execute(ProjectItem* item);
     };
 
 } // o3prm

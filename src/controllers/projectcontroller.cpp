@@ -1,6 +1,7 @@
 #include "projectcontroller.h"
 
 #include <iostream>
+#include <sstream>
 
 #include "buildcontroller.h"
 #include "editcontroller.h"
@@ -23,6 +24,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QSignalMapper>
+#include <QStringBuilder>
 #include <QTimer>
 
 #include <QFileSystemModel>
@@ -47,6 +49,7 @@ namespace o3prm
             QList<QString> recentsProjectsList;
             QSignalMapper * recentsProjectsMapper;
             ProjectProperties * projectProperties;
+            QMenu * requestMenu;
             QMenu * fileMenu;
             QMenu * packageMenu;
             QMenu * rootMenu;
@@ -75,16 +78,23 @@ namespace o3prm
         d->rootMenu = new QMenu(__mainWidget);
         d->rootMenu->addAction( tr( "Add a package" ) )->setData( "package" );
         d->rootMenu->addAction( tr( "Add a file" ) )->setData( "file" );
+        d->rootMenu->addAction( tr( "Add a request" ) )->setData( "request" );
 
         d->packageMenu = new QMenu(__mainWidget);
         d->packageMenu->addAction( tr( "Add a package" ) )->setData( "package" );
         d->packageMenu->addAction( tr( "Add a file" ) )->setData( "file" );
+        d->packageMenu->addAction( tr( "Add a request" ) )->setData( "request" );
         d->packageMenu->addAction( tr( "Rename" ) )->setData( "rename" );
         d->packageMenu->addAction( tr( "Delete" ) )->setData( "delete" );
 
         d->fileMenu = new QMenu(__mainWidget);
         d->fileMenu->addAction( tr( "Rename" ) )->setData( "rename" );
         d->fileMenu->addAction( tr( "Delete" ) )->setData( "delete" );
+
+        d->requestMenu = new QMenu(__mainWidget);
+        d->requestMenu->addAction( tr( "Execute" ) )->setData( "execute" );
+        d->requestMenu->addAction( tr( "Rename" ) )->setData( "rename" );
+        d->requestMenu->addAction( tr( "Delete" ) )->setData( "delete" );
     }
 
     void ProjectController::setupConnections()
@@ -469,10 +479,10 @@ namespace o3prm
                         return false;
                     }
                 case ProjectItem::ItemType::File:
+                case ProjectItem::ItemType::Request:
                     {
                         QDir dir(__currentProj->dir());
                         auto path = dir.absoluteFilePath(item->path());
-                        std::cout << path.toStdString() << std::endl;
                         return __mainWidget->fc->openFile(path);
                     }
                 default:
@@ -535,7 +545,11 @@ namespace o3prm
                             __fileCustomContextMenu(pos, item);
                             break;
                         }
-
+                    case (int)ProjectItem::ItemType::Request:
+                        {   
+                            __requestCustomContextMenu(pos, item);
+                            break;
+                        }
                     default:
                         {
                             // Don't know what to do
@@ -561,6 +575,10 @@ namespace o3prm
         {
             __addFile(item);
         }
+        else if (action and action->data().toString() == "request")
+        {
+            __addRequest(item);
+        }
     }
 
     void ProjectController::__packageCustomContextMenu(const QPoint& pos, ProjectItem* item)
@@ -576,6 +594,10 @@ namespace o3prm
         else if (action and action->data().toString() == "file")
         {
             __addFile(item);
+        }
+        else if (action and action->data().toString() == "request")
+        {
+            __addRequest(item);
         }
         else if (action and action->data().toString() == "rename")
         {
@@ -594,6 +616,25 @@ namespace o3prm
         QAction * action = d->fileMenu->exec(map);
 
         if (action and action->data().toString() == "rename")
+        {
+            __rename(item);
+        }
+        else if (action and action->data().toString() == "delete")
+        {
+        }
+    }
+
+    void ProjectController::__requestCustomContextMenu(const QPoint& pos, ProjectItem* item)
+    {
+        auto view = __mainWidget->mainwindow()->projectExplorator;
+        auto map = view->mapToGlobal( pos ) ;
+        QAction * action = d->requestMenu->exec(map);
+
+        if (action and action->data().toString() == "execute")
+        {
+            __execute(item);
+        }
+        else if (action and action->data().toString() == "rename")
         {
             __rename(item);
         }
@@ -676,6 +717,10 @@ namespace o3prm
         {
             name = name + ".o3prm";
         }
+        else if (type == ProjectItem::ItemType::Request and not name.endsWith(".o3prmr"))
+        {
+            name = name + ".o3prmr";
+        }
         return name;
     }
 
@@ -731,9 +776,90 @@ namespace o3prm
         }
     }
 
+    void ProjectController::__addRequest(ProjectItem* parent)
+    {
+        bool ok;
+        auto name = __askForName(ProjectItem::ItemType::Request, ok);
+
+        if (ok
+            and __validNameAndWarn(name)
+            and not __existsAndWarn(name, parent, ProjectItem::ItemType::Request))
+        {
+            auto file = new ProjectItem(ProjectItem::ItemType::Request, name);
+            parent->appendRow(file);
+
+            QDir dir(__currentProj->dir());
+            dir.cd(parent->path());
+
+            auto file_path = dir.absoluteFilePath(file->text());
+            QFile data(file_path);
+
+            if (data.open(QFile::WriteOnly | QFile::Truncate)) 
+            {
+                QTextStream out(&data);
+                auto ns = file->path().replace('/', '.').trimmed();
+                while (ns.size() > 0 and ns.endsWith('.'))
+                {
+                    ns.truncate(ns.size() - 1);
+                }
+                out << __defaultPackage(file) << '\n';
+            }
+
+            __saveProject();
+        }
+    }
+
+    QString ProjectController::__defaultPackage(ProjectItem* item)
+    {
+        if (item->isInPackage())
+        {
+            QString s = "package %1;";
+            return s.arg(item->package());
+        }
+        return QString();
+    }
+
     void ProjectController::onItemRenameFinished() 
     {
         //currentProj->setEditable( false );
+    }
+
+
+    void ProjectController::__execute(ProjectItem* item)
+    {
+        __build = new BuildModel(__currentProj, this);
+        auto interpreter = __build->build(item);
+        std::stringstream strBuff;
+        auto errors = interpreter->errorsContainer();
+        if (errors.count() > 0)
+        {
+            strBuff << "Errors and warnings: ";
+            for (int i = 0; i < errors.count(); ++i)
+            {
+                auto parse_error = errors.error(i);
+                strBuff << std::endl << parse_error.msg;
+            }
+            strBuff << std::endl << std::endl;
+        }
+
+        if (interpreter->results().size())
+        {
+            strBuff << "Results: ";
+            for (size_t i = 0; i < interpreter->results().size(); ++i)
+            {
+                auto result = interpreter->results()[i];
+                strBuff << std::endl << "    " << result.command << ": ";
+                for (size_t j = 0; j < result.values.size(); ++j)
+                {
+                    auto value = result.values[j];
+                    strBuff << "\n" << "        " << value.label << ": " << value.p;
+                }
+            }
+        }
+
+        QMessageBox msgBox;
+        msgBox.setText(QString::fromStdString(strBuff.str()));
+        msgBox.exec();
     }
 
 } // o3prm

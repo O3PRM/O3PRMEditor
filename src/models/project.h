@@ -81,6 +81,19 @@ namespace o3prm
                 return static_cast<ProjectItem*>(QStandardItem::child(row, column));
             }
 
+            bool isInPackage() const 
+            {
+                return parent()->type() == ItemType::Directory;
+            }
+
+            QString package() const
+            {
+                if (isInPackage())
+                {
+                    return static_cast<ProjectItem*>(parent())->path().replace('/', '.');
+                }
+                return QString();
+            }
 
         private:
             ItemType __type;
