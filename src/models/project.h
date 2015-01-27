@@ -21,7 +21,8 @@ namespace o3prm
             enum ItemType {
                 Directory = 1000,
                 File = 1001,
-                Project = 1002
+                Project = 1002,
+                Request = 1003
             };
 
             /// Values used by ProjectItem must be above or equal to 1000.
@@ -97,6 +98,7 @@ namespace o3prm
                     case ProjectItem::ItemType::Directory: { return tr("Package"); }
                     case ProjectItem::ItemType::File:      { return tr("File"); }
                     case ProjectItem::ItemType::Project:   { return tr("Project"); }
+                    case ProjectItem::ItemType::Request:   { return tr("Request"); }
                     default: { return tr("Unknown"); }
                 }
             }
@@ -108,6 +110,7 @@ namespace o3prm
                     case (int)ProjectItem::ItemType::Directory: { return tr("Package"); }
                     case (int)ProjectItem::ItemType::File:      { return tr("File"); }
                     case (int)ProjectItem::ItemType::Project:   { return tr("Project"); }
+                    case (int)ProjectItem::ItemType::Request:   { return tr("Request"); }
                     default: { return tr("Unknown"); }
                 }
             }

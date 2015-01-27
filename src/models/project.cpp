@@ -53,6 +53,10 @@ namespace o3prm
             {
                 item = new ProjectItem(ProjectItem::ItemType::File, text);
             }
+            else if (node->tagName() == itemType2String(ProjectItem::ItemType::Request).toLower())
+            {
+                item = new ProjectItem(ProjectItem::ItemType::Request, text);
+            }
 
             pair.first->appendRow(item);
 
