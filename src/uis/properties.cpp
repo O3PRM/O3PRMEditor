@@ -6,6 +6,7 @@
 
 #include "qsciscintillaextended.h"
 #include "controllers/filecontroller.h"
+#include "controllers/editorcontroller.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -210,7 +211,7 @@ void Properties::accept() {
   settings.endGroup();
 
   //
-  foreach( QsciScintillaExtended * sci, mw->fc->openDocuments() ) {
+  foreach( QsciScintillaExtended * sci, mw->editorController()->openDocuments() ) {
     sci->setTabWidth( ui->tabWidthSpinBox->value() );
     sci->setIndentationWidth( ui->indentWidthSpinBox->value() );
     sci->setAutoIndent( ui->autoIndentCheckBox->isChecked() );

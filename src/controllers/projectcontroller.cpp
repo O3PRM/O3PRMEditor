@@ -512,12 +512,9 @@ namespace o3prm
 
     void ProjectController::__rename(ProjectItem* item)
     {
-        // TODO: need to refresh editor, fot the moment does not work as intended
-        auto msg = tr("Warning: close file(s) before renaming !");
-        QMessageBox::warning(__mainWidget, msg, msg);
         bool ok;
         auto old_name = item->path();
-        auto new_name = __askForName((ProjectItem::ItemType) item->type(), ok);
+        auto new_name = __askForName((ProjectItem::ItemType) item->type(), ok, item->text());
         if (ok and __validNameAndWarn(new_name))
         {
             QDir dir(__currentProj->dir());
@@ -531,7 +528,7 @@ namespace o3prm
                     case (int) ProjectItem::ItemType::File:
                     case (int) ProjectItem::ItemType::Request:
                         {
-                            emit fileRenamed(old_name, item->path());
+                            emit fileRenamed(dir.absoluteFilePath(old_name), dir.absoluteFilePath(item->path()));
                             break;
                         }
                     default:
@@ -582,17 +579,20 @@ namespace o3prm
         return true;
     }
 
-    QString ProjectController::__askForName(ProjectItem::ItemType type, bool& ok)
+    QString ProjectController::__askForName(ProjectItem::ItemType type, bool& ok, QString defaultValue)
     {
         ok = false;
         auto type_name = Project::itemType2String(type);
         auto title = tr("Choose a name for this new %1").arg(type_name.toLower());
         auto msg = tr("%1 name:").arg(type_name);
-        auto default_value = tr("new_%1").arg(type_name);
+        if (defaultValue.isEmpty())
+        {
+            defaultValue = tr("new_%1").arg(type_name);
+        }
 
         auto name = QInputDialog::getText(__mainWidget,
                 title, msg,
-                QLineEdit::Normal, default_value,
+                QLineEdit::Normal, defaultValue,
                 &ok);
 
         if (type == ProjectItem::ItemType::File and not name.endsWith(".o3prm"))

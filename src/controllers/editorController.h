@@ -26,6 +26,25 @@ namespace o3prm
             // were properly initialised.
             void setupConnections();
 
+            /// Return the list of opend documents
+            QList<QsciScintillaExtended*> openDocuments() const;
+
+            /// Return true if at least one document is opened
+            bool hasCurrentDocument() const;
+
+            /// Return the current document, the open tab, or 0 if any.
+            QsciScintillaExtended* currentDocument() const;
+
+            /// Return the document corresponding to \a file, or 0 if this file is not open.
+            QsciScintillaExtended * fileToDocument( const QString & file ) const;
+
+            /// Returns the document and update index with the proper value.
+            QsciScintillaExtended* findDocument(int& index);
+
+
+            /// Close all files, return true if it succeeded
+            bool quit();
+
         public slots:
             /// Open file at path in a new tab
             void openFile(QString path);
@@ -39,11 +58,47 @@ namespace o3prm
             /// Save all files
             void saveAllFiles();
 
+            /// Close old tab and open on renamed file
+            void onDocumentRenamed(QString oldPath, QString newPath );
+
             /// Close file at index or curent file if index == -1
             void closeFile(int index=-1);
 
             /// Close all files
             void closeAllFiles();
+
+            /// Update tab to show that the document was changed
+            void onCurrentDocumentChanged(int index=-2);
+
+            /// Do an undo on the current document
+            void undo();
+
+            /// Do a redo on the current document
+            void redo();
+
+            /// Do a cut in the pastebin in the current document
+            void cut();
+
+            /// Do a copy in the pastebin in the current document
+            void copy();
+
+            /// Do a paste from the pastebin in the current document
+            void paste();
+
+            void remove();
+            void selectAll();
+
+            /// Add or removes comments from the selection in the current document
+            void switchComment();
+
+            /// Increase indentation in the current document
+            void increaseIndentation();
+
+            /// Decrease indentation in the current document
+            void decreaseIndentation();
+
+            /// Autocomplete the current word in the current document
+            void autoComplete();
 
         signals:
             /// Emited when a file is opened
@@ -66,7 +121,7 @@ namespace o3prm
             /// Returns the document and update index with the proper value.
             QsciScintillaExtended* __findDocument(int& index);
 
-            bool __openFile(const QFileInfo& fileinfo);
+            bool __openFile(const QFileInfo& fileinfo, int pos=-1);
 
             void __toggleEditorMenus(bool show);
 

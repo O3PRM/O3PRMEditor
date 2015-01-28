@@ -22,23 +22,6 @@ class EditController : public QObject {
 
   public slots:
 
-    void undo();
-    void redo();
-
-    void cut();
-    void copy();
-    void paste();
-
-    void remove();
-    void selectAll();
-
-    void switchComment();
-
-    void increaseIndentation();
-    void decreaseIndentation();
-
-    void autoComplete();
-
     void editPreferences();
 
   signals:

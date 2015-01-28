@@ -1,5 +1,7 @@
 #include "controllers/editorController.h"
 
+#include <iostream>
+
 #include <QMessageBox>
 #include <QFileDialog>
 
@@ -24,6 +26,82 @@ namespace o3prm
     {
         connect(__mainWidget->projectController(), SIGNAL( fileOpened( QString ) ),
                 this, SLOT( openFile(QString) ) );
+
+        connect(__mainWidget->mainWindow()->actionUndo, SIGNAL( triggered() ),
+                this, SLOT( undo() ) );
+        connect(__mainWidget->mainWindow()->actionRedo, SIGNAL( triggered() ),
+                this, SLOT( redo() ) );
+        connect(__mainWidget->mainWindow()->actionCut, SIGNAL( triggered() ),
+                this, SLOT( cut() ) );
+        connect(__mainWidget->mainWindow()->actionCopy, SIGNAL( triggered() ),
+                this, SLOT( copy() ) );
+        connect(__mainWidget->mainWindow()->actionPaste, SIGNAL( triggered() ),
+                this, SLOT( paste() ) );
+        connect(__mainWidget->mainWindow()->actionRemove, SIGNAL( triggered() ),
+                this, SLOT( remove() ) );
+        connect(__mainWidget->mainWindow()->actionSelectAll, SIGNAL( triggered() ),
+                this, SLOT( selectAll() ) );
+        connect(__mainWidget->mainWindow()->actionSwitchComment, SIGNAL( triggered() ),
+                this, SLOT( switchComment() ) );
+        connect(__mainWidget->mainWindow()->actionIncreaseIndentation, SIGNAL( triggered() ),
+                this, SLOT( increaseIndentation() ) );
+        connect(__mainWidget->mainWindow()->actionDecreaseIndentation, SIGNAL( triggered() ),
+                this, SLOT( decreaseIndentation() ) );
+        connect(__mainWidget->mainWindow()->actionAutoComplete, SIGNAL( triggered() ),
+                this, SLOT( autoComplete() ) );
+
+        connect(__mainWidget->mainWindow()->actionSaveFile, SIGNAL( triggered() ),
+                this, SLOT( saveFile() ));
+        connect(__mainWidget->mainWindow()->actionSaveAsFile, SIGNAL( triggered() ),
+                this, SLOT( saveAsFile() ));
+        connect(__mainWidget->mainWindow()->actionSaveAllFiles, SIGNAL( triggered() ),
+                this, SLOT( saveAllFiles() ));
+        connect(__mainWidget->mainWindow()->actionCloseFile, SIGNAL( triggered() ),
+                this, SLOT( closeFile() ));
+        connect(__mainWidget->mainWindow()->actionCloseAllFiles, SIGNAL( triggered() ),
+                this, SLOT( closeAllFiles() ));
+
+        connect(__mainWidget->mainWindow()->tabWidget, SIGNAL( currentChanged( int ) ),
+                this, SLOT( onCurrentDocumentChanged( int ) ));
+        connect(__mainWidget->mainWindow()->tabWidget, SIGNAL( tabCloseRequested( int ) ),
+                this, SLOT( closeFile( int ) ));
+
+        connect(__mainWidget->projectController(), SIGNAL(projectClosed()),
+                this, SLOT(closeAllFiles()));
+        connect(__mainWidget->projectController(), SIGNAL( fileRenamed(QString, QString) ),
+                this, SLOT( onDocumentRenamed(QString, QString) ));
+    }
+
+    QsciScintillaExtended* EditorController::currentDocument() const
+    {
+        auto obj = __mainWidget->mainwindow()->tabWidget->currentWidget();
+        if (obj)
+        {
+            return qobject_cast<QsciScintillaExtended *>(obj);
+        }
+        return 0;
+    }
+
+    QsciScintillaExtended* EditorController::findDocument(int& index)
+    {
+        if (index >= 0 and index < __mainWidget->mainWindow()->tabWidget->count())
+        {
+            index = __mainWidget->mainWindow()->tabWidget->currentIndex();
+            return currentDocument();
+        }
+        auto obj = __mainWidget->mainWindow()->tabWidget->widget(index);
+        return qobject_cast<QsciScintillaExtended*>(obj);
+    }
+
+    QsciScintillaExtended* EditorController::fileToDocument( const QString & file ) const 
+    {
+        return __openFiles.value(file, 0);
+    }
+
+    bool EditorController::quit() 
+    {
+        closeAllFiles();
+        return __mainWidget->mainWindow()->tabWidget->count() == 0;
     }
 
     void EditorController::openFile(QString path)
@@ -37,10 +115,15 @@ namespace o3prm
         }
     }
 
+    QList<QsciScintillaExtended*> EditorController::openDocuments() const
+    {
+        return __openFiles.values();
+    }
+
     void EditorController::saveFile()
     {
         // If argument is 0, get the current document
-        auto sci = __currentDocument(); 
+        auto sci = currentDocument(); 
 
         // If there is any editor open
         if (sci)
@@ -60,12 +143,17 @@ namespace o3prm
         }
     }
 
+    bool EditorController::hasCurrentDocument() const
+    {
+        return __mainWidget->mainWindow()->tabWidget->count();
+    }
+
     void EditorController::saveAsFile(QsciScintillaExtended *sci, QString dir)
     {
         // If argument is 0, get the current editor
         if ( sci == 0 )
         {
-            sci = __currentDocument();
+            sci = currentDocument();
         }
 
         if (sci)
@@ -89,7 +177,7 @@ namespace o3prm
 
     void EditorController::closeFile(int index)
     {
-        auto sci = __findDocument(index); // updates index
+        auto sci = findDocument(index); // updates index
 
         // if there is an open file then of file has changed, ask for save
         if (sci and __askForSaveIfChanged(sci, index))
@@ -108,6 +196,7 @@ namespace o3prm
 
             QFileInfo info(sci->filename()); // TODO: this may not be necessary
             emit fileClosed(info.absolutePath());
+            __openFiles.remove(sci->filename());
             sci->deleteLater();
         }
     }
@@ -117,7 +206,7 @@ namespace o3prm
         bool success = true;
         for ( int i = 0; i < __mainWidget->mainWindow()->tabWidget->count(); i++ ) 
         {
-            auto sci = __findDocument(i);
+            auto sci = findDocument(i);
             success = success and __saveFile(sci->filename(), sci);
         }
 
@@ -129,6 +218,18 @@ namespace o3prm
         }
     }
 
+    void EditorController::onDocumentRenamed(QString oldPath, QString newPath )
+    {
+        auto sci = __openFiles.value(oldPath, 0);
+        if (sci)
+        {
+            auto index = __mainWidget->mainWindow()->tabWidget->indexOf( sci );
+            closeFile(index);
+            QFileInfo info(newPath);
+            __openFile(newPath, index);
+        }
+    }
+
     void EditorController::closeAllFiles()
     {
         for ( int i = __mainWidget->mainWindow()->tabWidget->count() - 1; i >= 0 ; i-- ) 
@@ -137,20 +238,143 @@ namespace o3prm
         }
     }
 
-    QsciScintillaExtended* EditorController::__currentDocument() const
+    void EditorController::onCurrentDocumentChanged( int index ) 
     {
-        return qobject_cast<QsciScintillaExtended *>( __mainWidget->mainwindow()->tabWidget->currentWidget() );
+        QsciScintillaExtended * sci = 0;
+
+        // if index == -2, signal was emit by a QsciScintilla
+        if ( index == -2 ) 
+        {
+            sci = qobject_cast<QsciScintillaExtended*>( sender() );
+            index = __mainWidget->mainWindow()->tabWidget->indexOf( sci );
+        }
+        // else, by QTabWidget
+        else if (index >= 0 and index < __mainWidget->mainWindow()->tabWidget->count())
+        {
+            auto obj = __mainWidget->mainWindow()->tabWidget->widget( index );
+            sci = qobject_cast<QsciScintillaExtended*>(obj);
+        }
+        else
+        {
+            sci = currentDocument();
+            index = __mainWidget->mainWindow()->tabWidget->indexOf( sci );
+        }
+
+        if (sci) 
+        {
+            __mainWidget->setWindowFilePath( sci->title() );
+            __mainWidget->setWindowModified( sci->isModified() );
+            __mainWidget->mainWindow()->tabWidget->setTabText( index, sci->title() + ( sci->isModified()?"*":"" ) );
+            __mainWidget->mainWindow()->actionBuild->setEnabled( true );
+            __mainWidget->mainWindow()->actionExecute->setEnabled( true );
+            __mainWidget->viewController()->setCommandWidgetVisible( sci->lexerEnum() == QsciScintillaExtended::O3prmr );
+        }
+        else
+        {
+            __mainWidget->setWindowFilePath( QString() );
+            __mainWidget->setWindowModified( false );
+            __mainWidget->mainWindow()->actionExecute->setEnabled( false );
+            __mainWidget->mainWindow()->actionBuild->setEnabled( false );
+            __mainWidget->viewController()->setCommandWidgetVisible( false );
+        }
     }
 
-    QsciScintillaExtended* EditorController::__findDocument(int& index)
+    void EditorController::undo()
     {
-        if (index >= 0 and index < __mainWidget->mainWindow()->tabWidget->count())
+        if ( currentDocument()) 
         {
-            index = __mainWidget->mainWindow()->tabWidget->currentIndex();
-            return __currentDocument();
+            currentDocument()->undo();
         }
-        auto obj = __mainWidget->mainWindow()->tabWidget->widget(index);
-        return qobject_cast<QsciScintillaExtended*>(obj);
+    }
+
+    void EditorController::redo() 
+    {
+        if ( currentDocument()) 
+        {
+            currentDocument()->redo();
+        }
+    }
+
+    void EditorController::cut() 
+    {
+        if ( currentDocument()) 
+        {
+            currentDocument()->cut();
+        }
+    }
+
+    void EditorController::copy() 
+    {
+        if ( currentDocument()) 
+        {
+            currentDocument()->copy();
+        }
+    }
+
+    void EditorController::paste() 
+    {
+        if ( currentDocument()) 
+        {
+            currentDocument()->paste();
+        }
+    }
+
+    void EditorController::remove()
+    {
+        if ( currentDocument()) 
+        {
+            currentDocument()->removeSelectedText();
+        }
+    }
+
+    void EditorController::selectAll()
+    {
+        if ( currentDocument()) 
+        {
+            currentDocument()->selectAll();
+        }
+    }
+
+    void EditorController::switchComment() {
+        if ( currentDocument()) 
+        {
+            currentDocument()->switchComment();
+        }
+    }
+
+    void EditorController::increaseIndentation()
+    {
+        if ( currentDocument()) 
+        {
+            currentDocument()->indent();
+        }
+    }
+
+    void EditorController::decreaseIndentation()
+    {
+        if ( currentDocument()) 
+        {
+            currentDocument()->unindent();
+        }
+    }
+
+    void EditorController::autoComplete() 
+    {
+        // if ( currentDocument() )
+        // {
+        //     if ( ! d->prmModel.isNull() && mw->pc->isOpenProject() ) {
+        //         mw->bc->updateModel();
+
+        //         if ( mw->ui->commandLineEdit->hasFocus() ) {
+        //             mw->ui->commandLineEdit->setCompleter( d->completer );
+        //             mw->ui->commandLineEdit->autoComplete();
+        //         } else {
+        //             mw->fc->currentDocument()->setCompleter( d->completer );
+        //             mw->fc->currentDocument()->autoCompleteFromCompleter();
+        //         }
+        //     } else if ( ! mw->ui->commandLineEdit->hasFocus() )
+        //         mw->fc->currentDocument()->autoCompleteFromAll();
+        // }
     }
 
     void EditorController::__toggleEditorMenus(bool show)
@@ -161,9 +385,9 @@ namespace o3prm
     }
 
     void EditorController::__initialize(QsciScintillaExtended* sci,
-                                        const QString& title,
-                                        const QString& path,
-                                        const QString& text)
+            const QString& title,
+            const QString& path,
+            const QString& text)
     {
         sci->setTitle( title );
         sci->setFilename( path );
@@ -204,11 +428,13 @@ namespace o3prm
         sci->setBackspaceUnindents( settings.value( "preferences/editor/backspaceUnindents" ).toBool() );
         sci->setIndentationsUseTabs( settings.value( "preferences/editor/indentUseTabs" ).toBool() );
 
-        connect( sci, SIGNAL( modificationChanged( bool ) ), this, SLOT( onCurrentDocumentChanged() ) );
-        connect( sci, SIGNAL( filenameChanged( QString,QString ) ), this, SLOT( onDocumentRenamed( QString,QString ) ) );
+        connect(sci, SIGNAL( modificationChanged( bool ) ),
+                this, SLOT( onCurrentDocumentChanged() ) );
+        connect(sci, SIGNAL( filenameChanged( QString,QString ) ),
+                this, SLOT( onDocumentRenamed( QString,QString ) ) );
     }
 
-    bool EditorController::__openFile(const QFileInfo& fileinfo)
+    bool EditorController::__openFile(const QFileInfo& fileinfo, int index)
     {
         // If already opend, set focus on it
         if (__openFiles.contains(fileinfo.absoluteFilePath()))
@@ -240,7 +466,7 @@ namespace o3prm
                 __initialize(sci, fileinfo.fileName(), fileinfo.absoluteFilePath(), text);
 
                 // Add the file to the view
-                int index = __mainWidget->mainWindow()->tabWidget->addTab( sci, fileinfo.fileName() );
+                __mainWidget->mainWindow()->tabWidget->insertTab(index, sci, fileinfo.fileName());
                 __mainWidget->mainWindow()->tabWidget->setCurrentWidget( sci );
                 sci->setFocus();
 

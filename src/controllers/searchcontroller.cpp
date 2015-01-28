@@ -1,6 +1,7 @@
 #include "searchcontroller.h"
 
 #include "uis/mainwindow.h"
+#include "controllers/editorcontroller.h"
 #include "ui_mainwindow.h"
 #include "filecontroller.h"
 #include "editcontroller.h"
@@ -112,7 +113,7 @@ SearchController::SearchController( MainWindow * mw, QObject *parent ) :
   set this text in the search field.
   */
 void SearchController::quickSearch() {
-  QsciScintillaExtended * sci = mw->fc->currentDocument();
+  QsciScintillaExtended * sci = mw->editorController()->currentDocument();
 
   if ( sci == 0 )
     return;
@@ -148,7 +149,7 @@ void SearchController::quickSearch() {
 /**
   */
 void SearchController::advanceSearch() {
-  QsciScintillaExtended * sci = mw->fc->currentDocument();
+  QsciScintillaExtended * sci = mw->editorController()->currentDocument();
 
   if ( sci != 0 && sci->hasSelectedText() )
     d->as->setSearchText( sci->selectedText() );
@@ -206,7 +207,7 @@ void SearchController::advanceSearch() {
               ||
               (( fileinfo.fileName().endsWith( ".o3prmr" ) || fileinfo.fileName().endsWith( ".skr" ) ) &&
                ( d->as->filter() == AdvancedSearch::All || d->as->filter() == AdvancedSearch::O3prmr ) ) ) {
-            sci = mw->fc->fileToDocument( fileinfo.filePath() );
+            sci = mw->editorController()->fileToDocument( fileinfo.filePath() );
 
             if ( sci != 0 )
               documentsToSearchIn << sci;
@@ -293,7 +294,7 @@ bool SearchController::next( QsciScintillaExtended * sci ) {
   bool result = false;
 
   if ( sci == 0 )
-    sci = mw->fc->currentDocument();
+    sci = mw->editorController()->currentDocument();
 
   if ( sci != 0 && ! d->cs.search.isEmpty() && ( ! d->cs.isQuickSearch || ! d->qse->text().isEmpty() ) ) {
     result = sci->findFirst( d->cs.search, d->cs.regx, d->cs.cs, d->cs.wo, d->cs.wrap, true );
@@ -317,7 +318,7 @@ bool SearchController::previous( QsciScintillaExtended * sci ) {
   bool result;
 
   if ( sci == 0 )
-    sci = mw->fc->currentDocument();
+    sci = mw->editorController()->currentDocument();
 
   if ( sci != 0 &&  ! d->cs.search.isEmpty() && ( ! d->cs.isQuickSearch || ! d->qse->text().isEmpty() ) ) {
     // Search just before the previous result.
@@ -340,7 +341,7 @@ bool SearchController::previous( QsciScintillaExtended * sci ) {
 /**
   */
 void SearchController::replace() {
-  QsciScintillaExtended * sci = mw->fc->currentDocument();
+  QsciScintillaExtended * sci = mw->editorController()->currentDocument();
 
   if ( sci == 0 )
     return;
@@ -362,7 +363,7 @@ bool SearchController::replaceAndNext( QsciScintillaExtended * sci ) {
   bool result = false;
 
   if ( sci == 0 )
-    sci = mw->fc->currentDocument();
+    sci = mw->editorController()->currentDocument();
 
   if ( sci != 0 && ! d->cs.search.isEmpty() && ( ! d->cs.isQuickSearch || ! d->cs.search.isEmpty() ) ) {
     if ( sci->hasSelectedText() )
@@ -380,7 +381,7 @@ bool SearchController::replaceAndPrevious( QsciScintillaExtended * sci ) {
   bool result = false;
 
   if ( sci == 0 )
-    sci = mw->fc->currentDocument();
+    sci = mw->editorController()->currentDocument();
 
   if ( sci != 0 && ! d->cs.search.isEmpty() && ( ! d->cs.isQuickSearch || ! d->cs.search.isEmpty() ) ) {
     if ( sci->hasSelectedText() )
@@ -396,7 +397,7 @@ bool SearchController::replaceAndPrevious( QsciScintillaExtended * sci ) {
   */
 void SearchController::replaceAll( QsciScintillaExtended * sci ) {
   if ( sci == 0 )
-    sci = mw->fc->currentDocument();
+    sci = mw->editorController()->currentDocument();
 
   if ( sci != 0 && ( ! d->cs.isQuickSearch || !d->cs.search.isEmpty() ) )
     sci->replaceAll( d->cs.search, d->cs.replace );
@@ -407,7 +408,7 @@ void SearchController::replaceAll( QsciScintillaExtended * sci ) {
 /**
   */
 void SearchController::switchMarker() {
-  QsciScintillaExtended * sci = mw->fc->currentDocument();
+  QsciScintillaExtended * sci = mw->editorController()->currentDocument();
 
   if ( sci != 0 ) {
     sci->switchMarker();
@@ -417,7 +418,7 @@ void SearchController::switchMarker() {
 /**
   */
 void SearchController::findNextMarker() {
-  QsciScintillaExtended * sci = mw->fc->currentDocument();
+  QsciScintillaExtended * sci = mw->editorController()->currentDocument();
 
   if ( sci != 0 ) {
     sci->goToNextMarker();
@@ -427,7 +428,7 @@ void SearchController::findNextMarker() {
 /**
   */
 void SearchController::findPreviousMarker() {
-  QsciScintillaExtended * sci = mw->fc->currentDocument();
+  QsciScintillaExtended * sci = mw->editorController()->currentDocument();
 
   if ( sci != 0 ) {
     sci->goToPreviousMarker();
@@ -458,7 +459,7 @@ void SearchController::onQuickSearchEditTextChanged( QString ) {
   d->cs.search = d->qse->text();
   // Move the cursor index to the beggining of the previous result to rematch it if possible
   // even if we delete a caracter
-  mw->fc->currentDocument()->setCurrentIndex( mw->fc->currentDocument()->currentIndex() - d->cs.search.length() - 1 );
+  mw->editorController()->currentDocument()->setCurrentIndex( mw->editorController()->currentDocument()->currentIndex() - d->cs.search.length() - 1 );
   next();
 }
 
@@ -469,24 +470,24 @@ void SearchController::onQuickReplaceEditTextChanged( QString ) {
 void SearchController::onResultSearchDoubleClick( QTreeWidgetItem * item, int ) {
   QString filename = item->data( 1, Qt::UserRole ).toString();
 
-  QsciScintillaExtended * sci = mw->fc->fileToDocument( filename );
-  // If file is open
+  mw->editorController()->openFile(filename);
+  auto sci = mw->editorController()->fileToDocument( filename );
 
-  if ( sci == 0 ) {
-    if ( ! mw->fc->openFile( filename ) ) {
+  if ( sci == 0 )
+  {
       qWarning() << "Warning : in onResultSearchDoubleClick : can't open file" << filename;
-      return;
-    } else
-      sci = mw->fc->currentDocument();
-  } else
-    d->tab->setCurrentWidget( sci );
-
-  if ( ! item->text( 0 ).isEmpty() ) {
-    int line = item->text( 0 ).toInt();
-    sci->setCursorPosition( line,0 );
-    sci->setFocus();
   }
+  else
+  {
+      d->tab->setCurrentWidget( sci );
 
+      if ( ! item->text( 0 ).isEmpty() ) 
+      {
+          int line = item->text( 0 ).toInt();
+          sci->setCursorPosition( line,0 );
+          sci->setFocus();
+      }
+  }
 }
 
 /**
@@ -523,12 +524,12 @@ void SearchController::parseFiles( const QList<QString> & filePaths, bool isRepl
   // close files
   foreach( QsciScintillaExtended * sci, list ) {
 
-    // if replaceAll is true
-    // modification may be done
-    // so save them
-    if ( isReplaceAll ) {
-      mw->fc->saveFile( sci );
-    }
+    // // if replaceAll is true
+    // // modification may be done
+    // // so save them
+    // if ( isReplaceAll ) {
+    //   mw->editorController()->saveFile( sci );
+    // }
 
     sci->deleteLater();
   }
@@ -603,18 +604,18 @@ void SearchController::onSearchOptionButtonClicked() {
 
 void SearchController::onCaseSensitiveOptionChecked( bool checked ) {
   d->cs.cs = checked;
-  mw->fc->currentDocument()->setCurrentIndex( mw->fc->currentDocument()->currentIndex() - d->cs.search.length() - 1 );
+  mw->editorController()->currentDocument()->setCurrentIndex( mw->editorController()->currentDocument()->currentIndex() - d->cs.search.length() - 1 );
   next();
 }
 
 void SearchController::onWholeWordOptionChecked( bool checked ) {
   d->cs.wo = checked;
-  mw->fc->currentDocument()->setCurrentIndex( mw->fc->currentDocument()->currentIndex() - d->cs.search.length() - 1 );
+  mw->editorController()->currentDocument()->setCurrentIndex( mw->editorController()->currentDocument()->currentIndex() - d->cs.search.length() - 1 );
   next();
 }
 
 void SearchController::onUseRegexOptionChecked( bool checked ) {
   d->cs.regx = checked;
-  mw->fc->currentDocument()->setCurrentIndex( mw->fc->currentDocument()->currentIndex() - d->cs.search.length() - 1 );
+  mw->editorController()->currentDocument()->setCurrentIndex( mw->editorController()->currentDocument()->currentIndex() - d->cs.search.length() - 1 );
   next();
 }

@@ -1,6 +1,7 @@
 #include "viewcontroller.h"
 
 #include "uis/mainwindow.h"
+#include "controllers/editorcontroller.h"
 #include "ui_mainwindow.h"
 #include "filecontroller.h"
 #include "editcontroller.h"
@@ -214,10 +215,10 @@ void ViewController::setLineNumbersVisibility( bool visible ) {
     return;
 
   if ( visible )
-    foreach( QsciScintillaExtended * sci, mw->fc->openDocuments() )
+    foreach( QsciScintillaExtended * sci, mw->editorController()->openDocuments() )
     sci->setMarginWidth( 0,"8888" );
   else
-    foreach( QsciScintillaExtended * sci, mw->fc->openDocuments() )
+    foreach( QsciScintillaExtended * sci, mw->editorController()->openDocuments() )
     sci->setMarginWidth( 0,0 );
 
   d->lineNumbersVisibility->setChecked( visible );
@@ -228,10 +229,10 @@ void ViewController::setBookmarksVisibility( bool visible ) {
     return;
 
   if ( visible )
-    foreach( QsciScintillaExtended * sci, mw->fc->openDocuments() )
+    foreach( QsciScintillaExtended * sci, mw->editorController()->openDocuments() )
     sci->setMarginWidth( 1,16 );
   else
-    foreach( QsciScintillaExtended * sci, mw->fc->openDocuments() )
+    foreach( QsciScintillaExtended * sci, mw->editorController()->openDocuments() )
     sci->setMarginWidth( 1,0 );
 
   d->bookmarksVisibility->setChecked( visible );
@@ -242,10 +243,10 @@ void ViewController::setFoldMargingVisibility( bool visible ) {
     return;
 
   if ( visible )
-    foreach( QsciScintillaExtended * sci, mw->fc->openDocuments() )
+    foreach( QsciScintillaExtended * sci, mw->editorController()->openDocuments() )
     sci->setFolding( QsciScintillaExtended::BoxedTreeFoldStyle );
   else
-    foreach( QsciScintillaExtended * sci, mw->fc->openDocuments() )
+    foreach( QsciScintillaExtended * sci, mw->editorController()->openDocuments() )
     sci->setFolding( QsciScintillaExtended::NoFoldStyle );
 
   d->foldMargingVisibility->setChecked( visible );
@@ -255,7 +256,7 @@ void ViewController::setIndentationGuidesVisibility( bool visible ) {
   if ( visible != d->indentationGuidesVisibility->isChecked() )
     return;
 
-  foreach( QsciScintillaExtended * sci, mw->fc->openDocuments() )
+  foreach( QsciScintillaExtended * sci, mw->editorController()->openDocuments() )
   sci->setIndentationGuides( visible );
 
   d->indentationGuidesVisibility->setChecked( visible );
@@ -265,7 +266,7 @@ void ViewController::setUnprintableCharactersVisibility( bool visible ) {
   if ( visible != d->unprintableCharactersVisibility->isChecked() )
     return;
 
-  foreach( QsciScintillaExtended * sci, mw->fc->openDocuments() ) {
+  foreach( QsciScintillaExtended * sci, mw->editorController()->openDocuments() ) {
     sci->setWhitespaceVisibility(( QsciScintillaExtended::WhitespaceVisibility ) visible );
     sci->setEolVisibility( visible );
   }
@@ -274,16 +275,16 @@ void ViewController::setUnprintableCharactersVisibility( bool visible ) {
 }
 
 void ViewController::increaseZoom() {
-  if ( mw->fc->hasCurrentDocument() )
-    mw->fc->currentDocument()->zoomIn();
+  if ( mw->editorController()->hasCurrentDocument() )
+    mw->editorController()->currentDocument()->zoomIn();
 }
 
 void ViewController::decreaseZoom() {
-  if ( mw->fc->hasCurrentDocument() )
-    mw->fc->currentDocument()->zoomOut();
+  if ( mw->editorController()->hasCurrentDocument() )
+    mw->editorController()->currentDocument()->zoomOut();
 }
 
 void ViewController::normalZoom() {
-  if ( mw->fc->hasCurrentDocument() )
-    mw->fc->currentDocument()->resetZoom();
+  if ( mw->editorController()->hasCurrentDocument() )
+    mw->editorController()->currentDocument()->resetZoom();
 }

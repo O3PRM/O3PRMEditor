@@ -45,6 +45,7 @@ class MainWindow : public QMainWindow
 
         o3prm::ProjectController* projectController();
         ViewController* viewController() { return vc; }
+        o3prm::EditorController* editorController() { return __editorController; }
         Ui::MainWindow* mainWindow() { return ui; }
 
     protected:
@@ -63,7 +64,7 @@ class MainWindow : public QMainWindow
 
         Ui::MainWindow *ui;
 
-        o3prm::FileController *fc;
+        //o3prm::FileController *fc;
         EditController *ec;
         SearchController *sc;
         ViewController *vc;

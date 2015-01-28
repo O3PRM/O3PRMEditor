@@ -49,7 +49,7 @@ Ui::MainWindow* MainWindow::mainwindow()
 
 void MainWindow::__setupControllers()
 {
-    fc = new o3prm::FileController( this, this );
+    //fc = new o3prm::FileController( this, this );
     ec = new EditController( this, this );
     sc = new SearchController( this, this );
     vc = new ViewController( this, this );
@@ -114,7 +114,7 @@ void MainWindow::__setupConnections()
              this, SLOT(closeProject()));
 
     // Setting up connections of each controller
-    fc->setupConnections();
+    //fc->setupConnections();
     pc->setupConnections();
     bc->setupConnections();
     __editorController->setupConnections();
@@ -145,7 +145,7 @@ void MainWindow::closeEvent( QCloseEvent *event )
     bool oldAutoSyntax = bc->isAutoSyntaxCheck();
     bc->setAutoSyntaxCheck( false );
 
-    if ( fc->quit() ) 
+    if ( __editorController->quit() ) 
     {
         event->accept();
     }

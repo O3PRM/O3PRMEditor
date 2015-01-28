@@ -192,7 +192,7 @@ namespace o3prm
 
             /// Shows a Dialog and ask user to type a filename.
             /// If ok is false, then the user cancelled the operation.
-            QString __askForName(ProjectItem::ItemType type, bool& ok);
+            QString __askForName(ProjectItem::ItemType type, bool& ok, QString defaultValue="");
 
             /// Returns true if name is a child of parent in the current project
             /// and warns the user the his name is unusable.
