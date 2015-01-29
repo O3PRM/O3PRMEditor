@@ -379,14 +379,20 @@ namespace o3prm
         bool ok;
         auto old_name = item->path();
         auto new_name = __askForName((ProjectItem::ItemType) item->type(), ok, item->text());
+
+        // Moving to the item's location
+        auto dir(__currentProj->dir());
+        auto parent = static_cast<ProjectItem*>(item->parent());
+        if (not parent->path().isEmpty())
+        {
+            dir.cd(parent->path());
+        }
+
         if (ok and __validNameAndWarn(new_name))
         {
-            QDir dir(__currentProj->dir());
-            dir.cd(item->path());
             if (dir.rename(item->text(), new_name))
             {
                 item->setText(new_name);
-                __saveProject();
                 switch (item->type())
                 {
                     case (int) ProjectItem::ItemType::File:
@@ -395,12 +401,18 @@ namespace o3prm
                             emit fileRenamed(dir.absoluteFilePath(old_name), dir.absoluteFilePath(item->path()));
                             break;
                         }
+                    case (int) ProjectItem::ItemType::Directory:
+                        {
+                            emit packageRenamed(dir.absoluteFilePath(old_name), dir.absoluteFilePath(item->text()));
+                            break;
+                        }
                     default:
                         {
                             // do nothing
                             break;
                         }
                 }
+                __saveProject();
             }
             else
             {
@@ -510,12 +522,19 @@ namespace o3prm
             if (data.open(QFile::WriteOnly | QFile::Truncate)) 
             {
                 QTextStream out(&data);
-                auto ns = file->path().replace('/', '.').trimmed();
+                auto ns = parent->path().replace('/', '.').trimmed();
+                if (parent->type() != ProjectItem::ItemType::Project)
+                {
+                    ns = __currentProj->name() + "." + ns;
+                }
                 while (ns.size() > 0 and ns.endsWith('.'))
                 {
                     ns.truncate(ns.size() - 1);
                 }
-                out << "namespace " << ns << ';' << '\n';
+                if (not ns.isEmpty())
+                {
+                    out << "package " << ns << ';' << '\n';
+                }
             }
 
             __saveProject();
@@ -619,7 +638,7 @@ namespace o3prm
                 case (int)ProjectItem::ItemType::File:
                 case (int)ProjectItem::ItemType::Request:
                 {
-                    auto path = dir.absoluteFilePath(item->text());
+                    auto path = dir.absoluteFilePath(item->path());
                     emit fileRemoved(path);
                     dir.remove(path);
                     break;
@@ -639,6 +658,7 @@ namespace o3prm
             }
             item->parent()->removeRow(item->row());
         }
+        __saveProject();
     }
 
     bool ProjectController::__removeDir(const QString & dirName)

@@ -59,6 +59,10 @@ namespace o3prm
             /// Save all files
             void saveAllFiles();
 
+            /// If path is a dir, close all files in it,
+            /// If its a file, juste close that one.
+            void closeFiles(QString path);
+
             /// Close file at index or curent file if index == -1
             void closeFile(int index=-1);
 
@@ -67,6 +71,9 @@ namespace o3prm
 
             /// Close old tab and open on renamed file
             void onDocumentRenamed(QString oldPath, QString newPath );
+
+            /// Close old tab and open on renamed file
+            void onPackageRenamed(QString oldPath, QString newPath );
 
             /// Update tab to show that the document was changed
             void onCurrentDocumentChanged(int index=-2);

@@ -57,6 +57,9 @@ namespace o3prm
             /// Emitted when a file is renamed.
             void fileRenamed(QString oldPath, QString newPath);
 
+            /// Emitted when a file is renamed.
+            void packageRenamed(QString oldPath, QString newPath);
+
         protected slots:
             /// Create a new project.
             /// Open a dialog and ask the name and the directory of the project.

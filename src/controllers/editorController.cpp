@@ -77,6 +77,12 @@ namespace o3prm
                 this, SLOT(closeAllFiles()));
         connect(__mainWidget->projectController(), SIGNAL( fileRenamed(QString, QString) ),
                 this, SLOT( onDocumentRenamed(QString, QString) ));
+        connect(__mainWidget->projectController(), SIGNAL( packageRenamed(QString, QString) ),
+                this, SLOT( onPackageRenamed(QString, QString) ));
+        connect(__mainWidget->projectController(), SIGNAL( fileRemoved(QString) ),
+                this, SLOT( closeFiles(QString) ));
+        connect(__mainWidget->projectController(), SIGNAL( packageRemoved(QString) ),
+                this, SLOT( closeFiles(QString) ));
     }
 
     QsciScintillaExtended* EditorController::currentDocument() const
@@ -185,6 +191,20 @@ namespace o3prm
         }
     }
 
+    void EditorController::closeFiles(QString path)
+    {
+        QList<QString> keys(__openFiles.keys());
+        for (int i = 0; i < keys.count(); ++i)
+        {
+            if (keys[i].startsWith(path))
+            {
+                auto sci = __openFiles.value(keys[i]);
+                auto index = __mainWidget->mainWindow()->tabWidget->indexOf( sci );
+                closeFile(index);
+            }
+        }
+    }
+
     void EditorController::closeFile(int index)
     {
         auto sci = findDocument(index); // updates index
@@ -244,6 +264,21 @@ namespace o3prm
             closeFile(index);
             QFileInfo info(newPath);
             __openFile(newPath, index);
+        }
+    }
+
+    void EditorController::onPackageRenamed(QString oldPath, QString newPath )
+    {
+        QList<QString> keys(__openFiles.keys());
+        for (int i = 0; i < keys.count(); ++i)
+        {
+            if (keys[i].startsWith(oldPath))
+            {
+                auto sci = __openFiles.value(keys[i]);
+                auto index = __mainWidget->mainWindow()->tabWidget->indexOf( sci );
+                closeFile(index);
+                __openFile(keys[i].replace(oldPath, newPath), index);
+            }
         }
     }
 
