@@ -184,7 +184,7 @@ void ViewController::setToolBarVisibility( bool visible ) {
 }
 
 void ViewController::setProjectExploratorVisibility( bool visible ) {
-  d->projectExploratorVisibility->setChecked( visible && mw->pc->isOpenProject() );
+  d->projectExploratorVisibility->setChecked( visible && mw->pc->hasProject() );
 }
 
 void ViewController::setSearchDockVisibility( bool visible ) {
