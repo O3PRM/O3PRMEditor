@@ -1,4 +1,4 @@
-#include "controllers/editorController.h"
+#include "controllers/editorcontroller.h"
 
 #include <iostream>
 
