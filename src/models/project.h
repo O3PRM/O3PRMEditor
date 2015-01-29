@@ -31,7 +31,6 @@ namespace o3prm
             ProjectItem(ItemType type):
                 QStandardItem(), __type(type)
             {
-
             }
             
             ProjectItem(ItemType type, const QString &text):
@@ -179,6 +178,7 @@ namespace o3prm
              */
             QList<QString> paths() const;
 
+            QVariant data (const QModelIndex& index, int role=Qt::DisplayRole) const;
 
         signals:
             /// This signal is emited when a file is moved by drag and drop in the view.

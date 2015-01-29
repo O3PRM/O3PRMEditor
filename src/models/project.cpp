@@ -142,4 +142,33 @@ namespace o3prm
         return false;
     }
 
+    QVariant Project::data(const QModelIndex& index, int role) const
+    {
+        if (role == Qt::DecorationRole)
+        {
+            auto parent = reinterpret_cast<QStandardItem*>(index.internalPointer());
+            auto item = parent->child(index.row());
+            switch (item->type())
+            {
+                case (int)ProjectItem::ItemType::Directory:
+                    {
+                        return QVariant(QIcon(":/icons/icons/folder.png"));
+                    }
+                case (int)ProjectItem::ItemType::File:
+                case (int)ProjectItem::ItemType::Request:
+                    {
+                        return QVariant(QIcon(":/icons/icons/new.png"));
+                    }
+                case (int)ProjectItem::ItemType::Project:
+                    {
+                        return QVariant(QIcon(":/icons/icons/transpO3PRM.png"));
+                    }
+                default:
+                    {
+                        // Do nothing
+                    }
+            }
+        }
+        return QStandardItemModel::data(index, role);
+    }
 }
