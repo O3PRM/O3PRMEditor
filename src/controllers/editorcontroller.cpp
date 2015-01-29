@@ -257,6 +257,7 @@ namespace o3prm
 
     void EditorController::onDocumentRenamed(QString oldPath, QString newPath )
     {
+        std::cout << "onDocumentRenamed(" << oldPath.toStdString() << ", " << newPath.toStdString() << ")" << std::endl;
         auto sci = __openFiles.value(oldPath, 0);
         if (sci)
         {

@@ -377,7 +377,7 @@ namespace o3prm
     void ProjectController::__rename(ProjectItem* item)
     {
         bool ok;
-        auto old_name = item->path();
+        auto old_name = item->text();
         auto new_name = __askForName((ProjectItem::ItemType) item->type(), ok, item->text());
 
         // Moving to the item's location
@@ -398,7 +398,7 @@ namespace o3prm
                     case (int) ProjectItem::ItemType::File:
                     case (int) ProjectItem::ItemType::Request:
                         {
-                            emit fileRenamed(dir.absoluteFilePath(old_name), dir.absoluteFilePath(item->path()));
+                            emit fileRenamed(dir.absoluteFilePath(old_name), dir.absoluteFilePath(item->text()));
                             break;
                         }
                     case (int) ProjectItem::ItemType::Directory:
