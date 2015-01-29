@@ -522,19 +522,7 @@ namespace o3prm
             if (data.open(QFile::WriteOnly | QFile::Truncate)) 
             {
                 QTextStream out(&data);
-                auto ns = parent->path().replace('/', '.').trimmed();
-                if (parent->type() != ProjectItem::ItemType::Project)
-                {
-                    ns = __currentProj->name() + "." + ns;
-                }
-                while (ns.size() > 0 and ns.endsWith('.'))
-                {
-                    ns.truncate(ns.size() - 1);
-                }
-                if (not ns.isEmpty())
-                {
-                    out << "package " << ns << ';' << '\n';
-                }
+                out << __defaultPackage(file) << '\n';
             }
 
             __saveProject();
@@ -562,11 +550,6 @@ namespace o3prm
             if (data.open(QFile::WriteOnly | QFile::Truncate)) 
             {
                 QTextStream out(&data);
-                auto ns = file->path().replace('/', '.').trimmed();
-                while (ns.size() > 0 and ns.endsWith('.'))
-                {
-                    ns.truncate(ns.size() - 1);
-                }
                 out << __defaultPackage(file) << '\n';
             }
 
