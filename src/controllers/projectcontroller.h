@@ -2,6 +2,7 @@
 #define O3PRM_PROJECTCONTROLLER_H
 
 #include <QObject>
+#include <QMenu>
 #include <QModelIndex>
 
 #include "models/project.h"
@@ -10,52 +11,6 @@
 // Cross reference, do not replace with an include directive
 class MainWindow; // uis/mainwindow.h
 
-/*
- * Réflections sur les interactions dans l'explorateur de projet (EdP) :
- * Si il y a des fautes dans un fichier, quand on fait le parsage du projet,
- * mets à jour l'icône dans l'EdP.
-
- * CLIC DROIT
- *   - sur un dossier -> menu avec
- *      * Renommer
- *      * Supprimer (Confirmation)
- *      * Nouveau
- *      + Package
- *      + Classe
- *      + Système
- *      + Requête
- *      * Refactoring
- *      + Renommer ("dans tout le projet")
- *      + Déplacer ("dans tout le projet")
- *      + Supprimer ("indique les références dans le projet, source d'erreurs")
- *      - sur un fichier -> menu avec
- *      * Renommer
- *      * Supprimer (confirmation)
- *      * Éxécuter (uniquement pour le fichier O3PRMR)
- *      * Refactoring
- *      + Renommer ("Renomme dans tout le projet")
- *      + Déplacer ("dans tout le projet")
- *      + Supprimer ("indique les références dans le projet, source d'erreurs")
-
- * DRAG AND DROP
- *      - d'un dossier -> ne renomme PAS tout (passer par refactoring).
- *      - d'un fichier -> ne renomme PAS tout (passer par refactoring).
-
- * Un fichier peut être renommé :
- *      1) par l'explorateur de projet;
- *      2) par sauvegarder sous.
-
- * Quand un fichier est renommé :
- *      On change la référence dans le fichier même (projet ou pas). -> FileController
- *      On change la référence dans les autres fichiers que si projet. -> ProjectController
-
- * Quand un fichier est déplacé :
- *      On change le package partout que si projet. -> ProjectController
-
- * Quand on fait Refactoring -> Renommer : comme renommer normal
- * Quand on fait Refactoring -> Déplacer : on comme un drag and drop ?
- * Quand on fait Refactoring -> Supprimer : comme supprimer normal + on cherche dans le projet et message.
- */
 namespace o3prm
 {
     class ProjectController : public QObject 
@@ -64,127 +19,91 @@ namespace o3prm
         Q_OBJECT
 
         public:
-            /**
-             * Constructor
-             */
+            /// Constructor
             explicit ProjectController( MainWindow *parent = 0 ); 
 
-            /**
-             * Destructor
-             */
+            /// Destructor
             ~ProjectController();
             
-            // Call this to setup connection after all other controllers
-            // have been properly initalised.
+            /// Call this to setup connection after all other controllers
+            /// have been properly initalised.
             void setupConnections();
 
-            /**
-             * Return the current project
-             */
-            Project * currentProject() const;
+            /// Return the current project
+            Project* currentProject() const;
 
-            /**
-             * Return true if a project is open, false otherwise.
-             */
-            bool isOpenProject() const;
+            /// Return true if a project is open, false otherwise.
+            bool hasProject() const;
 
         signals:
-            /// Emitted when a project is loaded
+            /// Emitted when a project is loaded.
             void projectLoaded(o3prm::Project* project);
 
-            /// Emitted when a project is saved
+            /// Emitted when a project is saved.
             void projectSaved(o3prm::Project* project);
 
-            /// Emitted when a project is closed
+            /// Emitted when a project is closed.
             void projectClosed();
 
+            /// Emitted when an item is double clicked.
             void fileOpened(QString path);
+
+            /// Emitted when a file is removed.
+            void fileRemoved(QString path);
+
+            /// Emitted when an package is removed.
+            void packageRemoved(QString path);
 
             /// Emitted when a file is renamed.
             void fileRenamed(QString oldPath, QString newPath);
 
-        public slots:
-            /**
-             * Create a new project.
-             * Open a dialog and ask the name and the directory of the project.
-             */
-            void newProject();
-
-            /**
-             * Open the project projectpath,
-             * or open a dialog to choose the project directory if projectpath is empty.
-             */
-            void openProject( QString projectpath = QString() );
-
-            /**
-             * Close the current project.
-             */
-            void closeProject();
-
-        protected:
-            /**
-             * Add the project the "recentsProjects" list.
-             */
-            void addToRecentsProjects( const QString & projectPath );
-            /**
-             * Remove the projects of the "recentsProjects" list.
-             */
-            void removeOfRecentsProjects( const QString & projectPath );
-            void saveProjectsState();
+            /// Emitted when a file is renamed.
+            void packageRenamed(QString oldPath, QString newPath);
 
         protected slots:
-            /**
-             * Switch to this file if it is open.
-             */
+            /// Create a new project.
+            /// Open a dialog and ask the name and the directory of the project.
+            void _newProject();
+
+            /// Open the project projectpath,
+            /// or open a dialog to choose the project directory if projectpath is empty.
+            void _openProject( QString projectpath = QString() );
+
+            /// Close the current project.
+            void _closeProject();
+
+            /// Does nothing.
             bool _onClick( QModelIndex index );
 
-            /**
-             * Open the file or switch to it if it is already open.
-             */
+            /// Open the file or switch to it if it is already open.
             bool _onDoubleClick( QModelIndex index );
 
-            /**
-             * When files are renamed, change the document filename if it is open;
-             */
-            void onProjectFileRenamed( const QString & path,
-                    const QString & oldName,
-                    const QString & newName );
-            /**
-             * When files are moved, change the document filename if it is open;
-             */
-            void onProjectFileMoved( const QString & oldFilePath, const QString & newPath );
-
-            /**
-             * Propose a menu when users ask for it.  Users can:
-             *  - remove a package or a file,
-             *  - add a package or a file,
-             *  - rename a package or a file.
-             *  - execute a o3prmr file.
-             */
-            void onCustomContextMenuRequested( const QPoint & pos );
-
-            /**
-             * This slot is called when user has called "rename" in the project explorator,
-             * and the editing is finished.
-             * We reset the model to non-editable.
-             * \see onCustomContextMenuRequested()
-             */
-            void onItemRenameFinished();
-
-            void triggerInit();
+            /// Shows the custom context menu mathcin the ProjectItem under pos
+            void _onCustomContextMenuRequested( const QPoint & pos );
 
         private:
-            Project *__currentProj;
-            BuildModel *__build;
+            /// The current opened project.
+            Project* __currentProj;
 
-            MainWindow *__mainWidget;
+            /// The app main window
+            MainWindow* __mainWidget;
 
-            struct PrivateData;
-            PrivateData * d;
+            /// The build model used for inference.
+            BuildModel* __build;
 
-            void __setupRecentProjects();
-            void __setupContextMenu();
+            /// The menu shown above Request ProjectItem
+            QMenu* __requestMenu;
 
+            /// The menu shown above File ProjectItem
+            QMenu* __fileMenu;
+
+            /// The menu shown above Package ProjectItem
+            QMenu* __packageMenu;
+
+            /// The menu shown above Project ProjectItem
+            QMenu* __projectMenu;
+
+            /// Saves the project
             bool __saveProject();
 
             // Close the project without saving it
@@ -231,6 +150,10 @@ namespace o3prm
 
             /// Executes the given item if its a Request.
             void __execute(ProjectItem* item);
+
+            void __delete(ProjectItem* item);
+
+            bool __removeDir(const QString & dirName);
     };
 
 } // o3prm

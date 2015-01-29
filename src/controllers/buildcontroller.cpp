@@ -326,7 +326,7 @@ namespace o3prm
     void BuildController::parseProject()
     {
         // // If no project or still running
-        // if (mw->pc->isOpenProject() and d->projectParser == 0)
+        // if (mw->pc->hasProject() and d->projectParser == 0)
         // {
         //     QString document;
         //     const o3prm::Project * project = mw->pc->currentProject();
@@ -404,7 +404,7 @@ namespace o3prm
 
         //     // Set paths
         //     QString filename = sci->filename();
-        //     if (mw->pc->isOpenProject() and mw->pc->currentProject()->isInside(filename))
+        //     if (mw->pc->hasProject() and mw->pc->currentProject()->isInside(filename))
         //     {
         //         d->fileParser->addClassPaths( mw->pc->currentProject()->paths() );
         //     }
@@ -526,7 +526,7 @@ namespace o3prm
 
         //         if ( errFilename.isEmpty() ) 
         //         {
-        //             if ( mw->pc->isOpenProject() )
+        //             if ( mw->pc->hasProject() )
         //             {
         //                 relFilename = QDir( mw->pc->currentProject()->dir() ).relativeFilePath( filename );
         //             }
@@ -540,7 +540,7 @@ namespace o3prm
         //         }
         //         else if ( errFilename == "anonymous buffer" or errFilename.endsWith( ".bak" ) )
         //         {
-        //             if ( mw->pc->isOpenProject() )
+        //             if ( mw->pc->hasProject() )
         //             {
         //                 relFilename = QDir( mw->pc->currentProject()->dir() ).relativeFilePath( filename );
         //             }
@@ -552,7 +552,7 @@ namespace o3prm
         //             s.replace( errFilename, relFilename );
         //             errFilename = filename;
         //         }
-        //         else if ( mw->pc->isOpenProject() ) 
+        //         else if ( mw->pc->hasProject() ) 
         //         {
         //             relFilename = QDir( mw->pc->currentProject()->dir() ).relativeFilePath( errFilename );
         //             s.replace( errFilename, relFilename );

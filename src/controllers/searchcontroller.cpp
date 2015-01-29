@@ -155,7 +155,7 @@ void SearchController::advanceSearch() {
     d->as->setSearchText( sci->selectedText() );
 
   // Enable / Disable project radio
-  d->as->setProjectSearchEnabled( mw->pc->isOpenProject() );
+  d->as->setProjectSearchEnabled( mw->pc->hasProject() );
 
   // Show advance search dialog
   int resp = d->as->exec();

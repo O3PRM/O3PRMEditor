@@ -671,7 +671,7 @@ namespace o3prm
     {
         QString metadata( "\n" );
 
-        if ( __mainWidget->pc->isOpenProject() )
+        if ( __mainWidget->pc->hasProject() )
         {
             auto msg = tr("THIS FILE IS PART OF '%1' PROJECT.\n");
             metadata += msg.arg(__mainWidget->pc->currentProject()->name());

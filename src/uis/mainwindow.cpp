@@ -56,7 +56,7 @@ void MainWindow::__setupControllers()
     __setupProjectController();
     bc = new o3prm::BuildController( this, this );
 
-    __editorController = new o3prm::EditorController(this, this);
+    __editorController = new o3prm::EditorController(this);
 }
 
 void MainWindow::__setupProjectController()

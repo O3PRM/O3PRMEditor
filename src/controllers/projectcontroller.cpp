@@ -31,70 +31,40 @@
 
 namespace o3prm
 {
-    /**
-     * Private data
-     */
-    class ProjectController::PrivateData
-    {
-        public:
-            PrivateData(ProjectController* parent):
-                projectProperties(0)
-            {
-                recentsProjects = new QMenu();
-                recentsProjectsMapper = new QSignalMapper(parent);
-            }
-            ~PrivateData() { }
-            int numberMaxOfRecentsProjects;
-            QMenu * recentsProjects;
-            QList<QString> recentsProjectsList;
-            QSignalMapper * recentsProjectsMapper;
-            ProjectProperties * projectProperties;
-            QMenu * requestMenu;
-            QMenu * fileMenu;
-            QMenu * packageMenu;
-            QMenu * rootMenu;
-    };
+    ///////////////////////////////////////////////////////////////////////////
+    //                          PUBLIC METHODS                               //
+    ///////////////////////////////////////////////////////////////////////////
 
     ProjectController::ProjectController(MainWindow *parent ) :
         QObject( parent ),
         __currentProj( 0 ),
-        __mainWidget(parent),
-        d(new PrivateData(this))
+        __mainWidget(parent)
     {
-        __setupRecentProjects();
-        __setupContextMenu();
+        // Setting up context menus
+        __projectMenu = new QMenu(__mainWidget);
+        __projectMenu->addAction( tr( "Add a package" ) )->setData( "package" );
+        __projectMenu->addAction( tr( "Add a file" ) )->setData( "file" );
+        __projectMenu->addAction( tr( "Add a request" ) )->setData( "request" );
+
+        __packageMenu = new QMenu(__mainWidget);
+        __packageMenu->addAction( tr( "Add a package" ) )->setData( "package" );
+        __packageMenu->addAction( tr( "Add a file" ) )->setData( "file" );
+        __packageMenu->addAction( tr( "Add a request" ) )->setData( "request" );
+        __packageMenu->addAction( tr( "Rename" ) )->setData( "rename" );
+        __packageMenu->addAction( tr( "Delete" ) )->setData( "delete" );
+
+        __fileMenu = new QMenu(__mainWidget);
+        __fileMenu->addAction( tr( "Rename" ) )->setData( "rename" );
+        __fileMenu->addAction( tr( "Delete" ) )->setData( "delete" );
+
+        __requestMenu = new QMenu(__mainWidget);
+        __requestMenu->addAction( tr( "Execute" ) )->setData( "execute" );
+        __requestMenu->addAction( tr( "Rename" ) )->setData( "rename" );
+        __requestMenu->addAction( tr( "Delete" ) )->setData( "delete" );
     }
 
-    void ProjectController::__setupRecentProjects()
+    ProjectController::~ProjectController()
     {
-        // Construct "Recent project" menu
-        //mw->ui->actionRecentProject->setMenu( d->recentsProjects );
-        //connect( d->recentsProjectsMapper, SIGNAL( mapped( QString ) ),
-        //        this, SLOT( pc->openProject( QString ) ) );
-    }
-
-    void ProjectController::__setupContextMenu()
-    {
-        d->rootMenu = new QMenu(__mainWidget);
-        d->rootMenu->addAction( tr( "Add a package" ) )->setData( "package" );
-        d->rootMenu->addAction( tr( "Add a file" ) )->setData( "file" );
-        d->rootMenu->addAction( tr( "Add a request" ) )->setData( "request" );
-
-        d->packageMenu = new QMenu(__mainWidget);
-        d->packageMenu->addAction( tr( "Add a package" ) )->setData( "package" );
-        d->packageMenu->addAction( tr( "Add a file" ) )->setData( "file" );
-        d->packageMenu->addAction( tr( "Add a request" ) )->setData( "request" );
-        d->packageMenu->addAction( tr( "Rename" ) )->setData( "rename" );
-        d->packageMenu->addAction( tr( "Delete" ) )->setData( "delete" );
-
-        d->fileMenu = new QMenu(__mainWidget);
-        d->fileMenu->addAction( tr( "Rename" ) )->setData( "rename" );
-        d->fileMenu->addAction( tr( "Delete" ) )->setData( "delete" );
-
-        d->requestMenu = new QMenu(__mainWidget);
-        d->requestMenu->addAction( tr( "Execute" ) )->setData( "execute" );
-        d->requestMenu->addAction( tr( "Rename" ) )->setData( "rename" );
-        d->requestMenu->addAction( tr( "Delete" ) )->setData( "delete" );
     }
 
     void ProjectController::setupConnections()
@@ -104,75 +74,36 @@ namespace o3prm
         connect( __mainWidget->ui->projectExplorator, SIGNAL( doubleClicked( QModelIndex ) ),
                 this, SLOT( _onDoubleClick( QModelIndex ) ) );
         connect( __mainWidget->ui->projectExplorator, SIGNAL( customContextMenuRequested( QPoint ) ),
-                this, SLOT( onCustomContextMenuRequested( QPoint ) ) );
-        connect( __mainWidget->ui->projectExplorator->itemDelegate(), SIGNAL( closeEditor( QWidget* ) ),
-                this, SLOT( onItemRenameFinished() ) );
+                this, SLOT( _onCustomContextMenuRequested( QPoint ) ) );
 
         connect(__mainWidget->ui->actionNewFileProject, SIGNAL( triggered() ),
-                this, SLOT( newProject() ) );
+                this, SLOT( _newProject() ) );
         connect( __mainWidget->ui->actionNewProject, SIGNAL( triggered() ),
-                this, SLOT( newProject() ) );
+                this, SLOT( _newProject() ) );
 
         connect( __mainWidget->ui->actionOpenProject, SIGNAL( triggered() ),
-                this, SLOT( openProject() ) );
+                this, SLOT( _openProject() ) );
         connect( __mainWidget->ui->actionCloseProject, SIGNAL( triggered() ),
-                this, SLOT( closeProject() ) );
-
-        QTimer::singleShot( 200, this, SLOT( triggerInit() ) );
+                this, SLOT( _closeProject() ) );
     }
 
-    ProjectController::~ProjectController()
-    {
-    }
-
-    void ProjectController::triggerInit()
-    {
-        // QSettings settings;
-        // settings.beginGroup( "project" );
-
-        // d->numberMaxOfRecentsProjects = settings.value( "numberMaxOfRecentsProjects",5 ).toInt();
-
-        // // Read the last closed projects in settings
-        // int size = settings.beginReadArray( "recentsProjects" );
-
-        // for ( int i = 0; i < size ; i++ )
-        // {
-        //     settings.setArrayIndex( i );
-        //     addToRecentsProjects( settings.value( "project" ).toString() );
-        // }
-
-        // settings.endArray();
-
-        // // Reopen project don't close last time.
-        // QString lastProject = settings.value( "last project" ).toString();
-
-        // if ( ! lastProject.isEmpty() )
-        // {
-        //     openProject( lastProject );
-        // }
-        // else
-        // {
-        //     currentProj = 0;
-        //     mw->ui->projectExplorator->setModel( currentProj );
-
-        //     // Change the current directory
-        //     QDir::setCurrent( QDir::homePath() );
-        // }
-    }
-
-    Project * ProjectController::currentProject() const
+    Project* ProjectController::currentProject() const
     {
         return __currentProj;
     }
 
-    bool ProjectController::isOpenProject() const
+    bool ProjectController::hasProject() const
     {
         return __currentProj != 0;
     }
 
-    void ProjectController::newProject()
+    ///////////////////////////////////////////////////////////////////////////
+    //                          PROTECTED SLOTS                              //
+    ///////////////////////////////////////////////////////////////////////////
+
+    void ProjectController::_newProject()
     {
-        if (isOpenProject())
+        if (hasProject())
         {
             __saveProject();
             __closeProject();
@@ -190,41 +121,9 @@ namespace o3prm
         }
     }
 
-    bool ProjectController::__saveProject()
+    void ProjectController::_openProject( QString path )
     {
-        QString name = "%1.o3prmproject";
-        name = name.arg(__currentProj->name());
-
-        QDir dir(__currentProj->dir());
-        QFile file(dir.absoluteFilePath(name));
-
-        if( file.open( QIODevice::WriteOnly | QIODevice::Truncate) )
-        {
-            auto dom = __currentProj->asXml();
-
-            QTextStream ts( &file );
-            ts << dom.toString();
-
-            file.close();
-            emit projectSaved(__currentProj);
-            return true;
-        }
-        return false;
-    }
-
-    void ProjectController::__closeProject()
-    {
-        if ( __currentProj )
-        {
-            __currentProj->deleteLater();
-            __currentProj = 0;
-            emit projectClosed();
-        }
-    }
-
-    void ProjectController::openProject( QString path )
-    {
-        if (isOpenProject())
+        if (hasProject())
         {
             __saveProject();
             __closeProject();
@@ -264,67 +163,15 @@ namespace o3prm
         }
     }
 
-    void ProjectController::closeProject() 
+    void ProjectController::_closeProject() 
     {
-        if (isOpenProject())
+        if (hasProject())
         {
-            addToRecentsProjects( __currentProj->dir().absolutePath() );
             __saveProject();
             __closeProject();
             QDir::setCurrent( QDir::homePath() );
         }
 
-    }
-
-    void ProjectController::addToRecentsProjects( const QString & projetPath )
-    {
-        //if ( projetPath.isEmpty() || d->recentsProjectsList.contains( projetPath ) )
-        //{
-        //    return;
-        //}
-
-        //d->recentsProjectsList.append( projetPath );
-
-        //QAction * action = new QAction( QDir( projetPath ).dirName(), mw );
-
-        //action->setData( projetPath );
-
-        //connect( action, SIGNAL( triggered() ), d->recentsProjectsMapper, SLOT( map() ) );
-
-        //d->recentsProjectsMapper->setMapping( action, projetPath );
-
-        //if ( d->recentsProjects->actions().isEmpty() )
-        //{
-        //    d->recentsProjects->addAction( action );
-        //}
-        //else
-        //{
-        //    d->recentsProjects->insertAction( d->recentsProjects->actions().first(), action );
-        //}
-
-        ////
-        //if ( d->recentsProjects->actions().size() > d->numberMaxOfRecentsProjects )
-        //{
-        //    d->recentsProjects->removeAction( d->recentsProjects->actions().last() );
-        //}
-    }
-
-    void ProjectController::removeOfRecentsProjects( const QString & projetPath ) 
-    {
-        //if ( projetPath.isEmpty() || ! d->recentsProjectsList.contains( projetPath ) )
-        //{
-        //    return;
-        //}
-
-        //d->recentsProjectsList.removeOne( projetPath );
-
-        //QAction * a = qobject_cast<QAction *>( d->recentsProjectsMapper->mapping( projetPath ) );
-
-        //if ( a != 0 ) 
-        //{
-        //    d->recentsProjectsMapper->removeMappings( a );
-        //    d->recentsProjects->removeAction( a );
-        //}
     }
 
     bool ProjectController::_onClick( QModelIndex index ) 
@@ -334,7 +181,7 @@ namespace o3prm
 
     bool ProjectController::_onDoubleClick( QModelIndex index ) 
     {
-        if (isOpenProject())
+        if (hasProject())
         {
             auto parent = static_cast<ProjectItem*>(index.internalPointer());
             auto item = parent->child(index.row());
@@ -361,31 +208,9 @@ namespace o3prm
         return false;
     }
 
-    void ProjectController::onProjectFileRenamed( const QString & path,
-            const QString & oldName,
-            const QString & newName ) 
+    void ProjectController::_onCustomContextMenuRequested( const QPoint & pos ) 
     {
-        //QsciScintillaExtended * sci = mw->fc->fileToDocument( path + "/" + oldName );
-
-        //if ( sci != 0 )
-        //{
-        //    sci->setFilename( path + "/" + newName );
-        //}
-    }
-
-    void ProjectController::onProjectFileMoved( const QString & oldFilePath, const QString & newFilePath ) 
-    {
-        //QsciScintillaExtended * sci = mw->fc->fileToDocument( oldFilePath );
-
-        //if ( sci != 0 ) 
-        //{
-        //    sci->setFilename( newFilePath );
-        //}
-    }
-
-    void ProjectController::onCustomContextMenuRequested( const QPoint & pos ) 
-    {
-        if (isOpenProject())
+        if (hasProject())
         {
             auto view = __mainWidget->mainwindow()->projectExplorator;
             auto index = view->indexAt(pos);
@@ -428,11 +253,47 @@ namespace o3prm
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    //                          PRIVATE METHODS                              //
+    ///////////////////////////////////////////////////////////////////////////
+
+    void ProjectController::__closeProject()
+    {
+        if ( __currentProj )
+        {
+            __currentProj->deleteLater();
+            __currentProj = 0;
+            emit projectClosed();
+        }
+    }
+
+    bool ProjectController::__saveProject()
+    {
+        QString name = "%1.o3prmproject";
+        name = name.arg(__currentProj->name());
+
+        QDir dir(__currentProj->dir());
+        QFile file(dir.absoluteFilePath(name));
+
+        if( file.open( QIODevice::WriteOnly | QIODevice::Truncate) )
+        {
+            auto dom = __currentProj->asXml();
+
+            QTextStream ts( &file );
+            ts << dom.toString();
+
+            file.close();
+            emit projectSaved(__currentProj);
+            return true;
+        }
+        return false;
+    }
+
     void ProjectController::__projectCustomContextMenu(const QPoint& pos, ProjectItem* item)
     {
         auto view = __mainWidget->mainwindow()->projectExplorator;
         auto map = view->mapToGlobal( pos ) ;
-        QAction * action = d->rootMenu->exec(map);
+        QAction * action = __projectMenu->exec(map);
 
         if (action and action->data().toString() == "package")
         {
@@ -452,7 +313,7 @@ namespace o3prm
     {
         auto view = __mainWidget->mainwindow()->projectExplorator;
         auto map = view->mapToGlobal( pos ) ;
-        QAction * action = d->packageMenu->exec(map);
+        QAction * action = __packageMenu->exec(map);
 
         if (action and action->data().toString() == "package")
         {
@@ -472,6 +333,7 @@ namespace o3prm
         }
         else if (action and action->data().toString() == "delete")
         {
+            __delete(item);
         }
 
     }
@@ -480,7 +342,7 @@ namespace o3prm
     {
         auto view = __mainWidget->mainwindow()->projectExplorator;
         auto map = view->mapToGlobal( pos ) ;
-        QAction * action = d->fileMenu->exec(map);
+        QAction * action = __fileMenu->exec(map);
 
         if (action and action->data().toString() == "rename")
         {
@@ -488,6 +350,7 @@ namespace o3prm
         }
         else if (action and action->data().toString() == "delete")
         {
+            __delete(item);
         }
     }
 
@@ -495,7 +358,7 @@ namespace o3prm
     {
         auto view = __mainWidget->mainwindow()->projectExplorator;
         auto map = view->mapToGlobal( pos ) ;
-        QAction * action = d->requestMenu->exec(map);
+        QAction * action = __requestMenu->exec(map);
 
         if (action and action->data().toString() == "execute")
         {
@@ -507,28 +370,40 @@ namespace o3prm
         }
         else if (action and action->data().toString() == "delete")
         {
+            __delete(item);
         }
     }
 
     void ProjectController::__rename(ProjectItem* item)
     {
         bool ok;
-        auto old_name = item->path();
+        auto old_name = item->text();
         auto new_name = __askForName((ProjectItem::ItemType) item->type(), ok, item->text());
+
+        // Moving to the item's location
+        auto dir(__currentProj->dir());
+        auto parent = static_cast<ProjectItem*>(item->parent());
+        if (not parent->path().isEmpty())
+        {
+            dir.cd(parent->path());
+        }
+
         if (ok and __validNameAndWarn(new_name))
         {
-            QDir dir(__currentProj->dir());
-            dir.cd(item->path());
             if (dir.rename(item->text(), new_name))
             {
                 item->setText(new_name);
-                __saveProject();
                 switch (item->type())
                 {
                     case (int) ProjectItem::ItemType::File:
                     case (int) ProjectItem::ItemType::Request:
                         {
-                            emit fileRenamed(dir.absoluteFilePath(old_name), dir.absoluteFilePath(item->path()));
+                            emit fileRenamed(dir.absoluteFilePath(old_name), dir.absoluteFilePath(item->text()));
+                            break;
+                        }
+                    case (int) ProjectItem::ItemType::Directory:
+                        {
+                            emit packageRenamed(dir.absoluteFilePath(old_name), dir.absoluteFilePath(item->text()));
                             break;
                         }
                     default:
@@ -537,6 +412,7 @@ namespace o3prm
                             break;
                         }
                 }
+                __saveProject();
             }
             else
             {
@@ -646,12 +522,7 @@ namespace o3prm
             if (data.open(QFile::WriteOnly | QFile::Truncate)) 
             {
                 QTextStream out(&data);
-                auto ns = file->path().replace('/', '.').trimmed();
-                while (ns.size() > 0 and ns.endsWith('.'))
-                {
-                    ns.truncate(ns.size() - 1);
-                }
-                out << "namespace " << ns << ';' << '\n';
+                out << __defaultPackage(file) << '\n';
             }
 
             __saveProject();
@@ -679,11 +550,6 @@ namespace o3prm
             if (data.open(QFile::WriteOnly | QFile::Truncate)) 
             {
                 QTextStream out(&data);
-                auto ns = file->path().replace('/', '.').trimmed();
-                while (ns.size() > 0 and ns.endsWith('.'))
-                {
-                    ns.truncate(ns.size() - 1);
-                }
                 out << __defaultPackage(file) << '\n';
             }
 
@@ -700,12 +566,6 @@ namespace o3prm
         }
         return QString();
     }
-
-    void ProjectController::onItemRenameFinished() 
-    {
-        //currentProj->setEditable( false );
-    }
-
 
     void ProjectController::__execute(ProjectItem* item)
     {
@@ -742,6 +602,75 @@ namespace o3prm
         QMessageBox msgBox;
         msgBox.setText(QString::fromStdString(strBuff.str()));
         msgBox.exec();
+    }
+
+    void ProjectController::__delete(ProjectItem* item)
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("Delete %1?").arg(item->text()));
+        auto item_type = Project::itemType2String(item->type());
+        msgBox.setInformativeText(tr("Do you want to delete %1 %2?").arg(item_type, item->text()));
+        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        int ret = msgBox.exec();
+        if (ret == QMessageBox::Ok)
+        {
+            auto dir = QDir(__currentProj->dir());
+            switch (item->type())
+            {
+                case (int)ProjectItem::ItemType::File:
+                case (int)ProjectItem::ItemType::Request:
+                {
+                    auto path = dir.absoluteFilePath(item->path());
+                    emit fileRemoved(path);
+                    dir.remove(path);
+                    break;
+                }
+                case (int)ProjectItem::ItemType::Directory:
+                {
+                    dir.cd(item->text());
+                    __removeDir(dir.absolutePath());
+                    emit packageRemoved(dir.absolutePath());
+                    break;
+                }
+                default:
+                {
+                    // Do nothing
+                    break;
+                }
+            }
+            item->parent()->removeRow(item->row());
+        }
+        __saveProject();
+    }
+
+    bool ProjectController::__removeDir(const QString & dirName)
+    {
+        bool result = true;
+        QDir dir(dirName);
+
+        if (dir.exists(dirName))
+        {
+            auto flags = QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files;
+            Q_FOREACH(QFileInfo info, dir.entryInfoList(flags, QDir::DirsFirst))
+            {
+                if (info.isDir())
+                {
+                    result = __removeDir(info.absoluteFilePath());
+                }
+                else
+                {
+                    result = QFile::remove(info.absoluteFilePath());
+                }
+
+                if (!result)
+                {
+                    return result;
+                }
+            }
+            result = dir.rmdir(dirName);
+        }
+        return result;
     }
 
 } // o3prm
