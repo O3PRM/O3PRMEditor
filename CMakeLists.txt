@@ -71,6 +71,7 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/lexers/qscilexero3prml2.cpp
             src/lexers/qscilexero3prmr.cpp
             src/models/project.cpp
+            src/models/projectitem.cpp
             src/models/buildmodel.cpp
             src/parsers/abstractparser.cpp
             src/parsers/o3prmlinterpretation.cpp
@@ -101,6 +102,7 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/lexers/qscilexero3prml2.h
             src/lexers/qscilexero3prmr.h
             src/models/project.h
+            src/models/projectitem.h
             src/models/buildmodel.h
             src/parsers/abstractparser.h
             src/parsers/o3prmlinterpretation.h

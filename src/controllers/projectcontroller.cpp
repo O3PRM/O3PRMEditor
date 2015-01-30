@@ -628,9 +628,12 @@ namespace o3prm
                 }
                 case (int)ProjectItem::ItemType::Directory:
                 {
-                    dir.cd(item->text());
-                    __removeDir(dir.absolutePath());
-                    emit packageRemoved(dir.absolutePath());
+                    if (dir.exists(item->path()))
+                    {
+                        dir.cd(item->path());
+                        __removeDir(dir.absolutePath());
+                        emit packageRemoved(dir.absolutePath());
+                    }
                     break;
                 }
                 default:
