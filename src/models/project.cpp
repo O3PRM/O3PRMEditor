@@ -147,17 +147,31 @@ namespace o3prm
         if (role == Qt::DecorationRole)
         {
             auto parent = reinterpret_cast<QStandardItem*>(index.internalPointer());
-            auto item = parent->child(index.row());
+            auto item = static_cast<ProjectItem*>(parent->child(index.row()));
             switch (item->type())
             {
                 case (int)ProjectItem::ItemType::Directory:
                     {
-                        return QVariant(QIcon(":/icons/icons/folder.png"));
+                        if (dir().exists(item->path()))
+                        {
+                            return QVariant(QIcon(":/icons/icons/folder.png"));
+                        }
+                        else
+                        {
+                            return QVariant(QIcon(":/icons/icons/warning2.png"));
+                        }
                     }
                 case (int)ProjectItem::ItemType::File:
                 case (int)ProjectItem::ItemType::Request:
                     {
-                        return QVariant(QIcon(":/icons/icons/new.png"));
+                        if (dir().exists(item->path()))
+                        {
+                            return QVariant(QIcon(":/icons/icons/new.png"));
+                        }
+                        else
+                        {
+                            return QVariant(QIcon(":/icons/icons/warning2.png"));
+                        }
                     }
                 case (int)ProjectItem::ItemType::Project:
                     {

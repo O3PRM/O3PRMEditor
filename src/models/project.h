@@ -5,99 +5,15 @@
 #define EXTNAME_O3PRM_RUN "o3prmr"
 #define EXTNAME_O3PRM "o3prm"
 
-#include <string>
-
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
 #include <QtXml>
 
+#include "models/projectitem.h"
+
 namespace o3prm
 {
-
-    class ProjectItem: public QStandardItem
-    {
-        public :
-            enum ItemType {
-                Directory = 1000,
-                File = 1001,
-                Project = 1002,
-                Request = 1003
-            };
-
-            /// Values used by ProjectItem must be above or equal to 1000.
-            static int minItemTypeInt() { return (int)ItemType::Directory; }
-
-            ProjectItem(ItemType type):
-                QStandardItem(), __type(type)
-            {
-            }
-            
-            ProjectItem(ItemType type, const QString &text):
-                QStandardItem(text), __type(type)
-            {
-            }
-
-            ProjectItem(ItemType type, const QIcon &icon, const QString &text):
-                QStandardItem(icon, text), __type(type)
-            {
-            }
-
-            explicit ProjectItem(ItemType type, int rows, int columns = 1):
-                QStandardItem(rows, columns), __type(type)
-            {
-            }
-
-            int type() const 
-            {
-                return (int)__type;
-            }
-
-            int itemType() const 
-            {
-                return __type;
-            }
-
-            void setType(int type)
-            {
-                __type = (ItemType) type;
-            }
-
-            // Returns the path to parent using / as separators.
-            QString path() const
-            {
-                QString path = text();
-                int type_value = (int)ItemType::Directory;
-                for (auto iter = parent(); iter != 0 and iter->type() == type_value; iter = iter->parent())
-                {
-                    path = iter->text() + "/" + path;
-                }
-                return path;
-            }
-
-            ProjectItem* child(int row, int column=0) const
-            {
-                return static_cast<ProjectItem*>(QStandardItem::child(row, column));
-            }
-
-            bool isInPackage() const 
-            {
-                return parent()->type() == ItemType::Directory;
-            }
-
-            QString package() const
-            {
-                if (isInPackage())
-                {
-                    return static_cast<ProjectItem*>(parent())->path().replace('/', '.');
-                }
-                return QString();
-            }
-
-        private:
-            ItemType __type;
-    };
-
     class Project : public QStandardItemModel
     {
         Q_OBJECT
