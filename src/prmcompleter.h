@@ -5,21 +5,21 @@
 
 #include <QStringList>
 
-/**
-  The PRMCompleter class provides completions based on current PRM model.
-  */
-
-class PRMCompleter : public QCompleter {
+/*!
+    The PRMCompleter class provides completions based on current PRM model.
+ */
+class PRMCompleter : public QCompleter 
+{
     Q_OBJECT
-  public:
-    explicit PRMCompleter( QObject * parent = 0 );
 
-    virtual QString pathFromIndex( const QModelIndex &index ) const;
-    virtual QStringList splitPath( const QString &path ) const;
+    public:
+        explicit PRMCompleter( QObject * parent = 0 );
 
-  signals:
+        virtual QString pathFromIndex( const QModelIndex &index ) const;
+        virtual QStringList splitPath( const QString &path ) const;
 
-  public slots:
+    signals:
+    public slots:
 
 };
 

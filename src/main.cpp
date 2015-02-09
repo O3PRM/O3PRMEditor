@@ -8,52 +8,47 @@
 
 #include "uis/mainwindow.h"
 
+/*!
+    The app is composed of a main window and different controller classes.
 
-/**
-################################################################################
-##                                                                            ##
-##                                 O3PRMEDITOR                                ##
-##                                                                            ##
-################################################################################
+    In uis/ you will find the different user interfaces used by the application,
+    the most notable one is defined in uis/mainwindow.h.
+    
+    In constrollers/ you will find the controllers which handles events emited
+    by the different uis or by controllers themselves. 
 
-L'application est composée de la fenêtre principale, et de classes de contrôle.
-La fenêtre principale ne gère que l'aide et le "À propos". Elle fait surout le lien
-entre les contrôleurs.
-Chaque contrôleur gère les opérations de son menu et d'autres qui y sont associées.
- - Le FileController gère toutes les opérations en rapport avec les fichiers.
- - Le Editcontroller gère les opérations d'éditions du document courant
-ainsi que les préférences de l'application.
- - Le SearchController gère les opérations de recherche et de remplacement,
-dans le document courant ou le projet en cours, ainsi que les marqueurs.
- - Le ViewController gère les opérations de visibilités des différents éléments.
- - Le ProjectController gère tout ce qui est en rapport avec le projet.
- - Le BuildController gère tout ce qui est en rapport avec l'interprétation
-et l'exécution des fichiers, en passant par la correction syntaxique
-et l'auto-complétion contextuelle.
+    In models/ you will find the models displayed by the uis.
 
-*/
+    In lexers/ and pareser/ you will find QScintilla extensions for the O3PRM language.
 
-int main( int argc, char *argv[] ) try {
+    Finally, rsrc/ contains ressources used by the application.
+ */
+int main( int argc, char *argv[] ) try
+{
+    QApplication a( argc, argv );
+    QTextCodec::setCodecForTr( QTextCodec::codecForName( "UTF-8" ) );
+    QTextCodec::setCodecForCStrings( QTextCodec::codecForName( "UTF-8" ) );
+    QCoreApplication::setOrganizationName( "Lip6" );
+    QCoreApplication::setApplicationName( "O3prmEditor" );
 
-  QApplication a( argc, argv );
-  QTextCodec::setCodecForTr( QTextCodec::codecForName( "UTF-8" ) );
-  QTextCodec::setCodecForCStrings( QTextCodec::codecForName( "UTF-8" ) );
-  QCoreApplication::setOrganizationName( "Lip6" );
-  QCoreApplication::setApplicationName( "O3prmEditor" );
+    MainWindow w;
+    w.showMaximized();
 
-  MainWindow w;
-  w.showMaximized();
-
-  return a.exec();
-
-} catch ( const gum::Exception & err ) {
-  std::cerr << err.errorContent() << std::endl;
-  //std::cerr << err << std::endl;
-  return 1;
-} catch ( const std::string & err ) {
-  std::cerr << err << std::endl;
-  return 2;
-} catch ( const QString & err ) {
-  std::cerr << err.data() << std::endl;
-  return 3;
+    return a.exec();
 }
+catch ( const gum::Exception & err ) 
+{
+    std::cerr << err.errorContent() << std::endl;
+    return 1;
+}
+catch ( const std::string & err ) 
+{
+    std::cerr << err << std::endl;
+    return 2;
+}
+catch ( const QString & err ) 
+{
+    std::cerr << err.data() << std::endl;
+    return 3;
+}
+

@@ -3,32 +3,40 @@
 
 #include <QLineEdit>
 
-class QCommandLineEdit : public QLineEdit {
+class QCommandLineEdit : public QLineEdit 
+{
     Q_OBJECT;
 
-  public:
-    QCommandLineEdit( QWidget * parent = 0 );
+    public:
+        QCommandLineEdit( QWidget * parent = 0 );
 
-    //! \reimp
-    QCompleter * completer() const;
-    //! \reimp
-    void setCompleter( QCompleter * c );
+        /*!
+            \reimp
+        */
+        QCompleter * completer() const;
 
-  public slots:
-    /// Autocomplete from QCompleter and its model.
-    void autoComplete();
+        /*!
+            \reimp
+        */
+        void setCompleter( QCompleter * c );
 
-  protected:
-    virtual void keyPressEvent( QKeyEvent * event );
+    public slots:
+        /*!
+            Autocomplete from QCompleter and its model.
+        */
+        void autoComplete();
 
-  protected slots:
-    void insertCompletion( const QString& completion );
-    void onReturnPressed();
+    protected:
+        virtual void keyPressEvent( QKeyEvent * event );
 
-  private:
+    protected slots:
+        void insertCompletion( const QString& completion );
+        void onReturnPressed();
 
-    struct PrivateData;
-    PrivateData * d;
+    private:
+
+        struct PrivateData;
+        PrivateData * d;
 };
 
 #endif // QCOMMANDLINEEDIT_H

@@ -9,63 +9,110 @@
 
 #include "qsciscintillaextended.h"
 
-class PRMTreeModel : public QStandardItemModel {
+class PRMTreeModel : public QStandardItemModel 
+{
     Q_OBJECT
-  public:
 
-    /// enum PRM types.
-    enum PRMObjects { Unknow, Type, Label, Class, Refererence, Attribute, Function, Aggregate, Interface, System, Instance, Session, Alias, Package };
+    public:
 
-    /// enum PRM data role.
-    /// DisplayRole contains the complete path as a string (ex: classes.Computer.room)
-    /// LocalDataRole contains the local data of the item as a QString (ex: room).
-    /// ObjectRole is one of PRMObjects types (ex : PRMObjects::Refererence).
-    /// TypeRole is a QStringList representing the type of the references, instances and aliases (ex: [classes,Room]).
-    /// IsArrayRole is a boolean, use only for references and instances (ex: false).
-    enum PRMRoles { LocalDataRole = Qt::UserRole, ObjectRole, TypeRole, IsArrayRole };
+        /*!
+            enum PRM types.
+         */
+        enum PRMObjects
+        {
+            Unknow,
+            Type,
+            Label, 
+            Class, 
+            Refererence, 
+            Attribute, 
+            Function, 
+            Aggregate, 
+            Interface, 
+            System, 
+            Instance, 
+            Session, 
+            Alias, 
+            Package 
+        };
 
-    explicit PRMTreeModel( const gum::prm::PRM<double> * prm, const gum::prm::o3prmr::O3prmrContext<double> * context = 0, QObject *parent = 0 );
-    ~PRMTreeModel();
+        /*!
+            enum PRM data role.
 
-    /// \reimp
-    virtual bool canFetchMore( const QModelIndex & parent ) const;
-    /// \reimp
-    virtual void fetchMore( const QModelIndex & parent );
+            DisplayRole contains the complete path as a string (ex: classes.Computer.room)
+            LocalDataRole contains the local data of the item as a QString (ex: room).
+            ObjectRole is one of PRMObjects types (ex : PRMObjects::Refererence).
+            TypeRole is a QStringList representing the type of the references,
+                instances and aliases (ex: [classes,Room]).
+            IsArrayRole is a boolean, use only for references and instances (ex: false).
+         */
+        enum PRMRoles
+        {
+            LocalDataRole = Qt::UserRole, 
+            ObjectRole, 
+            TypeRole, 
+            IsArrayRole 
+        };
 
-    /// Add keywords to model.
-    void setKeywords( const QStringList & keywords );
-    ///
-    void update( QSharedPointer<PRMTreeModel> prm, QsciScintillaExtended * currentDocument );
+        explicit PRMTreeModel( const gum::prm::PRM<double> * prm,
+                               const gum::prm::o3prmr::O3prmrContext<double> * context = 0,
+                               QObject *parent = 0 );
 
-  protected:
-    const QString & separator() const { return m_separator; }
+        ~PRMTreeModel();
 
-    QStandardItem * createChild( const QStringList & datas, QStandardItem * parent = 0 );
-    QStandardItem * createChild( const QString & data, QStandardItem * parent = 0 );
+        /*!
+            \reimp
+         */
+        virtual bool canFetchMore( const QModelIndex & parent ) const;
 
-    QStandardItem * getChild( const QString & data, QStandardItem * parent = 0 ) const;
-    QStandardItem * getChild( const QStringList & path, QStandardItem * parent = 0 ) const;
+        /*!
+            \reimp
+         */
+        virtual void fetchMore( const QModelIndex & parent );
 
-    void appendSameChildren( const QStandardItem * from , QStandardItem * to );
-    void removeSameChildren( const QStandardItem * from , QStandardItem * in );
+        /*!
+            Add keywords to model.
+        */
+        void setKeywords( const QStringList & keywords );
 
-    /// Set the current package to allow direct access of its members.
-    void setCurrentPackage( const QStringList & package );
-    /// Set the current class, interface or system, to allow direct access of its members.
-    void setCurrentBlock( const QString & block );
-    /// Set alias for o3prmr files.
-    /// If alias already exist, it is updated.
-    void addAlias( const QString & alias, const QStringList & to );
+        void update( QSharedPointer<PRMTreeModel> prm, QsciScintillaExtended * currentDocument );
 
-    ///
-    QList<QStandardItem *> findItems( const QVariant & data, int role = Qt::DisplayRole ) const;
+    protected:
+        const QString & separator() const { return m_separator; }
 
-  private:
-    static const QString & m_separator;
-    QStandardItem * m_package;
-    QStandardItem * m_block;
-    QStandardItem * m_keywords;
-    QList<QStandardItem* > m_aliases;
+        QStandardItem * createChild( const QStringList & datas, QStandardItem * parent = 0 );
+        QStandardItem * createChild( const QString & data, QStandardItem * parent = 0 );
+
+        QStandardItem * getChild( const QString & data, QStandardItem * parent = 0 ) const;
+        QStandardItem * getChild( const QStringList & path, QStandardItem * parent = 0 ) const;
+
+        void appendSameChildren( const QStandardItem * from , QStandardItem * to );
+        void removeSameChildren( const QStandardItem * from , QStandardItem * in );
+
+        /*!
+            Set the current package to allow direct access of its members.
+        */
+        void setCurrentPackage( const QStringList & package );
+
+        /*!
+            Set the current class, interface or system, to allow direct access of its members.
+         */
+        void setCurrentBlock( const QString & block );
+
+        /*!
+            Set alias for o3prmr files.
+            If alias already exist, it is updated.
+        */
+        void addAlias( const QString & alias, const QStringList & to );
+
+        QList<QStandardItem *> findItems( const QVariant & data, int role = Qt::DisplayRole ) const;
+
+    private:
+        static const QString & m_separator;
+        QStandardItem * m_package;
+        QStandardItem * m_block;
+        QStandardItem * m_keywords;
+        QList<QStandardItem* > m_aliases;
 };
 
 #endif // PRMTREEMODEL_H
