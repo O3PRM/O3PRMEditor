@@ -8,8 +8,8 @@ using namespace gum::prm;
 const QString & PRMTreeModel::m_separator = ".";
 
 PRMTreeModel::PRMTreeModel( const PRM<double> * prm,
-                            const o3prmr::O3prmrContext<double> * context,
-                            QObject *parent ) :
+        const o3prmr::O3prmrContext<double> * context,
+        QObject *parent ) :
     QStandardItemModel( parent ), m_package( 0 ), m_block( 0 ), m_keywords( 0 ) 
 {
     QStandardItem * root = invisibleRootItem();
@@ -104,7 +104,7 @@ PRMTreeModel::PRMTreeModel( const PRM<double> * prm,
         foreach( const o3prmr::ImportCommand * i, context->imports() )
         {
             addAlias( QString::fromStdString( i->alias ),
-                      QString::fromStdString( i->value ).split( separator() ) );
+                    QString::fromStdString( i->value ).split( separator() ) );
         }
     }
 }
@@ -300,7 +300,7 @@ void PRMTreeModel::fetchMore( const QModelIndex & parent )
 }
 
 void PRMTreeModel::update( QSharedPointer<PRMTreeModel> model,
-                           QsciScintillaExtended * currentDocument ) 
+        QsciScintillaExtended * currentDocument ) 
 {
     // >>>>>>>>>>>>>>>>>>>>>>   ALIASES   <<<<<<<<<<<<<<<<<<<<<<<<<
 

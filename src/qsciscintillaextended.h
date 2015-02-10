@@ -69,10 +69,10 @@ class QsciScintillaExtended : public QsciScintilla
 
         void next( const QString & search ) const;
         void replaceAll( const QString & search,
-                         const QString & replace,
-                         bool isRegexp = false,
-                         bool isCaseSensitive = true,
-                         bool wholeWordOnly = false );
+                const QString & replace,
+                bool isRegexp = false,
+                bool isCaseSensitive = true,
+                bool wholeWordOnly = false );
 
         void switchMarker( int line = -1 );
         void goToNextMarker();

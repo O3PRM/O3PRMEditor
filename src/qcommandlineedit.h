@@ -5,25 +5,25 @@
 
 class QCommandLineEdit : public QLineEdit 
 {
-    Q_OBJECT;
+    Q_OBJECT
 
     public:
         QCommandLineEdit( QWidget * parent = 0 );
 
         /*!
-            \reimp
-        */
+          \reimp
+         */
         QCompleter * completer() const;
 
         /*!
-            \reimp
-        */
+          \reimp
+         */
         void setCompleter( QCompleter * c );
 
     public slots:
         /*!
-            Autocomplete from QCompleter and its model.
-        */
+          Autocomplete from QCompleter and its model.
+         */
         void autoComplete();
 
     protected:

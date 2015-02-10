@@ -16,7 +16,7 @@ class PRMTreeModel : public QStandardItemModel
     public:
 
         /*!
-            enum PRM types.
+          enum PRM types.
          */
         enum PRMObjects
         {
@@ -37,14 +37,14 @@ class PRMTreeModel : public QStandardItemModel
         };
 
         /*!
-            enum PRM data role.
+          enum PRM data role.
 
-            DisplayRole contains the complete path as a string (ex: classes.Computer.room)
-            LocalDataRole contains the local data of the item as a QString (ex: room).
-            ObjectRole is one of PRMObjects types (ex : PRMObjects::Refererence).
-            TypeRole is a QStringList representing the type of the references,
-                instances and aliases (ex: [classes,Room]).
-            IsArrayRole is a boolean, use only for references and instances (ex: false).
+          DisplayRole contains the complete path as a string (ex: classes.Computer.room)
+          LocalDataRole contains the local data of the item as a QString (ex: room).
+          ObjectRole is one of PRMObjects types (ex : PRMObjects::Refererence).
+          TypeRole is a QStringList representing the type of the references,
+          instances and aliases (ex: [classes,Room]).
+          IsArrayRole is a boolean, use only for references and instances (ex: false).
          */
         enum PRMRoles
         {
@@ -55,24 +55,24 @@ class PRMTreeModel : public QStandardItemModel
         };
 
         explicit PRMTreeModel( const gum::prm::PRM<double> * prm,
-                               const gum::prm::o3prmr::O3prmrContext<double> * context = 0,
-                               QObject *parent = 0 );
+                const gum::prm::o3prmr::O3prmrContext<double> * context = 0,
+                QObject *parent = 0 );
 
         ~PRMTreeModel();
 
         /*!
-            \reimp
+          \reimp
          */
         virtual bool canFetchMore( const QModelIndex & parent ) const;
 
         /*!
-            \reimp
+          \reimp
          */
         virtual void fetchMore( const QModelIndex & parent );
 
         /*!
-            Add keywords to model.
-        */
+          Add keywords to model.
+         */
         void setKeywords( const QStringList & keywords );
 
         void update( QSharedPointer<PRMTreeModel> prm, QsciScintillaExtended * currentDocument );
@@ -90,19 +90,19 @@ class PRMTreeModel : public QStandardItemModel
         void removeSameChildren( const QStandardItem * from , QStandardItem * in );
 
         /*!
-            Set the current package to allow direct access of its members.
-        */
+          Set the current package to allow direct access of its members.
+         */
         void setCurrentPackage( const QStringList & package );
 
         /*!
-            Set the current class, interface or system, to allow direct access of its members.
+          Set the current class, interface or system, to allow direct access of its members.
          */
         void setCurrentBlock( const QString & block );
 
         /*!
-            Set alias for o3prmr files.
-            If alias already exist, it is updated.
-        */
+          Set alias for o3prmr files.
+          If alias already exist, it is updated.
+         */
         void addAlias( const QString & alias, const QStringList & to );
 
         QList<QStandardItem *> findItems( const QVariant & data, int role = Qt::DisplayRole ) const;

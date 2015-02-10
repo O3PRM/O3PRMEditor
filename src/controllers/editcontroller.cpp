@@ -15,14 +15,13 @@
 #include <Qsci/qscilexer.h>
 #include <QDebug>
 #include <QShortcut>
-//
 
-struct EditController::PrivateData {
+struct EditController::PrivateData 
+{
     PRMCompleter * completer;
     QSharedPointer<PRMTreeModel> prmModel;
 };
 
-// Constructor
 EditController::EditController( MainWindow * mw, QObject * parent ) :
     QObject( parent ),
     mw( mw ),
@@ -37,22 +36,23 @@ EditController::EditController( MainWindow * mw, QObject * parent ) :
     QTimer::singleShot( 500, this, SLOT( triggerInit() ) );
 }
 
-// Destructor
-EditController::~EditController() {
+EditController::~EditController() 
+{
     delete d;
 }
 
-void EditController::triggerInit() {
+void EditController::triggerInit()
+{
     //connect( mw->bc, SIGNAL( projectModelChanged() ), this, SLOT( onProjectModelChanged() ) );
 }
 
-QCompleter * EditController::completer() const {
+QCompleter * EditController::completer() const 
+{
     return d->completer;
 }
 
-/**
- */
-void EditController::editPreferences() {
+void EditController::editPreferences() 
+{
     pr->exec();
 }
 

@@ -26,7 +26,7 @@ void QKeySequenceWidget::initParameters()
     d->clearButton = new QPushButton( cl_icon, "", this );
     d->clearButton->setFixedSize( QSize( 25, 25 ) );
     auto ok_icon = QIcon(qApp->style()->standardIcon(QStyle::SP_DialogOkButton).pixmap(64, 64));
-    Ud->okButton = new QPushButton( ok_icon, "", this );
+    d->okButton = new QPushButton( ok_icon, "", this );
     d->okButton->setFixedSize( QSize( 25, 25 ) );
 
     QHBoxLayout * box = new QHBoxLayout( this );
@@ -37,11 +37,11 @@ void QKeySequenceWidget::initParameters()
     box->addWidget( d->okButton );
 
     connect( d->clearButton, SIGNAL( clicked() ),
-             this, SLOT( clear() ) );
+            this, SLOT( clear() ) );
     connect( d->clearButton, SIGNAL( released() ),
-             d->lineEdit, SLOT( setFocus() ) );
+            d->lineEdit, SLOT( setFocus() ) );
     connect( d->lineEdit, SIGNAL( editingFinished() ),
-             this, SLOT( onLineEditionFinished() ) );
+            this, SLOT( onLineEditionFinished() ) );
 }
 
 QKeySequenceWidget::QKeySequenceWidget( QWidget * parent ) :

@@ -9,19 +9,19 @@
 #include "uis/mainwindow.h"
 
 /*!
-    The app is composed of a main window and different controller classes.
+  The app is composed of a main window and different controller classes.
 
-    In uis/ you will find the different user interfaces used by the application,
-    the most notable one is defined in uis/mainwindow.h.
-    
-    In constrollers/ you will find the controllers which handles events emited
-    by the different uis or by controllers themselves. 
+  In uis/ you will find the different user interfaces used by the application,
+  the most notable one is defined in uis/mainwindow.h.
 
-    In models/ you will find the models displayed by the uis.
+  In constrollers/ you will find the controllers which handles events emited
+  by the different uis or by controllers themselves. 
 
-    In lexers/ and pareser/ you will find QScintilla extensions for the O3PRM language.
+  In models/ you will find the models displayed by the uis.
 
-    Finally, rsrc/ contains ressources used by the application.
+  In lexers/ and pareser/ you will find QScintilla extensions for the O3PRM language.
+
+  Finally, rsrc/ contains ressources used by the application.
  */
 int main( int argc, char *argv[] ) try
 {

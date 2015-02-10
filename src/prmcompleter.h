@@ -6,7 +6,7 @@
 #include <QStringList>
 
 /*!
-    The PRMCompleter class provides completions based on current PRM model.
+  The PRMCompleter class provides completions based on current PRM model.
  */
 class PRMCompleter : public QCompleter 
 {
@@ -17,9 +17,6 @@ class PRMCompleter : public QCompleter
 
         virtual QString pathFromIndex( const QModelIndex &index ) const;
         virtual QStringList splitPath( const QString &path ) const;
-
-    signals:
-    public slots:
 
 };
 

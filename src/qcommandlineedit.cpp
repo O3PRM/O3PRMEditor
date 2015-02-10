@@ -32,49 +32,49 @@ void QCommandLineEdit::setCompleter( QCompleter * c )
     if ( d->completer )
     {
         disconnect( d->completer, SIGNAL( activated( QString ) ),
-                    this, SLOT( insertCompletion( QString ) ) );
+                this, SLOT( insertCompletion( QString ) ) );
     }
 
     d->completer = c;
 
     connect( d->completer, SIGNAL( activated( QString ) ),
-             this, SLOT( insertCompletion( QString ) ) );
+            this, SLOT( insertCompletion( QString ) ) );
 }
 
 void QCommandLineEdit::keyPressEvent( QKeyEvent * event ) 
 {
     if ( d->completer and
-         d->completer->popup() and
-         d->completer->popup()->isVisible() ) 
+            d->completer->popup() and
+            d->completer->popup()->isVisible() ) 
     {
         // The following keys are forwarded by the completer to the widget
         switch ( event->key() )
         {
             case Qt::Key_Enter:
             case Qt::Key_Return:
-            {
-                //    case Qt::Key_Escape:
-                //    case Qt::Key_Tab:
-                //    case Qt::Key_Backtab:
-                event->ignore();
-                return; // let the completer do default behavior
-            }
+                {
+                    //    case Qt::Key_Escape:
+                    //    case Qt::Key_Tab:
+                    //    case Qt::Key_Backtab:
+                    event->ignore();
+                    return; // let the completer do default behavior
+                }
             case Qt::Key_Right:
-            {
-                QLineEdit::keyPressEvent( event );
-                autoComplete();
-                return;
-            }
+                {
+                    QLineEdit::keyPressEvent( event );
+                    autoComplete();
+                    return;
+                }
             case Qt::Key_Left:
-            {
-                QLineEdit::keyPressEvent( event );
-                autoComplete();
-                return;
-            }
+                {
+                    QLineEdit::keyPressEvent( event );
+                    autoComplete();
+                    return;
+                }
             default:
-            {
-                break;
-            }
+                {
+                    break;
+                }
         }
 
         if ( event->modifiers() == Qt::ControlModifier )
@@ -93,41 +93,41 @@ void QCommandLineEdit::keyPressEvent( QKeyEvent * event )
         switch ( event->key() ) 
         {
             case Qt::Key_Up:
-            {
-
-                if ( d->idx == d->history.size()-1 )
                 {
-                    d->history[d->idx] = text();
-                }
 
-                if ( d->idx > 0 ) 
-                {
-                    d->idx--;
-                    setText( d->history[d->idx] );
-                }
+                    if ( d->idx == d->history.size()-1 )
+                    {
+                        d->history[d->idx] = text();
+                    }
 
-                return;
-            }
+                    if ( d->idx > 0 ) 
+                    {
+                        d->idx--;
+                        setText( d->history[d->idx] );
+                    }
+
+                    return;
+                }
             case Qt::Key_Down:
-            {
-
-                if ( d->idx == d->history.size()-1 )
                 {
-                    d->history[d->idx] = text();
-                }
 
-                if ( d->idx < d->history.size()-1 ) 
-                {
-                    d->idx++;
-                    setText( d->history[d->idx] );
-                }
+                    if ( d->idx == d->history.size()-1 )
+                    {
+                        d->history[d->idx] = text();
+                    }
 
-                return;
-            }
+                    if ( d->idx < d->history.size()-1 ) 
+                    {
+                        d->idx++;
+                        setText( d->history[d->idx] );
+                    }
+
+                    return;
+                }
             default:
-            {
-                break;
-            }
+                {
+                    break;
+                }
         }
     }
 

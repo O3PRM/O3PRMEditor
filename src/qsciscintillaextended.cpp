@@ -187,7 +187,7 @@ void QsciScintillaExtended::setLexer( QsciScintillaExtended::Lexer lex )
 
 QString QsciScintillaExtended::package() 
 {
-    
+
     // To know in what package is this document,
     // we search for "Package" marker, which is set be the
     // QsciLexerO3prml2 during styling.
@@ -301,9 +301,9 @@ bool QsciScintillaExtended::isComment( int position ) const
     {
         int style = getStyleAt( position );
         return style == QsciLexerO3prmr::Comment or
-               style == QsciLexerO3prmr::CommentLine or
-               style == QsciLexerO3prmr::CommentDoc or
-               style == QsciLexerO3prmr::CommentLineDoc;
+            style == QsciLexerO3prmr::CommentLine or
+            style == QsciLexerO3prmr::CommentDoc or
+            style == QsciLexerO3prmr::CommentLineDoc;
     }
     else if ( lexerEnum() == O3prml )
     {
@@ -354,7 +354,7 @@ void QsciScintillaExtended::setCompleter( QCompleter * c )
     d->completer->setCaseSensitivity( Qt::CaseInsensitive );
 
     QObject::connect( d->completer, SIGNAL( activated( QString ) ),
-                      this, SLOT( insertCompletion( QString ) ) );
+            this, SLOT( insertCompletion( QString ) ) );
 
     // QObject::connect(d->completer, SIGNAL(highlighted(QString)),
     //      this, SLOT(insertCompletion(QString)));
@@ -511,7 +511,7 @@ void QsciScintillaExtended::unindent()
         getCursorPosition( &line,&index );
         QsciScintilla::unindent( line );
 
-        
+
     }
     // else if this is a selection
     else 
@@ -536,10 +536,10 @@ void QsciScintillaExtended::next( const QString & ) const
 }
 
 void QsciScintillaExtended::replaceAll( const QString & search,
-                                        const QString & replaceBy,
-                                        bool isRegexp,
-                                        bool isCaseSensitive,
-                                        bool wholeWordOnly ) 
+        const QString & replaceBy,
+        bool isRegexp,
+        bool isCaseSensitive,
+        bool wholeWordOnly ) 
 {
     if ( search.isEmpty() )
     {
@@ -757,9 +757,9 @@ void QsciScintillaExtended::insertCompletion( const QString& completion )
 
     // select prefix
     setSelection( currentLine(),
-                  currentIndex() - d->completer->completionPrefix().length(),
-                  currentLine(),
-                  currentIndex() );
+            currentIndex() - d->completer->completionPrefix().length(),
+            currentLine(),
+            currentIndex() );
 
     // remove and insert
     // TODO : replace by replaceSelectedText(completion);
@@ -797,27 +797,27 @@ void QsciScintillaExtended::keyPressEvent( QKeyEvent *e )
             case Qt::Key_Escape:
             case Qt::Key_Tab:
             case Qt::Key_Backtab:
-            {
-                e->ignore();
-                // let the completer do default behavior
-                return; 
-            }
+                {
+                    e->ignore();
+                    // let the completer do default behavior
+                    return; 
+                }
             case Qt::Key_Right:
-            {
-                QsciScintilla::keyPressEvent( e );
-                autoCompleteFromCompleter();
-                return;
-            }
+                {
+                    QsciScintilla::keyPressEvent( e );
+                    autoCompleteFromCompleter();
+                    return;
+                }
             case Qt::Key_Left:
-            {
-                QsciScintilla::keyPressEvent( e );
-                autoCompleteFromCompleter();
-                return;
-            }
+                {
+                    QsciScintilla::keyPressEvent( e );
+                    autoCompleteFromCompleter();
+                    return;
+                }
             default:
-            {
-                break;
-            }
+                {
+                    break;
+                }
         }
 
         if ( e->modifiers() == Qt::ControlModifier )

@@ -52,7 +52,7 @@ namespace o3prm
     void BuildController::PrivateData::showStartParsing( const QString & of ) 
     {
         buildList->addItem( "" );
-        buildList->addItem( tr( "Vérifie la syntaxe de '%1' ..." ).arg( of ) );
+        buildList->addItem( tr( "Check syntax of '%1' ..." ).arg( of ) );
 
         int i = buildList->count() - 1;
         buildList->item( i )->setTextColor( Qt::blue );
@@ -72,7 +72,7 @@ namespace o3prm
 
         // Clear exec dock and inform start of process
         execList->addItem( "" );
-        execList->addItem( tr( "Exécution de '%1' ..." ).arg( of ) );
+        execList->addItem( tr( "Executing '%1' ..." ).arg( of ) );
         int i = execList->count() - 1;
         execList->item( i )->setTextColor( Qt::blue );
         i--;

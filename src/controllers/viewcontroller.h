@@ -6,56 +6,58 @@
 /// Cross reference, do not replace by an include directive
 class MainWindow; // "uis/mainwindow.h"
 
-class ViewController : public QObject {
+class ViewController : public QObject 
+{
     Q_OBJECT
-  public:
-    explicit ViewController( MainWindow * mw, QObject *parent = 0 );
 
-    bool isFullScreen() const;
-    bool isDocksVisible() const;
-    bool isDockVisible() const;
-    bool isStatusBarVisible() const;
-    bool isToolBarVisible() const;
-    bool isProjectExploratorVisible() const;
-    bool isSearchDockVisible() const;
-    bool isBuildDockVisible() const;
-    bool isExecuteDockVisible() const;
-    bool isCommandWidgetVisible() const;
+    public:
+        explicit ViewController( MainWindow * mw, QObject *parent = 0 );
 
-    bool isLineNumbersVisible() const;
-    bool isBookmarksVisible() const;
-    bool isFoldMargingVisible() const;
-    bool isIndentationGuidesVisible() const;
-    bool isUnprintableCharactersVisible() const;
+        bool isFullScreen() const;
+        bool isDocksVisible() const;
+        bool isDockVisible() const;
+        bool isStatusBarVisible() const;
+        bool isToolBarVisible() const;
+        bool isProjectExploratorVisible() const;
+        bool isSearchDockVisible() const;
+        bool isBuildDockVisible() const;
+        bool isExecuteDockVisible() const;
+        bool isCommandWidgetVisible() const;
 
-  public slots:
-    void setFullScreen( bool checked );
-    void setDocksVisibility( bool visible );
-    void setDockVisibility( bool visible );
-    void setStatusBarVisibility( bool visible );
-    void setToolBarVisibility( bool visible );
-    void setProjectExploratorVisibility( bool visible );
-    void setSearchDockVisibility( bool visible );
-    void setBuildDockVisibility( bool visible );
-    void setExecuteDockVisibility( bool visible );
-    void setCommandWidgetVisible( bool visible );
+        bool isLineNumbersVisible() const;
+        bool isBookmarksVisible() const;
+        bool isFoldMargingVisible() const;
+        bool isIndentationGuidesVisible() const;
+        bool isUnprintableCharactersVisible() const;
 
-    void setLineNumbersVisibility( bool checked );
-    void setBookmarksVisibility( bool checked );
-    void setFoldMargingVisibility( bool checked );
-    void setIndentationGuidesVisibility( bool checked );
-    void setUnprintableCharactersVisibility( bool checked );
+    public slots:
+        void setFullScreen( bool checked );
+        void setDocksVisibility( bool visible );
+        void setDockVisibility( bool visible );
+        void setStatusBarVisibility( bool visible );
+        void setToolBarVisibility( bool visible );
+        void setProjectExploratorVisibility( bool visible );
+        void setSearchDockVisibility( bool visible );
+        void setBuildDockVisibility( bool visible );
+        void setExecuteDockVisibility( bool visible );
+        void setCommandWidgetVisible( bool visible );
 
-    void increaseZoom();
-    void decreaseZoom();
-    void normalZoom();
+        void setLineNumbersVisibility( bool checked );
+        void setBookmarksVisibility( bool checked );
+        void setFoldMargingVisibility( bool checked );
+        void setIndentationGuidesVisibility( bool checked );
+        void setUnprintableCharactersVisibility( bool checked );
 
-  private:
+        void increaseZoom();
+        void decreaseZoom();
+        void normalZoom();
 
-    struct PrivateData;
-    PrivateData * d;
+    private:
 
-    MainWindow * mw;
+        struct PrivateData;
+        PrivateData * d;
+
+        MainWindow * mw;
 };
 
 #endif // VIEWCONTROLLER_H

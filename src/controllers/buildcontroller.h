@@ -55,7 +55,10 @@ namespace o3prm
             void modelCanBeUpdated();
 
         protected slots:
-            /// Ce slot est appelé quand on change de document ou quand la correction est fini.
+            /*!
+              This slot is called when the user switch to another document
+              or when correction is finished. 
+             */
             void startParsing( bool isAuto = true, bool isExecution = false );
             void onParsingFinished();
             void onExecutionFinished();

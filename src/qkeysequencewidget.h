@@ -32,7 +32,7 @@ class QKeySequenceWidget : public QWidget
     private:
         Q_DISABLE_COPY( QKeySequenceWidget )
 
-        struct PrivateData;
+            struct PrivateData;
         PrivateData * d;
 
         void initParameters();
@@ -58,21 +58,21 @@ class MyLineEdit : public QLineEdit
             setText( seq.toString() );
         }
 
-        public slots:
-            virtual void clear() 
-            {
-                seq = QKeySequence();
-                setText( QString() );
-            }
+    public slots:
+        virtual void clear() 
+        {
+            seq = QKeySequence();
+            setText( QString() );
+        }
 
     protected:
         virtual void keyPressEvent( QKeyEvent * event ) 
         {
             if ( seq.count() <= 4 and
-                 event->key() != Qt::Key_Control and
-                 event->key() != Qt::Key_Shift and
-                 event->key() != Qt::Key_Alt and
-                 event->key() != Qt::Key_Meta )
+                    event->key() != Qt::Key_Control and
+                    event->key() != Qt::Key_Shift and
+                    event->key() != Qt::Key_Alt and
+                    event->key() != Qt::Key_Meta )
             {
                 QKeySequence shortcut( event->modifiers() + event->key() );
 
