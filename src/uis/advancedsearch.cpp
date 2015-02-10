@@ -3,17 +3,18 @@
 
 AdvancedSearch::AdvancedSearch( QWidget *parent ) :
     QDialog( parent ),
-    ui( new Ui::AdvancedSearch ) {
-  ui->setupUi( this );
+    ui( new Ui::AdvancedSearch ) 
+{
+    ui->setupUi( this );
 
-  m_isSearch = false;
-  m_isReplaceAll = false;
+    m_isSearch = false;
+    m_isReplaceAll = false;
 }
 
-AdvancedSearch::~AdvancedSearch() {
-  delete ui;
+AdvancedSearch::~AdvancedSearch() 
+{
+    delete ui;
 }
-
 
 bool AdvancedSearch::isSearch() const { return m_isSearch; }
 
@@ -31,7 +32,10 @@ bool AdvancedSearch::isRegex() const { return ui->regexBox->isChecked(); }
 
 bool AdvancedSearch::isWholeWord() const { return ui->wordBox->isChecked(); }
 
-AdvancedSearch::Filter AdvancedSearch::filter() const  { return ( Filter ) ui->filterCombo->currentIndex(); }
+AdvancedSearch::Filter AdvancedSearch::filter() const 
+{
+    return ( Filter ) ui->filterCombo->currentIndex(); 
+}
 
 QString AdvancedSearch::searchText() const { return ui->searchEdit->text(); }
 
@@ -49,42 +53,53 @@ void AdvancedSearch::setRegex( bool checked ) { ui->regexBox->setChecked( checke
 
 void AdvancedSearch::setWholeWord( bool checked ) { ui->wordBox->setChecked( checked ); }
 
-void AdvancedSearch::setFilter( Filter filter ) { ui->filterCombo->setCurrentIndex(( int ) filter ); }
+void AdvancedSearch::setFilter( Filter filter )
+{
+    ui->filterCombo->setCurrentIndex(( int ) filter );
+}
 
 void AdvancedSearch::setSearchText( const QString & text ) { ui->searchEdit->setText( text ); }
 
 void AdvancedSearch::setReplaceText( const QString & text ) { ui->replaceEdit->setText( text ); }
 
-void AdvancedSearch::setProjectSearchEnabled( bool enabled ) {
-  ui->projectRadio->setEnabled( enabled );
+void AdvancedSearch::setProjectSearchEnabled( bool enabled )
+{
+    ui->projectRadio->setEnabled( enabled );
 
-  if ( !enabled )
-    ui->documentRadio->setChecked( true );
+    if ( !enabled )
+    {
+        ui->documentRadio->setChecked( true );
+    }
 }
 
-void AdvancedSearch::on_cancelButton_clicked() {
-  m_isSearch = false;
-  m_isReplaceAll = false;
-  reject();
+void AdvancedSearch::on_cancelButton_clicked() 
+{
+    m_isSearch = false;
+    m_isReplaceAll = false;
+    reject();
 }
 
-void AdvancedSearch::on_searchButton_clicked() {
-  m_isSearch = true;
-  m_isReplaceAll = false;
-  accept();
+void AdvancedSearch::on_searchButton_clicked() 
+{
+    m_isSearch = true;
+    m_isReplaceAll = false;
+    accept();
 }
 
-void AdvancedSearch::on_replaceAllButton_clicked() {
-  m_isSearch = false;
-  m_isReplaceAll = true;
-  accept();
+void AdvancedSearch::on_replaceAllButton_clicked() 
+{
+    m_isSearch = false;
+    m_isReplaceAll = true;
+    accept();
 }
 
-void AdvancedSearch::on_documentRadio_toggled( bool checked ) {
-  ui->filterCombo->setEnabled( !checked );
+void AdvancedSearch::on_documentRadio_toggled( bool checked ) 
+{
+    ui->filterCombo->setEnabled( !checked );
 }
 
-void AdvancedSearch::closeEvent( QCloseEvent * ) {
-  m_isSearch = false;
-  m_isReplaceAll = false;
+void AdvancedSearch::closeEvent( QCloseEvent * )
+{
+    m_isSearch = false;
+    m_isReplaceAll = false;
 }

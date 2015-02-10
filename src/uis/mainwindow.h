@@ -26,14 +26,13 @@ class ViewController;
 class EditController;
 class SearchController;
 
-/**
+/*!
   The program main window.
   This class include and load the ui file, which describes all widgets and actions.
   Actions are handle in controllers, that are separated in different files.
 
   This class only handles the quit action.
  */
-
 class MainWindow : public QMainWindow 
 {
     Q_OBJECT

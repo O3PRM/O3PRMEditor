@@ -17,7 +17,8 @@
 #include <QLayout>
 #include <QDebug>
 
-struct MainWindow::PrivateData {
+struct MainWindow::PrivateData
+{
     QDialog * dial;
     QTextBrowser * browser;
 };
@@ -92,26 +93,26 @@ void MainWindow::__setupConnections()
 {
     // TabBar
     connect( ui->tabBar, SIGNAL( currentChanged( int ) ),
-             ui->dockStack, SLOT( setCurrentIndex( int ) ) );
+            ui->dockStack, SLOT( setCurrentIndex( int ) ) );
     connect( ui->dockStack, SIGNAL( currentChanged( int ) ),
-             ui->tabBar, SLOT( setCurrentIndex( int ) ) );
+            ui->tabBar, SLOT( setCurrentIndex( int ) ) );
     connect( ui->tabBar, SIGNAL( currentChanged( int ) ),
-             ui->dockStack, SLOT( show() ) );
+            ui->dockStack, SLOT( show() ) );
 
     // Main ui's various events
     connect( ui->actionQuit, SIGNAL( triggered() ),
-             this, SLOT( close() ) );
+            this, SLOT( close() ) );
     connect( ui->actionHelp, SIGNAL( triggered() ),
-             this, SLOT( showHelp() ) );
+            this, SLOT( showHelp() ) );
     connect( ui->actionAbout, SIGNAL( triggered() ),
-             this, SLOT( showAboutDialog() ) );
+            this, SLOT( showAboutDialog() ) );
 
     connect( pc, SIGNAL( projectLoaded(o3prm::Project*) ),
-             this, SLOT(loadProject(o3prm::Project*)));
+            this, SLOT(loadProject(o3prm::Project*)));
     connect( pc, SIGNAL( projectSaved(o3prm::Project*) ),
-             this, SLOT(saveProject(o3prm::Project*)));
+            this, SLOT(saveProject(o3prm::Project*)));
     connect( pc, SIGNAL( projectClosed() ),
-             this, SLOT(closeProject()));
+            this, SLOT(closeProject()));
 
     // Setting up connections of each controller
     //fc->setupConnections();
@@ -181,15 +182,14 @@ void MainWindow::showAboutDialog()
 {
     QString message;
     message += tr( "O3prmEditor version 1.0b4\n\n" );
-    message += tr( "Auteurs : Vincent Renaudineau, Pierre-Henri Wuillemin.\n\n" );
-    message += tr( "Copyright 2010 Lip6 (Paris, France). Tous droits réservés." );
-    message += tr( "Ce logiciel est sous licence GPL v3.\n\n" );
-    message += tr( "Il utilise les librairies :\n" );
-    message += tr( " - Qt, de Nokia;\n" );
-    message += tr( " - QScintilla, de Riverbank;\n" );
-    message += tr( " - aGrUM, du Lip6 (Pierre-Henri Wuillemin, Christophe Gonzales, "
-            "Lionel Torti, Vincent Renaudineau).\n" );
-    QMessageBox::about( this, tr( "À Propos de O3prmEditor" ), message );
+    message += tr( "Authors : Vincent Renaudineau, Pierre-Henri Wuillemin, Lionel Torti.\n\n" );
+    message += tr( "Copyright 2010 Lip6 (Paris, France). All right reserved." );
+    message += tr( "This software is under GPL v3 licence.\n\n" );
+    message += tr( "It uses the following libraries:\n" );
+    message += tr( " - Qt;\n" );
+    message += tr( " - QScintilla;\n" );
+    message += tr( " - aGrUM.\n" );
+    QMessageBox::about( this, tr( "About O3prmEditor" ), message );
 }
 
 void MainWindow::loadProject(o3prm::Project* project)
