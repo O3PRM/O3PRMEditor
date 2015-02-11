@@ -19,8 +19,10 @@ namespace o3prm
 
             ~BuildModel();
 
-            /// Returns the O3prmInterpreter builded from item.
-            /// Item should contain a request.
+            /*!
+              Returns the O3prmInterpreter builded from item.
+              Item should contain a request.
+             */
             gum::prm::o3prmr::O3prmrInterpreter* build(ProjectItem* item);
 
         private:

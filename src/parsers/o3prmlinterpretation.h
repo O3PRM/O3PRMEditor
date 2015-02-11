@@ -3,25 +3,24 @@
 
 #include "abstractparser.h"
 
-namespace gum {
-
-  namespace prm {
-
-    namespace o3prm {
-
-      template<typename GUM_SCALAR>
-      class O3prmReader;
+namespace gum
+{
+  namespace prm 
+  {
+    namespace o3prm 
+    {
+      template<typename GUM_SCALAR> class O3prmReader;
     }
   }
 }
 
-/**
- * This class read a o3prm file to check its syntax.
- * It send a finished() signal when done.
- * When done, you can retrieve the O3prmReader.
+/*!
+  This class read a o3prm file to check its syntax.
+  It send a finished() signal when done.
+  When done, you can retrieve the O3prmReader.
  */
-
-class O3prmlInterpretation : public AbstractParser {
+class O3prmlInterpretation : public AbstractParser 
+{
     Q_OBJECT
 
     gum::prm::o3prm::O3prmReader<double> * m_reader;

@@ -5,8 +5,7 @@
 
 namespace o3prm 
 {
-    ProjectProperties::ProjectProperties( Project * p,
-            QWidget *parent ) :
+    ProjectProperties::ProjectProperties( Project * p, QWidget *parent ) :
         QDialog( parent ),
         ui( new Ui::ProjectProperties ),
         p( p ),
@@ -33,7 +32,7 @@ namespace o3prm
 
     void ProjectProperties::onAddButtonClicked() 
     {
-        auto msg = tr( "Ajouter un répertoire de classes" );
+        auto msg = tr( "Add a class directory" );
         auto dirPath = QFileDialog::getExistingDirectory( parent, msg, QDir::homePath() );
         ui->listWidget->addItem( dirPath );
     }

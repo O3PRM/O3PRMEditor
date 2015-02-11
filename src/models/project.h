@@ -43,25 +43,25 @@ namespace o3prm
                 }
             }
 
-            /**
-             * Constructor
+            /*!
+              Constructor
              */
             Project( const QString & dir, const QString& name, QObject * parent = 0 );
 
             static Project* load(const QString& dir, const QDomElement& dom, QObject* parent = 0);
 
-            /**
-             * Destructor
+            /*!
+              Destructor
              */
             ~Project();
 
-            /**
-             * Return the project name.
+            /*!
+              Return the project name.
              */
             QString name() const;
 
-            /**
-             * Return the project root directory.
+            /*!
+              Return the project root directory.
              */
             QDir dir() const;
 
@@ -69,19 +69,20 @@ namespace o3prm
 
             bool isEditable() const;
 
-            /// Save a Project in XML as a .o3prmproject file
+            /*!
+              Save a Project in XML as a .o3prmproject file
+             */
             QDomDocument asXml();
 
             /// Legacy methods that I still need to implement
-
-            /**
-             * Return true if \a filepath is in the project, false otherwise.
+            /*!
+              Return true if \a filepath is in the project, false otherwise.
              */
             bool isInside( const QString & filePath ) const;
 
-            /**
-             * Return all o3prml and o3prmr files in the project.
-             * \note Compute list each time.
+            /*!
+              Return all o3prml and o3prmr files in the project.
+              \note Compute list each time.
              */
             QList<QString> files() const;
 
@@ -89,17 +90,19 @@ namespace o3prm
 
             void clearPaths();
 
-            /**
-             * Return paths to search for classes or systems.
+            /*!
+              Return paths to search for classes or systems.
              */
             QList<QString> paths() const;
 
             QVariant data (const QModelIndex& index, int role=Qt::DisplayRole) const;
 
         signals:
-            /// This signal is emited when a file is moved by drag and drop in the view.
-            /// For constance with fileRenamed, \a oldFilePath is the complete, absolute,
-            /// filename with its path, \a newPath too.
+            /*!
+              This signal is emited when a file is moved by drag and drop in the view.
+              For constance with fileRenamed, \a oldFilePath is the complete, absolute,
+              filename with its path, \a newPath too.
+             */
             void fileMoved( const QString & oldFilePath, const QString & newPath );
 
         private:

@@ -10,111 +10,117 @@ using namespace std;
 
 using namespace gum::prm::o3prmr;
 
-struct O3prmrInterpretation::PrivateData {
-  QMutex *                        mutex;
-  gum::prm::o3prmr::O3prmrInterpreter *   interpreter;
-  QString                               command;
-  vector<QueryResult>                   result;
+struct O3prmrInterpretation::PrivateData 
+{
+    QMutex *mutex;
+    gum::prm::o3prmr::O3prmrInterpreter *interpreter;
+    QString command;
+    vector<QueryResult> result;
 };
 
-////////////////////////////////////////////////////////////////////////////////
-
-//! Constructor. Create o3prmr interpreter.
 O3prmrInterpretation::O3prmrInterpretation( const QsciScintillaExtended * sci, QObject * parent ) :
-    AbstractParser( sci, parent ), d( new PrivateData ) {
-  d->interpreter = new O3prmrInterpreter();
-  d->mutex = new QMutex();
+    AbstractParser( sci, parent ), d( new PrivateData )
+{
+    d->interpreter = new O3prmrInterpreter();
+    d->mutex = new QMutex();
 }
 
-//! Destructor. Delete o3prmr interpreter.
-O3prmrInterpretation::~O3prmrInterpretation() {
-  // Wait the run methods ends.
-  wait();
-  delete d->mutex;
-  delete d->interpreter;
+O3prmrInterpretation::~O3prmrInterpretation() 
+{
+    // Wait for the run methods to end
+    wait();
+    delete d->mutex;
+    delete d->interpreter;
 }
 
-//! Return last command.
-QString O3prmrInterpretation::command() const {
-  QMutexLocker locker( d->mutex );
-  return d->command;
+QString O3prmrInterpretation::command() const 
+{
+    QMutexLocker locker( d->mutex );
+    return d->command;
 }
 
-
-//! Return result of execution.
-vector<gum::prm::o3prmr::QueryResult> O3prmrInterpretation::results() const {
-  QMutexLocker locker( d->mutex );
-  return d->result;
+vector<gum::prm::o3prmr::QueryResult> O3prmrInterpretation::results() const 
+{
+    QMutexLocker locker( d->mutex );
+    return d->result;
 }
 
-//! \reimp
-void O3prmrInterpretation::parse( Priority priority ) {
-  QMutexLocker locker( d->mutex );
-  d->command.clear();
-  locker.unlock();
+void O3prmrInterpretation::parse( Priority priority ) 
+{
+    QMutexLocker locker( d->mutex );
+    d->command.clear();
+    locker.unlock();
 
-  AbstractParser::parse( priority );
+    AbstractParser::parse( priority );
 }
 
-//! Parse a single command
-void O3prmrInterpretation::parseCommand( const QString & command, Priority priority ) {
-  QMutexLocker locker( d->mutex );
-  d->command = command;
-  locker.unlock();
+void O3prmrInterpretation::parseCommand( const QString & command, Priority priority ) 
+{
+    QMutexLocker locker( d->mutex );
+    d->command = command;
+    locker.unlock();
 
-  AbstractParser::parse( priority );
+    AbstractParser::parse( priority );
 }
 
+void O3prmrInterpretation::run() 
+{
+    QString f = filename();
+    QString b = buffer();
 
-//! \reimp
-void O3prmrInterpretation::run() {
-  QString f = filename();
-  QString b = buffer();
+    d->interpreter->setSyntaxMode( isSyntaxMode() );
+    d->interpreter->clearPaths();
 
-  d->interpreter->setSyntaxMode( isSyntaxMode() );
-  d->interpreter->clearPaths();
-  foreach( QString s, classPaths() )
-  d->interpreter->addPath( s.toStdString() );
-  d->interpreter->setSyntaxMode( isSyntaxMode() );
-  //d->interpreter->setVerboseMode(true);
-
-  QMutexLocker locker( d->mutex );
-  QString command = d->command;
-  locker.unlock();
-
-  bool result;
-
-  if ( ! command.isEmpty() ) {
-    if ( ! d->interpreter || ! d->interpreter->prm() ) { // On a pas encore parsé le fichier
-      if ( ! f.isEmpty() ) {
-        result = d->interpreter->interpretFile( f.toStdString() );
-      } else {
-        result = d->interpreter->interpretLine( b.toStdString() );
-      }
+    foreach( QString s, classPaths() )
+    {
+        d->interpreter->addPath( s.toStdString() );
     }
 
-    result = d->interpreter->interpretLine( command.toStdString() );
-  } else if ( ! f.isEmpty() )
-    result = d->interpreter->interpretFile( f.toStdString() );
-  else
-    result = d->interpreter->interpretLine( b.toStdString() );
+    d->interpreter->setSyntaxMode( isSyntaxMode() );
 
-// qDebug() << "in O3prmrInterpretation::run() :" << command.isEmpty() << f.isEmpty()
-//   << b.count('\n') << result << d->interpreter->getErrorsContainer().error_count << d->interpreter->prm();
+    QMutexLocker locker( d->mutex );
+    QString command = d->command;
+    locker.unlock();
 
-// if ( d->interpreter->getErrorsContainer().error_count > 0 )
-//  d->interpreter->getErrorsContainer().showElegantErrorsAndWarnings();
+    bool result;
 
-  setErrors( d->interpreter->errorsContainer() );
+    if ( ! command.isEmpty() )
+    {
+        // File not parsed yet
+        if ( ! d->interpreter || ! d->interpreter->prm() )
+        {
+            if ( ! f.isEmpty() ) 
+            {
+                result = d->interpreter->interpretFile( f.toStdString() );
+            }
+            else
+            {
+                result = d->interpreter->interpretLine( b.toStdString() );
+            }
+        }
 
-  if ( d->interpreter->prm() == 0 )
-    return;
+        result = d->interpreter->interpretLine( command.toStdString() );
+    }
+    else if ( ! f.isEmpty() )
+    {
+        result = d->interpreter->interpretFile( f.toStdString() );
+    }
+    else
+    {
+        result = d->interpreter->interpretLine( b.toStdString() );
+    }
 
-  locker.relock();
+    setErrors( d->interpreter->errorsContainer() );
 
-  d->result = d->interpreter->results();
+    if ( d->interpreter->prm() == 0 )
+    {
+        return;
+    }
 
-  QSharedPointer<PRMTreeModel> ptr( new PRMTreeModel( d->interpreter->prm(),d->interpreter->getContext() ) );
+    locker.relock();
+    d->result = d->interpreter->results();
+    auto model = new PRMTreeModel( d->interpreter->prm(),d->interpreter->getContext() );
+    QSharedPointer<PRMTreeModel> ptr(model);
 
-  setPRM( ptr );
+    setPRM( ptr );
 }

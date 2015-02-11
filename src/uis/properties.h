@@ -6,37 +6,38 @@
 
 class MainWindow;
 
-namespace Ui {
-
-  class Properties;
+namespace Ui
+{
+    class Properties;
 }
 
-class Properties : public QDialog {
+class Properties : public QDialog 
+{
     Q_OBJECT
 
-  public:
-    explicit Properties( MainWindow * mw, QWidget *parent = 0 );
-    ~Properties();
+    public:
+        explicit Properties( MainWindow * mw, QWidget *parent = 0 );
+        ~Properties();
 
-  protected slots:
-    void on_shortcutsTree_itemSelectionChanged();
-    void on_shortcutsTree_itemActivated( QTreeWidgetItem *, int );
-    void on_keySequenceWidget_shortcutChanged( const QKeySequence & key );
+    protected slots:
+        void on_shortcutsTree_itemSelectionChanged();
+        void on_shortcutsTree_itemActivated( QTreeWidgetItem *, int );
+        void on_keySequenceWidget_shortcutChanged( const QKeySequence & key );
 
-  protected:
-    void accept();
-    void reject();
+    protected:
+        void accept();
+        void reject();
 
-  private:
-    Q_DISABLE_COPY( Properties );
+    private:
+        Q_DISABLE_COPY( Properties );
 
-    QTreeWidgetItem * addShortcuts( QAction * a, const QString & parent = "" );
+        QTreeWidgetItem * addShortcuts( QAction * a, const QString & parent = "" );
 
-    struct PrivateData;
-    PrivateData * d;
+        struct PrivateData;
+        PrivateData * d;
 
-    Ui::Properties *ui;
-    MainWindow * mw;
+        Ui::Properties *ui;
+        MainWindow * mw;
 };
 
 #endif // PROPERTIES_H

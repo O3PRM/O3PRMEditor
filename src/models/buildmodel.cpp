@@ -2,7 +2,6 @@
 
 namespace o3prm
 {
-
     BuildModel::BuildModel(Project* project, QObject* parent):
         QObject(parent), __project(project)
     {
@@ -22,6 +21,5 @@ namespace o3prm
         interpreter->interpretFile(path.toStdString());
         return interpreter;
     }
-
 
 } // o3prm

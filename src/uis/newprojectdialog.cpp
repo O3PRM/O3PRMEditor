@@ -53,15 +53,15 @@ void NewProjectDialog::on_buttonBox_accepted()
                 msg,
                 QMessageBox::Ok,
                 QMessageBox::Cancel );
-    }
 
-    if ( button == QMessageBox::Ok )
-    {
-        QDir( QDir::root() ).rename( name,name+".old" );
-    }
-    else
-    {
-        return;
+        if ( button == QMessageBox::Ok )
+        {
+            QDir( QDir::root() ).rename( name,name+".old" );
+        }
+        else
+        {
+            return;
+        }
     }
 
     // If can't create the directory, warn the user.

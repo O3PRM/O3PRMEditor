@@ -8,48 +8,51 @@
 
 using namespace gum::prm::o3prm;
 
-
-//! Constructor.
 O3prmlInterpretation::O3prmlInterpretation( const QsciScintillaExtended * sci, QObject * parent ) :
-    AbstractParser( sci, parent ), m_reader( 0 ), prmChanged( false ) {
+    AbstractParser( sci, parent ), m_reader( 0 ), prmChanged( false )
+{
+
 }
 
-//! Destructor.
-O3prmlInterpretation::~O3prmlInterpretation() {
-  // Wait the run methods ends.
-  wait();
+O3prmlInterpretation::~O3prmlInterpretation() 
+{
+    // Wait for the run methods to end
+    wait();
 
-  if ( m_reader )
-    delete m_reader->prm();
+    if ( m_reader )
+    {
+        delete m_reader->prm();
+    }
 
-  delete m_reader;
+    delete m_reader;
 }
 
-//! \reimp
-void O3prmlInterpretation::run() {
-  QString f = filename();
-  std::string b = buffer().toStdString();
+void O3prmlInterpretation::run() 
+{
+    QString f = filename();
+    std::string b = buffer().toStdString();
 
-  if ( m_reader )
-    delete m_reader->prm();
+    if ( m_reader )
+    {
+        delete m_reader->prm();
+        delete m_reader;
+    }
 
-  delete m_reader;
+    m_reader = new O3prmReader<double>();
+    m_reader->setClassPath( classPaths().join( ";" ).toStdString() );
+    m_reader->showElegantErrorsAndWarnings();
 
-  m_reader = new O3prmReader<double>();
+    if ( f.isEmpty() ) 
+    {
+        m_reader->readString( b );
+    }
+    else
+    {
+        m_reader->readFile( f.toStdString() );
+    }
 
-  m_reader->setClassPath( classPaths().join( ";" ).toStdString() );
-
-  m_reader->showElegantErrorsAndWarnings();
-
-  if ( f.isEmpty() ) {
-    m_reader->readString( b );
-  } else
-    m_reader->readFile( f.toStdString() );
-
-  setErrors( m_reader->errorsContainer() );
-
-  QSharedPointer<PRMTreeModel> ptr( new PRMTreeModel( m_reader->prm() ) );
-
-  setPRM( ptr );
+    setErrors( m_reader->errorsContainer() );
+    QSharedPointer<PRMTreeModel> ptr( new PRMTreeModel( m_reader->prm() ) );
+    setPRM( ptr );
 }
 

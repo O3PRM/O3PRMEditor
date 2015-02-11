@@ -4,52 +4,51 @@
 #include <QRegExp>
 #include <QDebug>
 
-// The ctor.
-QsciLexerO3prml::QsciLexerO3prml( QObject * parent ) : QsciLexerJava( parent ) {
-  // Courier new 10pt
-  QFont font( "monospace" );
-  font.setPointSize( 10 );
-  font.setStyleHint( QFont::Monospace );
-  setFont( font,QsciLexerJava::Default );
-  setFont( font,QsciLexerJava::Comment );
-  setFont( font,QsciLexerJava::CommentLine );
-  setFont( font,QsciLexerJava::Number );
-  setFont( font,QsciLexerJava::Operator );
-  setFont( font,QsciLexerJava::Identifier );
-  setFont( font,QsciLexerJava::GlobalClass );
-  font.setBold( true );
-  setFont( font,QsciLexerJava::CommentDoc );
-  setFont( font,QsciLexerJava::CommentLineDoc );
-  setFont( font,QsciLexerJava::Keyword );
-  setFont( font,QsciLexerJava::Operator );
+QsciLexerO3prml::QsciLexerO3prml( QObject * parent ) : QsciLexerJava( parent ) 
+{
+    QFont font( "monospace" );
+    font.setPointSize( 10 );
+    font.setStyleHint( QFont::Monospace );
+    setFont( font,QsciLexerJava::Default );
+    setFont( font,QsciLexerJava::Comment );
+    setFont( font,QsciLexerJava::CommentLine );
+    setFont( font,QsciLexerJava::Number );
+    setFont( font,QsciLexerJava::Operator );
+    setFont( font,QsciLexerJava::Identifier );
+    setFont( font,QsciLexerJava::GlobalClass );
+    font.setBold( true );
+    setFont( font,QsciLexerJava::CommentDoc );
+    setFont( font,QsciLexerJava::CommentLineDoc );
+    setFont( font,QsciLexerJava::Keyword );
+    setFont( font,QsciLexerJava::Operator );
 
-  // Color
-  setColor( Qt::blue, QsciLexerJava::CommentDoc );
-  setColor( Qt::blue, QsciLexerJava::CommentLineDoc );
-  setColor( Qt::darkGreen, QsciLexerJava::CommentLine );
-  setColor( Qt::darkGreen, QsciLexerJava::Comment );
-  setColor( QColor( 255,170,0 ), QsciLexerJava::Number );
+    setColor( Qt::blue, QsciLexerJava::CommentDoc );
+    setColor( Qt::blue, QsciLexerJava::CommentLineDoc );
+    setColor( Qt::darkGreen, QsciLexerJava::CommentLine );
+    setColor( Qt::darkGreen, QsciLexerJava::Comment );
+    setColor( QColor( 255,170,0 ), QsciLexerJava::Number );
 
-  QsciAPIs *api = new QsciAPIs( this ); // déclaration de l'api
-  api->load( ":/api/o3prml.api" );
-  api->prepare(); // préparation  de l'auto-completion
-  setAPIs( api ); // application de l'api au lexer
-
+    QsciAPIs *api = new QsciAPIs( this );
+    api->load( ":/api/o3prml.api" );
+    api->prepare(); 
+    setAPIs( api ); 
 }
 
-// The dtor.
-QsciLexerO3prml::~QsciLexerO3prml() {
+QsciLexerO3prml::~QsciLexerO3prml() { }
+
+const char * QsciLexerO3prml::language() const 
+{
+    return "O3prml";
 }
 
-// Returns the language name.
-const char * QsciLexerO3prml::language() const {
-  return "O3prml";
-}
+const char * QsciLexerO3prml::keywords( int set ) const 
+{
+    if ( set != 1 )
+    {
+        return 0;
+    }
 
-// Returns the set of keywords.
-const char * QsciLexerO3prml::keywords( int set ) const {
-  if ( set != 1 )
-    return 0;
-
-  return "boolean class default dependson extends float implements import int interface noisyOr package system type";
+    auto keywords = "boolean class default dependson extends float implements "
+        "import int interface noisyOr package system type";
+    return keywords;
 }

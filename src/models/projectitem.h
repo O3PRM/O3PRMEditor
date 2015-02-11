@@ -15,7 +15,9 @@ namespace o3prm
                 Request = 1003
             };
 
-            /// Values used by ProjectItem must be above or equal to 1000.
+            /*!
+              Values used by ProjectItem must be above or equal to 1000.
+             */
             static int minItemTypeInt() { return (int)ItemType::Directory; }
 
             ProjectItem(ItemType type);
@@ -32,7 +34,9 @@ namespace o3prm
 
             void setType(int type);
 
-            // Returns the path to parent using / as separators.
+            /*!
+              Returns the path to parent using / as separators.
+             */
             QString path() const;
 
             ProjectItem* child(int row, int column=0) const;

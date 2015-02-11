@@ -3,12 +3,13 @@
 
 #include <QDialog>
 
-namespace Ui {
-
+namespace Ui
+{
   class NewProjectDialog;
 }
 
-class NewProjectDialog : public QDialog {
+class NewProjectDialog : public QDialog 
+{
     Q_OBJECT
 
   public:
