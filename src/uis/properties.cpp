@@ -29,9 +29,9 @@ Properties::Properties( MainWindow * mainw, QWidget *parent ) :
     d = new PrivateData;
     d->edited = 0;
 
-    ui->listIcon->addItem( tr( "Éditeur" ) );
-    ui->listIcon->addItem( tr( "Raccourcis clavier" ) );
-    ui->listIcon->addItem( tr( "Méta-données" ) );
+    ui->listIcon->addItem( tr( "Editor" ) );
+    ui->listIcon->addItem( tr( "Keyboard shortcuts" ) );
+    ui->listIcon->addItem( tr( "Metadata" ) );
 
     foreach( QAction * a, mw->ui->menuBar->actions() ) 
     {

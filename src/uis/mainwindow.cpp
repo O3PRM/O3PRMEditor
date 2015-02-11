@@ -164,7 +164,7 @@ void MainWindow::showHelp()
         // Create Help dialog
         __data->dial = new QDialog( this );
         __data->dial->setWindowIcon( QIcon( "qrc:/logo" ) );
-        __data->dial->setWindowTitle( tr( "O3prmEditor -- Aide" ) );
+        __data->dial->setWindowTitle( tr( "O3prmEditor -- Help" ) );
         QVBoxLayout * layout = new QVBoxLayout( __data->dial );
         layout->setSpacing( 0 );
         layout->setContentsMargins( 0,0,0,0 );
