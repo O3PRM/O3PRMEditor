@@ -40,63 +40,64 @@ ViewController::ViewController( MainWindow * mw, QObject *parent ) :
     d( new PrivateData ),
     mw( mw ) 
 {
-        d->fullScreenAction = mw->ui->actionFullScreen;
-        d->docksVisibilityAction = mw->ui->actionDocksVisibility;
-        d->dockVisibilityAction = mw->ui->actionDockVisibility;
+        //d->fullScreenAction = mw->ui->actionFullScreen;
+        //d->docksVisibilityAction = mw->ui->actionDocksVisibility;
+        //d->dockVisibilityAction = mw->ui->actionDockVisibility;
 
-        d->statusBarVisibility = mw->ui->actionStatusBarVisibility;
-        d->toolBarVisibility = mw->ui->actionToolBarVisibility;
-        d->projectExploratorVisibility = mw->ui->actionProjectExploratorVisibility;
-        d->searchDockVisibility = mw->ui->actionSearchDockVisibility;
-        d->buildDockVisibility = mw->ui->actionBuildDockVisibility;
-        d->executeDockVisibility = mw->ui->actionExecuteDockVisibility;
+        d->statusBarVisibility = mw->ui->actionShowStatusBar;
+        d->toolBarVisibility = mw->ui->actionShowToolbar;
+        d->projectExploratorVisibility = mw->ui->actionShowProjectExplorator;
+
+        d->searchDockVisibility = mw->ui->actionShowSearch;
+        d->buildDockVisibility = mw->ui->actionShowBuild;
+        d->executeDockVisibility = mw->ui->actionShowExecute;
         d->docksGroup = new QActionGroup( this );
         d->docksGroup->addAction( d->searchDockVisibility );
         d->docksGroup->addAction( d->buildDockVisibility );
         d->docksGroup->addAction( d->executeDockVisibility );
         d->docksGroup->setExclusive( true );
 
-        d->lineNumbersVisibility = mw->ui->actionLineNumbersVisibility;
-        d->bookmarksVisibility = mw->ui->actionBookmarksVisibility;
-        d->foldMargingVisibility = mw->ui->actionFoldMargingVisibility;
-        d->indentationGuidesVisibility = mw->ui->actionIndentationGuidesVisibility;
-        d->unprintableCharactersVisibility = mw->ui->actionUnprintableCharactersVisibility;
+        d->lineNumbersVisibility = mw->ui->actionShowLineNumbers;
+        d->bookmarksVisibility = mw->ui->actionShowBookmarks;
+        //d->foldMargingVisibility = mw->ui->actionFoldMargingVisibility;
+        //d->indentationGuidesVisibility = mw->ui->actionIndentationGuidesVisibility;
+        d->unprintableCharactersVisibility = mw->ui->actionShowInvisibleCharacters;
 
         // Warning !!! Some connections are done in the .ui file !!!
 
-        connect( d->fullScreenAction, SIGNAL( toggled( bool ) ),
-        this, SLOT( setFullScreen( bool ) ) );
-        connect( d->docksVisibilityAction, SIGNAL( toggled( bool ) ),
-        this, SLOT( setDocksVisibility( bool ) ) );
-        connect( d->dockVisibilityAction, SIGNAL( toggled( bool ) ),
-        mw->ui->dockStack, SLOT( setVisible( bool ) ) );
-        connect( d->searchDockVisibility, SIGNAL( toggled( bool ) ),
-        this, SLOT( setSearchDockVisibility( bool ) ) );
-        connect( d->buildDockVisibility, SIGNAL( toggled( bool ) ),
-        this, SLOT( setBuildDockVisibility( bool ) ) );
-        connect( d->executeDockVisibility, SIGNAL( toggled( bool ) ),
-        this, SLOT( setExecuteDockVisibility( bool ) ) );
+        //connect( d->fullScreenAction, SIGNAL( toggled( bool ) ),
+        //        this, SLOT( setFullScreen( bool ) ) );
+        //connect( d->docksVisibilityAction, SIGNAL( toggled( bool ) ),
+        //        this, SLOT( setDocksVisibility( bool ) ) );
+        //connect( d->dockVisibilityAction, SIGNAL( toggled( bool ) ),
+        //        mw->ui->dockStack, SLOT( setVisible( bool ) ) );
+        //connect( d->searchDockVisibility, SIGNAL( toggled( bool ) ),
+        //        this, SLOT( setSearchDockVisibility( bool ) ) );
+        //connect( d->buildDockVisibility, SIGNAL( toggled( bool ) ),
+        //        this, SLOT( setBuildDockVisibility( bool ) ) );
+        //connect( d->executeDockVisibility, SIGNAL( toggled( bool ) ),
+        //        this, SLOT( setExecuteDockVisibility( bool ) ) );
 
         connect( d->projectExploratorVisibility, SIGNAL( toggled( bool ) ),
-        mw->ui->projectExplorator, SLOT( setVisible( bool ) ) );
+                mw->ui->projectExplorator, SLOT( setVisible( bool ) ) );
 
         connect( d->lineNumbersVisibility, SIGNAL( toggled( bool ) ),
-        this, SLOT( setLineNumbersVisibility( bool ) ) );
+                this, SLOT( setLineNumbersVisibility( bool ) ) );
         connect( d->bookmarksVisibility, SIGNAL( toggled( bool ) ),
-        this, SLOT( setBookmarksVisibility( bool ) ) );
-        connect( d->foldMargingVisibility, SIGNAL( toggled( bool ) ),
-        this, SLOT( setFoldMargingVisibility( bool ) ) );
-        connect( d->indentationGuidesVisibility, SIGNAL( toggled( bool ) ),
-        this, SLOT( setIndentationGuidesVisibility( bool ) ) );
+                this, SLOT( setBookmarksVisibility( bool ) ) );
+        // connect( d->foldMargingVisibility, SIGNAL( toggled( bool ) ),
+        //         this, SLOT( setFoldMargingVisibility( bool ) ) );
+        // connect( d->indentationGuidesVisibility, SIGNAL( toggled( bool ) ),
+        //         this, SLOT( setIndentationGuidesVisibility( bool ) ) );
         connect( d->unprintableCharactersVisibility, SIGNAL( toggled( bool ) ),
-        this, SLOT( setUnprintableCharactersVisibility( bool ) ) );
+                this, SLOT( setUnprintableCharactersVisibility( bool ) ) );
 
-        connect( mw->ui->actionIncreaseZoom, SIGNAL( triggered() ),
-        this, SLOT( increaseZoom() ) );
-        connect( mw->ui->actionDecreaseZoom, SIGNAL( triggered() ),
-        this, SLOT( decreaseZoom() ) );
-        connect( mw->ui->actionNormalZoom, SIGNAL( triggered() ),
-        this, SLOT( normalZoom() ) );
+        connect( mw->ui->actionBigger, SIGNAL( triggered() ),
+                this, SLOT( increaseZoom() ) );
+        connect( mw->ui->actionSmaller, SIGNAL( triggered() ),
+                this, SLOT( decreaseZoom() ) );
+        connect( mw->ui->actionDefaultSize, SIGNAL( triggered() ),
+                this, SLOT( normalZoom() ) );
 }
 
 bool ViewController::isFullScreen() const 
@@ -159,15 +160,15 @@ bool ViewController::isBookmarksVisible() const
     return d->bookmarksVisibility->isChecked();
 }
 
-bool ViewController::isFoldMargingVisible() const 
-{
-    return d->foldMargingVisibility->isChecked();
-}
-
-bool ViewController::isIndentationGuidesVisible() const 
-{
-    return d->indentationGuidesVisibility->isChecked();
-}
+// bool ViewController::isFoldMargingVisible() const 
+// {
+//     return d->foldMargingVisibility->isChecked();
+// }
+// 
+// bool ViewController::isIndentationGuidesVisible() const 
+// {
+//     return d->indentationGuidesVisibility->isChecked();
+// }
 
 bool ViewController::isUnprintableCharactersVisible() const 
 {

@@ -76,9 +76,7 @@ namespace o3prm
         connect( __mainWidget->ui->projectExplorator, SIGNAL( customContextMenuRequested( QPoint ) ),
                 this, SLOT( _onCustomContextMenuRequested( QPoint ) ) );
 
-        connect(__mainWidget->ui->actionNewFileProject, SIGNAL( triggered() ),
-                this, SLOT( _newProject() ) );
-        connect( __mainWidget->ui->actionNewProject, SIGNAL( triggered() ),
+        connect(__mainWidget->ui->actionNewProject, SIGNAL( triggered() ),
                 this, SLOT( _newProject() ) );
 
         connect( __mainWidget->ui->actionOpenProject, SIGNAL( triggered() ),

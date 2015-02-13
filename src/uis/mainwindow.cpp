@@ -66,7 +66,7 @@ void MainWindow::__setupProjectController()
     ui->projectExplorator->setVisible( false );
     ui->projectExplorator->setDragDropMode( QAbstractItemView::InternalMove );
     ui->projectExplorator->setEditTriggers( QAbstractItemView::NoEditTriggers );
-    ui->actionProjectProperties->setEnabled( false );
+    //ui->actionProjectProperties->setEnabled( false );
 }
 
 void MainWindow::__setupTabWidget()
@@ -131,10 +131,10 @@ void MainWindow::closeProject()
     vc->setProjectExploratorVisibility( false );
 
     //// Disable new specific file creation
-    ui->actionNewClass->setEnabled( false );
-    ui->actionNewModel->setEnabled( false );
-    ui->actionNewRequestFile->setEnabled( false );
-    ui->actionProjectExploratorVisibility->setEnabled( false );
+    //ui->actionNewClass->setEnabled( false );
+    //ui->actionNewModel->setEnabled( false );
+    //ui->actionNewRequestFile->setEnabled( false );
+    ui->actionShowProjectExplorator->setEnabled( false );
     ui->projectExplorator->hide();
 
     //// Disable auto syntax check
@@ -195,7 +195,7 @@ void MainWindow::showAboutDialog()
 void MainWindow::loadProject(o3prm::Project* project)
 {
     // Show project arborescence
-    ui->actionProjectExploratorVisibility->setEnabled( true );
+    ui->actionShowProjectExplorator->setEnabled( true );
     ui->projectExplorator->setModel( project );
     //ui->projectExplorator->setRootIndex( project->root() );
     //vc->setProjectExploratorVisibility( true );
@@ -203,9 +203,9 @@ void MainWindow::loadProject(o3prm::Project* project)
     ui->projectExplorator->show();
 
     // Enable new specific file creation
-    ui->actionNewClass->setEnabled( true );
-    ui->actionNewModel->setEnabled( true );
-    ui->actionNewRequestFile->setEnabled( true );
+    // ui->actionNewClass->setEnabled( true );
+    // ui->actionNewModel->setEnabled( true );
+    // ui->actionNewRequestFile->setEnabled( true );
 
     // Enable auto syntax check
     bc->setAutoSyntaxCheck( true );

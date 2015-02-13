@@ -40,8 +40,8 @@ void QsciScintillaExtended::initParameters()
     setFont( font );
 
     setUtf8( true );
-    setEdgeMode( QsciScintilla::EdgeLine );
-    setEdgeColumn( 80 );
+    //setEdgeMode( QsciScintilla::EdgeLine );
+    //setEdgeColumn( 80 );
     setAutoIndent( true );
     setIndentationGuides( true );
     setTabWidth( 4 );

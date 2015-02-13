@@ -164,9 +164,7 @@ QTreeWidgetItem * Properties::addShortcuts( QAction * a, const QString & parent 
         menu->setFlags( menu->flags() ^ Qt::ItemIsSelectable );
         foreach( QAction * action, a->menu()->actions() ) 
         {
-            if ( ! action->isSeparator() and
-                    !( action == mw->ui->actionRecentFiles ) and
-                    !( action == mw->ui->actionRecentProject ) )
+            if ( not action->isSeparator() )
             {
                 menu->addChild( addShortcuts( action, completeName+"/" ) );
             }

@@ -39,9 +39,6 @@ namespace o3prm
         d->recentsFiles = new QMenu( mw );
         d->recentsFilesMapper = new QSignalMapper( this );
 
-        // Construct "Recent files" menu
-        __mainWidget->ui->actionRecentFiles->setMenu( d->recentsFiles );
-
         d->lastDir = QDir::homePath();
     }
 
@@ -50,20 +47,10 @@ namespace o3prm
         connect(d->recentsFilesMapper, SIGNAL( mapped( QString ) ),
                 this, SLOT( openFile( QString ) ) );
 
-        connect(__mainWidget->ui->actionOpenFile, SIGNAL( triggered() ),
-                this, SLOT( openFile() ));
-        connect(__mainWidget->ui->actionSaveFile, SIGNAL( triggered() ),
+        connect(__mainWidget->ui->actionSave, SIGNAL( triggered() ),
                 this, SLOT( saveFile() ));
-        connect(__mainWidget->ui->actionSaveAsFile, SIGNAL( triggered() ),
-                this, SLOT( saveAsFile() ));
-        connect(__mainWidget->ui->actionSaveAllFiles, SIGNAL( triggered() ),
+        connect(__mainWidget->ui->actionSaveAll, SIGNAL( triggered() ),
                 this, SLOT( saveAllFiles() ));
-        connect(__mainWidget->ui->actionCloseFile, SIGNAL( triggered() ),
-                this, SLOT( closeFile() ));
-        connect(__mainWidget->ui->actionCloseAllFiles, SIGNAL( triggered() ),
-                this, SLOT( closeAllFiles() ));
-        connect(__mainWidget->ui->actionUpdateMetadata, SIGNAL( triggered() ),
-                this, SLOT( updateMetadata() ));
         connect(__mainWidget->ui->tabWidget, SIGNAL( currentChanged( int ) ),
                 this, SLOT( onCurrentDocumentChanged( int ) ));
         connect(__mainWidget->ui->tabWidget, SIGNAL( tabCloseRequested( int ) ),
@@ -472,6 +459,7 @@ namespace o3prm
     /// Return true if all files have been saved, false otherwise.
     bool FileController::saveAllFiles() 
     {
+        std::cout << "In saveAllFiles()" << std::endl;
         bool success = true;
 
         // Save the curretn file
@@ -480,13 +468,16 @@ namespace o3prm
         // Change current index allow to view the file if we must saveAs it.
         for ( int i = 0, size = __mainWidget->ui->tabWidget->count() ; i < size ; i++ ) 
         {
+            std::cout << "Saving tab n°" << i << std::endl;
             __mainWidget->ui->tabWidget->setCurrentIndex( i ); // Set the document i to the current file
             success = success and saveFile();
         }
+        std::cout << "Finished saving tabs." << std::endl;
 
         // Reshow the previous current file.
         __mainWidget->ui->tabWidget->setCurrentWidget( temp );
 
+        std::cout << "Returning: " << (success?"true":"false") << std::endl;
         return success;
     }
 
@@ -512,8 +503,7 @@ namespace o3prm
 
             if ( __mainWidget->ui->tabWidget->count() == 0 ) 
             {
-                __mainWidget->ui->menuEdit->setEnabled( false );
-                __mainWidget->ui->menuSearch->setEnabled( false );
+                __mainWidget->ui->editMenu->setEnabled( false );
             }
             else if ( index == 0 )
             {
@@ -909,8 +899,7 @@ namespace o3prm
         connect( sci, SIGNAL( filenameChanged( QString,QString ) ), this, SLOT( onDocumentRenamed( QString,QString ) ) );
 
         // Restore editable menu
-        __mainWidget->ui->menuEdit->setEnabled( true );
-        __mainWidget->ui->menuSearch->setEnabled( true );
+        __mainWidget->ui->editMenu->setEnabled( true );
 
         __setMargin(sci);
 
@@ -937,16 +926,6 @@ namespace o3prm
         if ( ! __mainWidget->vc->isBookmarksVisible() )
         {
             sci->setMarginWidth( 1,0 );
-        }
-
-        if ( ! __mainWidget->vc->isFoldMargingVisible() )
-        {
-            sci->setFolding( QsciScintillaExtended::NoFoldStyle );
-        }
-
-        if ( ! __mainWidget->vc->isIndentationGuidesVisible() )
-        {
-            sci->setIndentationGuides( false );
         }
 
         if ( __mainWidget->vc->isUnprintableCharactersVisible() ) 

@@ -29,7 +29,7 @@ EditController::EditController( MainWindow * mw, QObject * parent ) :
     pr( new Properties( mw,mw ) )
 {
     d->completer = new PRMCompleter( this );
-    connect(mw->ui->actionEditPreferences, SIGNAL( triggered() ),
+    connect(mw->ui->actionPreferences, SIGNAL( triggered() ),
             this, SLOT( editPreferences() ) );
 
     // Must be start after project triggerInit

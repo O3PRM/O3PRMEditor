@@ -43,28 +43,22 @@ namespace o3prm
                 this, SLOT( copy() ) );
         connect(__mainWidget->mainWindow()->actionPaste, SIGNAL( triggered() ),
                 this, SLOT( paste() ) );
-        connect(__mainWidget->mainWindow()->actionSelectAll, SIGNAL( triggered() ),
-                this, SLOT( selectAll() ) );
-        connect(__mainWidget->mainWindow()->actionSwitchComment, SIGNAL( triggered() ),
+        connect(__mainWidget->mainWindow()->actionComment, SIGNAL( triggered() ),
+                this, SLOT( switchComment() ) );
+        connect(__mainWidget->mainWindow()->actionUncomment, SIGNAL( triggered() ),
                 this, SLOT( switchComment() ) );
         connect(__mainWidget->mainWindow()->actionIncreaseIndentation, SIGNAL( triggered() ),
                 this, SLOT( increaseIndentation() ) );
         connect(__mainWidget->mainWindow()->actionDecreaseIndentation, SIGNAL( triggered() ),
                 this, SLOT( decreaseIndentation() ) );
-        connect(__mainWidget->mainWindow()->actionAutoComplete, SIGNAL( triggered() ),
-                this, SLOT( autoComplete() ) );
+        connect(__mainWidget->mainWindow()->actionAutocomplete, SIGNAL( triggered() ),
+                this, SLOT( autocomplete() ) );
 
         // Connection some of the File entries from the main window.
-        connect(__mainWidget->mainWindow()->actionSaveFile, SIGNAL( triggered() ),
+        connect(__mainWidget->mainWindow()->actionSave, SIGNAL( triggered() ),
                 this, SLOT( saveFile() ));
-        connect(__mainWidget->mainWindow()->actionSaveAsFile, SIGNAL( triggered() ),
-                this, SLOT( saveAsFile() ));
-        connect(__mainWidget->mainWindow()->actionSaveAllFiles, SIGNAL( triggered() ),
+        connect(__mainWidget->mainWindow()->actionSaveAll, SIGNAL( triggered() ),
                 this, SLOT( saveAllFiles() ));
-        connect(__mainWidget->mainWindow()->actionCloseFile, SIGNAL( triggered() ),
-                this, SLOT( closeFile() ));
-        connect(__mainWidget->mainWindow()->actionCloseAllFiles, SIGNAL( triggered() ),
-                this, SLOT( closeAllFiles() ));
 
         // Connecting to the tab widget
         connect(__mainWidget->mainWindow()->tabWidget, SIGNAL( currentChanged( int ) ),
@@ -95,9 +89,10 @@ namespace o3prm
         return 0;
     }
 
+    // TODO Changing index is ugly, need to refactor this
     QsciScintillaExtended* EditorController::findDocument(int& index)
     {
-        if (index >= 0 and index < __mainWidget->mainWindow()->tabWidget->count())
+        if (index < 0 and index >= __mainWidget->mainWindow()->tabWidget->count())
         {
             index = __mainWidget->mainWindow()->tabWidget->currentIndex();
             return currentDocument();
@@ -233,7 +228,8 @@ namespace o3prm
     void EditorController::saveAllFiles()
     {
         bool success = true;
-        for ( int i = 0; i < __mainWidget->mainWindow()->tabWidget->count(); i++ ) 
+        int count = __mainWidget->mainWindow()->tabWidget->count();
+        for ( int i = 0; i < count; i++ ) 
         {
             auto sci = findDocument(i);
             success = success and __saveFile(sci);
@@ -395,7 +391,7 @@ namespace o3prm
         }
     }
 
-    void EditorController::autoComplete() 
+    void EditorController::autocomplete() 
     {
         // if ( currentDocument() )
         // {
@@ -404,7 +400,7 @@ namespace o3prm
 
         //         if ( mw->ui->commandLineEdit->hasFocus() ) {
         //             mw->ui->commandLineEdit->setCompleter( d->completer );
-        //             mw->ui->commandLineEdit->autoComplete();
+        //             mw->ui->commandLineEdit->autocomplete();
         //         } else {
         //             mw->fc->currentDocument()->setCompleter( d->completer );
         //             mw->fc->currentDocument()->autoCompleteFromCompleter();
@@ -421,8 +417,7 @@ namespace o3prm
     void EditorController::__toggleEditorMenus(bool show)
     {
         // Restore editable menu
-        __mainWidget->mainWindow()->menuEdit->setEnabled( true );
-        __mainWidget->mainWindow()->menuSearch->setEnabled( true );
+        __mainWidget->mainWindow()->editMenu->setEnabled( true );
     }
 
     void EditorController::__initialize(QsciScintillaExtended* sci,
@@ -443,16 +438,6 @@ namespace o3prm
         if ( ! __mainWidget->viewController()->isBookmarksVisible() )
         {
             sci->setMarginWidth( 1,0 );
-        }
-
-        if ( ! __mainWidget->viewController()->isFoldMargingVisible() )
-        {
-            sci->setFolding( QsciScintillaExtended::NoFoldStyle );
-        }
-
-        if ( ! __mainWidget->viewController()->isIndentationGuidesVisible() )
-        {
-            sci->setIndentationGuides( false );
         }
 
         if ( __mainWidget->viewController()->isUnprintableCharactersVisible() ) 

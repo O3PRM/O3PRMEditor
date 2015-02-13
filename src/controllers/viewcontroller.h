@@ -26,8 +26,6 @@ class ViewController : public QObject
 
         bool isLineNumbersVisible() const;
         bool isBookmarksVisible() const;
-        bool isFoldMargingVisible() const;
-        bool isIndentationGuidesVisible() const;
         bool isUnprintableCharactersVisible() const;
 
     public slots:

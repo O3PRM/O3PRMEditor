@@ -105,33 +105,33 @@ SearchController::SearchController( MainWindow * mw, QObject *parent ) :
     connect( d->sr, SIGNAL( itemDoubleClicked( QTreeWidgetItem*,int ) ), 
             this, SLOT( onResultSearchDoubleClick( QTreeWidgetItem*,int ) ) );
 
-    connect( mw->ui->actionQuickSearch, SIGNAL( triggered() ),
+    connect( mw->ui->actionFind, SIGNAL( triggered() ),
             this, SLOT( quickSearch() ) );
-    connect( mw->ui->actionAdvanceSearch, SIGNAL( triggered() ),
-            this, SLOT( advanceSearch() ) );
-    connect( mw->ui->actionReplace, SIGNAL( triggered() ),
-            this, SLOT( replace() ) );
-    connect( mw->ui->actionNext, SIGNAL( triggered() ), 
+    // connect( mw->ui->actionAdvanceSearch, SIGNAL( triggered() ),
+    //         this, SLOT( advanceSearch() ) );
+    //connect( mw->ui->actionReplace, SIGNAL( triggered() ),
+    //        this, SLOT( replace() ) );
+    connect( mw->ui->actionFindNext, SIGNAL( triggered() ), 
             this, SLOT( next() ) );
-    connect( mw->ui->actionPrevious, SIGNAL( triggered() ), 
+    connect( mw->ui->actionFindPrevious, SIGNAL( triggered() ), 
             this, SLOT( previous() ) );
-    connect( mw->ui->actionReplaceAndNext, SIGNAL( triggered() ), 
-            this, SLOT( replaceAndNext() ) );
-    connect( mw->ui->actionReplaceAndPrevious, SIGNAL( triggered() ), 
-            this, SLOT( replaceAndPrevious() ) );
-    connect( mw->ui->actionReplaceAll, SIGNAL( triggered() ), 
-            this, SLOT( replaceAll() ) );
-    connect( mw->ui->actionSwitchMarker, SIGNAL( triggered() ), 
-            this, SLOT( switchMarker() ) );
-    connect( mw->ui->actionFindNextMarker, SIGNAL( triggered() ), 
-            this, SLOT( findNextMarker() ) );
-    connect( mw->ui->actionFindPreviousMarker, SIGNAL( triggered() ), 
-            this, SLOT( findPreviousMarker() ) );
-    connect( mw->ui->actionDockVisibility, SIGNAL( triggered() ), 
-            this, SLOT( hideQuickWidgets() ) );
+    //connect( mw->ui->actionReplaceAndNext, SIGNAL( triggered() ), 
+    //        this, SLOT( replaceAndNext() ) );
+    //connect( mw->ui->actionReplaceAndPrevious, SIGNAL( triggered() ), 
+    //        this, SLOT( replaceAndPrevious() ) );
+    //connect( mw->ui->actionReplaceAll, SIGNAL( triggered() ), 
+    //        this, SLOT( replaceAll() ) );
+    //connect( mw->ui->actionSwitchMarker, SIGNAL( triggered() ), 
+    //        this, SLOT( switchMarker() ) );
+    //connect( mw->ui->actionFindNextMarker, SIGNAL( triggered() ), 
+    //        this, SLOT( findNextMarker() ) );
+    //connect( mw->ui->actionFindPreviousMarker, SIGNAL( triggered() ), 
+    //        this, SLOT( findPreviousMarker() ) );
+    //connect( mw->ui->actionDockVisibility, SIGNAL( triggered() ), 
+    //        this, SLOT( hideQuickWidgets() ) );
 
-    connect( mw->ui->searchOptionsButton, SIGNAL( clicked() ), 
-            this, SLOT( onSearchOptionButtonClicked() ) );
+    //connect( mw->ui->searchOptionsButton, SIGNAL( clicked() ), 
+    //        this, SLOT( onSearchOptionButtonClicked() ) );
     connect( d->caseSensitiveOptionAction, SIGNAL( toggled( bool ) ), 
             this, SLOT( onCaseSensitiveOptionChecked( bool ) ) );
     connect( d->wholeWordOptionAction, SIGNAL( toggled( bool ) ), 

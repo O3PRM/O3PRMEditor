@@ -106,7 +106,7 @@ namespace o3prm
             void decreaseIndentation();
 
             /// Autocomplete the current word in the current document
-            void autoComplete();
+            void autocomplete();
 
         signals:
             /// Emited when a file is opened
