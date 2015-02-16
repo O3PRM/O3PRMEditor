@@ -16,6 +16,9 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="windowTitle">
+   <string>O3PRM Editor</string>
+  </property>
   <property name="windowIcon">
    <iconset resource="../rsrc/resources.qrc">
     <normaloff>:/icons/logo</normaloff>:/icons/logo</iconset>
@@ -124,7 +127,7 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_6" stretch="128,0,0,0">
+           <layout class="QVBoxLayout" name="verticalLayout_6" stretch="128">
             <property name="spacing">
              <number>1</number>
             </property>
@@ -145,152 +148,6 @@
               <property name="movable">
                <bool>true</bool>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QWidget" name="commandWidget" native="true">
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <property name="margin">
-                <number>1</number>
-               </property>
-               <item>
-                <widget class="QCommandLineEdit" name="commandLineEdit"/>
-               </item>
-               <item>
-                <widget class="QPushButton" name="validCommandButton">
-                 <property name="text">
-                  <string>Valider</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QWidget" name="quickSearchWidget" native="true">
-              <layout class="QHBoxLayout" name="quickSearchLayout" stretch="0,128,0,0,0,0">
-               <property name="margin">
-                <number>1</number>
-               </property>
-               <item>
-                <widget class="QLabel" name="label">
-                 <property name="minimumSize">
-                  <size>
-                   <width>80</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Rechercher</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="quickSearchEdit"/>
-               </item>
-               <item>
-                <widget class="QPushButton" name="searchOptionsButton">
-                 <property name="maximumSize">
-                  <size>
-                   <width>27</width>
-                   <height>27</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string notr="true">+</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="previousSearchButton">
-                 <property name="text">
-                  <string>Précédent</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../rsrc/resources.qrc">
-                   <normaloff>:/icons/icons/previous.png</normaloff>:/icons/icons/previous.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="nextSearchButton">
-                 <property name="text">
-                  <string>Suivant</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../rsrc/resources.qrc">
-                   <normaloff>:/icons/icons/next.png</normaloff>:/icons/icons/next.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>81</width>
-                   <height>27</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QWidget" name="quickReplaceWidget" native="true">
-              <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,128,0,0,0">
-               <property name="margin">
-                <number>1</number>
-               </property>
-               <item>
-                <widget class="QLabel" name="label_2">
-                 <property name="minimumSize">
-                  <size>
-                   <width>80</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Remplacer</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="quickReplaceEdit"/>
-               </item>
-               <item>
-                <widget class="QPushButton" name="previousReplaceButton">
-                 <property name="text">
-                  <string>Précédent</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../rsrc/resources.qrc">
-                   <normaloff>:/icons/icons/previous.png</normaloff>:/icons/icons/previous.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="nextReplaceButton">
-                 <property name="text">
-                  <string>Suivant</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../rsrc/resources.qrc">
-                   <normaloff>:/icons/icons/next.png</normaloff>:/icons/icons/next.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="replaceAllButton">
-                 <property name="text">
-                  <string>Tous</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
              </widget>
             </item>
            </layout>
@@ -821,11 +678,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QCommandLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qcommandlineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>QTabBar</class>
    <extends>QWidget</extends>
    <header>QTabBar</header>
@@ -834,22 +686,5 @@
  <resources>
   <include location="../rsrc/resources.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>commandLineEdit</sender>
-   <signal>returnPressed()</signal>
-   <receiver>validCommandButton</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>454</x>
-     <y>420</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>712</x>
-     <y>420</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

@@ -1,61 +1,27 @@
-#ifndef ADVANCEDSEARCH_H
-#define ADVANCEDSEARCH_H
+#ifndef O3PRM__ADVANCED_SEARCH_H
+#define O3PRM__ADVANCED_SEARCH_H
 
 #include <QDialog>
 
-namespace Ui {
+#include "ui_advancedsearch.h"
 
-    class AdvancedSearch;
-}
-
-class AdvancedSearch : public QDialog
+namespace o3prm
 {
-    Q_OBJECT
 
-    public:
-        enum Filter {All, O3prml, O3prmr};
+    class AdvancedSearch : public QDialog
+    {
+        Q_OBJECT
 
-        explicit AdvancedSearch( QWidget *parent = 0 );
-        ~AdvancedSearch();
+        public:
+            explicit AdvancedSearch( QWidget *parent = 0 );
+            ~AdvancedSearch();
 
-        bool isSearch() const;
-        bool isReplaceAll() const;
-        bool isDocumentSearch() const;
-        bool isProjectSearch() const;
-        bool isOpenFilesSearch() const;
-        bool isCaseSensitive() const;
-        bool isRegex() const;
-        bool isWholeWord() const;
-        Filter filter() const;
-        QString searchText() const;
-        QString replaceText() const;
+            Ui::AdvancedSearch* ui() const;
 
-    public slots:
-        void setDocumentSearch();
-        void setProjectSearch();
-        void setOpenFilesSearch();
-        void setCaseSensitive( bool checked );
-        void setRegex( bool checked );
-        void setWholeWord( bool checked );
-        void setFilter( Filter filter );
-        void setSearchText( const QString & text );
-        void setReplaceText( const QString & text );
-        void setProjectSearchEnabled( bool enabled );
+        private:
+            Ui::AdvancedSearch* __ui;
+    };
 
-    protected slots:
-        void on_cancelButton_clicked();
-        void on_searchButton_clicked();
-        void on_replaceAllButton_clicked();
+} // o3prm
 
-        void on_documentRadio_toggled( bool checked );
-
-    protected:
-        void closeEvent( QCloseEvent * event );
-
-    private:
-        Ui::AdvancedSearch *ui;
-
-        bool m_isSearch, m_isReplaceAll;
-};
-
-#endif // ADVANCEDSEARCH_H
+#endif // O3PRM__ADVANCED_SEARCH_H

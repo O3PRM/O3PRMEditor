@@ -64,6 +64,7 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/controllers/editcontroller.cpp
             src/controllers/filecontroller.cpp
             src/controllers/projectcontroller.cpp
+            src/controllers/newsearchcontroller.cpp
             src/controllers/searchcontroller.cpp
             src/controllers/viewcontroller.cpp
             src/controllers/editorcontroller.cpp
@@ -73,6 +74,8 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/models/project.cpp
             src/models/projectitem.cpp
             src/models/buildmodel.cpp
+            src/models/searchmodel.cpp
+            src/models/searchresult.cpp
             src/parsers/abstractparser.cpp
             src/parsers/o3prmlinterpretation.cpp
             src/parsers/o3prmrinterpretation.cpp
@@ -95,6 +98,7 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/controllers/editcontroller.h
             src/controllers/filecontroller.h
             src/controllers/projectcontroller.h
+            src/controllers/newsearchcontroller.h
             src/controllers/searchcontroller.h
             src/controllers/viewcontroller.h
             src/controllers/editorcontroller.h
@@ -104,6 +108,8 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/models/project.h
             src/models/projectitem.h
             src/models/buildmodel.h
+            src/models/searchmodel.h
+            src/models/searchresult.h
             src/parsers/abstractparser.h
             src/parsers/o3prmlinterpretation.h
             src/parsers/o3prmrinterpretation.h

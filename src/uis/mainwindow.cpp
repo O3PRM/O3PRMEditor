@@ -5,7 +5,7 @@
 #include "qsciscintillaextended.h"
 #include "controllers/filecontroller.h"
 #include "controllers/editcontroller.h"
-#include "controllers/searchcontroller.h"
+#include "controllers/newsearchcontroller.h"
 #include "controllers/projectcontroller.h"
 #include "controllers/viewcontroller.h"
 #include "controllers/buildcontroller.h"
@@ -52,7 +52,7 @@ void MainWindow::__setupControllers()
 {
     //fc = new o3prm::FileController( this, this );
     ec = new EditController( this, this );
-    sc = new SearchController( this, this );
+    sc = new o3prm::NewSearchController( this, this );
     vc = new ViewController( this, this );
     __setupProjectController();
     bc = new o3prm::BuildController( this, this );
@@ -118,6 +118,7 @@ void MainWindow::__setupConnections()
     //fc->setupConnections();
     pc->setupConnections();
     bc->setupConnections();
+    sc->setupConnections();
     __editorController->setupConnections();
 }
 

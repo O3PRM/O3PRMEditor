@@ -147,7 +147,8 @@ bool ViewController::isExecuteDockVisible() const
 
 bool ViewController::isCommandWidgetVisible() const 
 {
-    return mw->ui->commandWidget->isVisible();
+    //return mw->ui->commandWidget->isVisible();
+    return false;
 }
 
 bool ViewController::isLineNumbersVisible() const 
@@ -246,7 +247,7 @@ void ViewController::setExecuteDockVisibility( bool visible )
 
 void ViewController::setCommandWidgetVisible( bool visible ) 
 {
-    mw->ui->commandWidget->setVisible( visible );
+    //mw->ui->commandWidget->setVisible( visible );
 }
 
 void ViewController::setLineNumbersVisibility( bool visible ) 

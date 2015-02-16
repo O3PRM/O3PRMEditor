@@ -89,8 +89,8 @@ namespace o3prm
     {
         d->buildList = mw->ui->buildDock;
         d->execList = mw->ui->execDock;
-        d->commandButton = mw->ui->validCommandButton;
-        d->commandLine = mw->ui->commandLineEdit;
+        //d->commandButton = mw->ui->validCommandButton;
+        //d->commandLine = mw->ui->commandLineEdit;
         d->isAuto = false;
         d->isCommand = false;
         d->fileParser = 0;

@@ -20,11 +20,11 @@ namespace o3prm
     class FileController;
     class BuildController;
     class EditorController;
+    class NewSearchController;
 }
 
 class ViewController;
 class EditController;
-class SearchController;
 
 /*!
   The program main window.
@@ -65,7 +65,7 @@ class MainWindow : public QMainWindow
 
         //o3prm::FileController *fc;
         EditController *ec;
-        SearchController *sc;
+        o3prm::NewSearchController *sc;
         ViewController *vc;
         o3prm::ProjectController *pc;
         o3prm::BuildController *bc;
@@ -74,7 +74,6 @@ class MainWindow : public QMainWindow
 
         friend class o3prm::FileController;
         friend class EditController;
-        friend class SearchController;
         friend class ViewController;
         friend class o3prm::ProjectController;
         friend class o3prm::BuildController;
