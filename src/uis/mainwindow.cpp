@@ -21,6 +21,10 @@ struct MainWindow::PrivateData
 {
     QDialog * dial;
     QTextBrowser * browser;
+    PrivateData():
+        dial(0), browser(0)
+    { }
+
 };
 
 MainWindow::MainWindow( QWidget *parent ) :
@@ -57,7 +61,7 @@ void MainWindow::__setupControllers()
     //vc = new ViewController( this, this );
     __setupProjectController();
     bc = new o3prm::BuildController( this, this );
-    
+
     __menuContoller = new o3prm::MenuController(this);
     __editorController = new o3prm::EditorController(this);
 }
@@ -156,7 +160,7 @@ void MainWindow::showHelp()
         __data->dial = new QDialog( this );
         __data->dial->setWindowIcon( QIcon( ":/icons/logo" ) );
         __data->dial->setWindowTitle( tr( "O3prmEditor -- Help" ) );
-        QVBoxLayout * layout = new QVBoxLayout( __data->dial );
+        auto layout = new QVBoxLayout( __data->dial );
         layout->setSpacing( 0 );
         layout->setContentsMargins( 0,0,0,0 );
         __data->browser = new QTextBrowser( __data->dial );
