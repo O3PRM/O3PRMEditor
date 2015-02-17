@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>762</width>
-    <height>501</height>
+    <width>741</width>
+    <height>553</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -306,7 +306,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>762</width>
+     <width>741</width>
      <height>22</height>
     </rect>
    </property>
@@ -332,6 +332,9 @@
      <addaction name="actionNewProject"/>
     </widget>
     <widget class="QMenu" name="menuRecentProjects">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Recent Projects</string>
      </property>
@@ -362,9 +365,11 @@
      <addaction name="actionFind"/>
      <addaction name="actionFindNext"/>
      <addaction name="actionFindPrevious"/>
-     <addaction name="actionUseSelectionForFind"/>
     </widget>
     <widget class="QMenu" name="menuFont">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="title">
       <string>Font</string>
      </property>
@@ -508,6 +513,9 @@
    </property>
   </action>
   <action name="actionAutocomplete">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Autocompletion</string>
    </property>
@@ -558,6 +566,9 @@
    </property>
   </action>
   <action name="actionSelect_Font">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Select Font</string>
    </property>
@@ -578,16 +589,25 @@
    </property>
   </action>
   <action name="actionShowLineNumbers">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Line Numbers</string>
    </property>
   </action>
   <action name="actionShowBookmarks">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Bookmarks</string>
    </property>
   </action>
   <action name="actionShowInvisibleCharacters">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Show Invisible Characters</string>
    </property>

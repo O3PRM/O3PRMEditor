@@ -152,14 +152,26 @@ namespace o3prm
 
     void NewSearchController::onReplaceandSearchButtonClicked()
     {
-        std::cout << "Searching " << __searchModel->searchValue().toStdString()
-            << " and replacing with " << __searchModel->replaceValue().toStdString() << std::endl;
+        auto cs = Qt::CaseInsensitive;
+        if (__searchModel->caseSensitiveOption())
+        {
+            cs = Qt::CaseInsensitive;
+        }
+        if (__searchModel->replaceValue().contains(__searchModel->searchValue(), cs))
+        {
+            __dialog->ui()->wordBox->setCheckState(Qt::Checked);
+        }
+        auto sci = __mw->editorController()->currentDocument();
+        if (sci and sci->hasSelectedText())
+        {
+            sci->replace(__searchModel->replaceValue());
+            onSearchButtonClicked();
+        }
     }
 
     void NewSearchController::onReplaceAllButtonClicked()
     {
-        std::cout << "Searching " << __searchModel->searchValue().toStdString()
-            << " and replacing ALL with " << __searchModel->replaceValue().toStdString() << std::endl;
+
     }
 
     void NewSearchController::__searchCurrentDoc()
@@ -188,13 +200,11 @@ namespace o3prm
 
     void NewSearchController::__searchOpenedFiles()
     {
-        std::cout << "In __searchOpenedFiles()" << std::endl;
         int index = __mw->mainWindow()->tabWidget->currentIndex();
         if (index > -1)
         {
             for (int i = 0; i < __mw->mainWindow()->tabWidget->count(); ++i)
             {
-                std::cout << "Index: " << index << std::endl;
                 auto sci = __mw->editorController()->findDocument(index);
                 // We want to start at selection for the first doc, then at
                 // the begining for the other ones.
@@ -203,14 +213,12 @@ namespace o3prm
 
                 if ( sci )
                 {
-                    std::cout << "sci: " << sci << std::endl;
                     bool result = sci->findFirst( __searchModel->searchValue(),
                             __searchModel->regularExpressionOption(),
                             __searchModel->caseSensitiveOption(),
                             __searchModel->wordsOnlyOption(),
                             false, true, line, column, true );
 
-                    std::cout << "results: " << (result?"true":"false") << std::endl;
                     if ( not result )
                     {
                         // We proceed to the nex tab
@@ -228,7 +236,6 @@ namespace o3prm
                     }
                 }
             }
-            std::cout << "Found nothing..." << std::endl;
             // We get here if search is unsucessfull
             __dialog->ui()->searchEdit->setStyleSheet( "background-color: red" );
             __dialog->ui()->searchEdit->setFocus();

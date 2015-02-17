@@ -75,7 +75,6 @@ SET(SOURCES src/controllers/buildcontroller.cpp
             src/models/projectitem.cpp
             src/models/buildmodel.cpp
             src/models/searchmodel.cpp
-            src/models/searchresult.cpp
             src/parsers/abstractparser.cpp
             src/parsers/o3prmlinterpretation.cpp
             src/parsers/o3prmrinterpretation.cpp
@@ -109,7 +108,6 @@ SET(HEADERS src/controllers/buildcontroller.h
             src/models/projectitem.h
             src/models/buildmodel.h
             src/models/searchmodel.h
-            src/models/searchresult.h
             src/parsers/abstractparser.h
             src/parsers/o3prmlinterpretation.h
             src/parsers/o3prmrinterpretation.h

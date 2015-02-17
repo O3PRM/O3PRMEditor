@@ -46,6 +46,9 @@
      </item>
      <item>
       <widget class="QRadioButton" name="currentProjectRadio">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Current Project</string>
        </property>
@@ -197,6 +200,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="replaceAllButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Replace All</string>
        </property>
