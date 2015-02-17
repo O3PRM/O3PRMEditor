@@ -224,26 +224,6 @@ void ViewController::setProjectExploratorVisibility( bool visible )
     d->projectExploratorVisibility->setChecked( visible && mw->pc->hasProject() );
 }
 
-void ViewController::setSearchDockVisibility( bool visible ) 
-{
-    d->searchDockVisibility->setChecked( visible );
-    mw->ui->dockStack->setCurrentWidget( mw->ui->pageSearch );
-    setDockVisibility( visible );
-}
-
-void ViewController::setBuildDockVisibility( bool visible )
-{
-    d->buildDockVisibility->setChecked( visible );
-    mw->ui->dockStack->setCurrentWidget( mw->ui->pageBuild );
-    setDockVisibility( visible );
-}
-
-void ViewController::setExecuteDockVisibility( bool visible ) 
-{
-    d->executeDockVisibility->setChecked( visible );
-    mw->ui->dockStack->setCurrentWidget( mw->ui->pageExecute );
-    setDockVisibility( visible );
-}
 
 void ViewController::setCommandWidgetVisible( bool visible ) 
 {

@@ -64,7 +64,7 @@ void MainWindow::__setupProjectController()
 {
     pc = new o3prm::ProjectController( this );
     ui->projectExplorator->setVisible( false );
-    ui->projectExplorator->setDragDropMode( QAbstractItemView::InternalMove );
+    ui->projectExplorator->setDragDropMode( QAbstractItemView::NoDragDrop );
     ui->projectExplorator->setEditTriggers( QAbstractItemView::NoEditTriggers );
     //ui->actionProjectProperties->setEnabled( false );
 }
@@ -77,11 +77,6 @@ void MainWindow::__setupTabWidget()
     ui->splitter2->setStretchFactor( 2, 0 );
 
     vc->setCommandWidgetVisible( false );
-
-    ui->tabBar->addTab( tr( "Search" ) );
-    ui->tabBar->addTab( tr( "Build" ) );
-    ui->tabBar->addTab( tr( "Execute" ) );
-    ui->tabBar->setShape( QTabBar::RoundedSouth );
 }
 
 void MainWindow::__setupProjectExplorer()
@@ -91,14 +86,6 @@ void MainWindow::__setupProjectExplorer()
 
 void MainWindow::__setupConnections()
 {
-    // TabBar
-    connect( ui->tabBar, SIGNAL( currentChanged( int ) ),
-            ui->dockStack, SLOT( setCurrentIndex( int ) ) );
-    connect( ui->dockStack, SIGNAL( currentChanged( int ) ),
-            ui->tabBar, SLOT( setCurrentIndex( int ) ) );
-    connect( ui->tabBar, SIGNAL( currentChanged( int ) ),
-            ui->dockStack, SLOT( show() ) );
-
     // Main ui's various events
     connect( ui->actionQuit, SIGNAL( triggered() ),
             this, SLOT( close() ) );

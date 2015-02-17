@@ -87,8 +87,6 @@ namespace o3prm
     BuildController::BuildController( MainWindow * mw, QObject *parent ) :
         QObject( parent ), mw( mw ), d( new PrivateData ) 
     {
-        d->buildList = mw->ui->buildDock;
-        d->execList = mw->ui->execDock;
         //d->commandButton = mw->ui->validCommandButton;
         //d->commandLine = mw->ui->commandLineEdit;
         d->isAuto = false;

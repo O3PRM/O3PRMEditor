@@ -35,9 +35,6 @@ class ViewController : public QObject
         void setStatusBarVisibility( bool visible );
         void setToolBarVisibility( bool visible );
         void setProjectExploratorVisibility( bool visible );
-        void setSearchDockVisibility( bool visible );
-        void setBuildDockVisibility( bool visible );
-        void setExecuteDockVisibility( bool visible );
         void setCommandWidgetVisible( bool visible );
 
         void setLineNumbersVisibility( bool checked );
