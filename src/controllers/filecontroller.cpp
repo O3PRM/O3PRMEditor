@@ -771,7 +771,7 @@ namespace o3prm
             __mainWidget->ui->tabWidget->setTabText( index, sci->title() + ( sci->isModified()?"*":"" ) );
             __mainWidget->ui->actionBuild->setEnabled( true );
             __mainWidget->ui->actionExecute->setEnabled( true );
-            __mainWidget->vc->setCommandWidgetVisible( sci->lexerEnum() == QsciScintillaExtended::O3prmr );
+            //__mainWidget->vc->setCommandWidgetVisible( sci->lexerEnum() == QsciScintillaExtended::O3prmr );
 
         }
         else
@@ -780,7 +780,7 @@ namespace o3prm
             __mainWidget->setWindowModified( false );
             __mainWidget->ui->actionExecute->setEnabled( false );
             __mainWidget->ui->actionBuild->setEnabled( false );
-            __mainWidget->vc->setCommandWidgetVisible( false );
+            //__mainWidget->vc->setCommandWidgetVisible( false );
         }
     }
 

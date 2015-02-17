@@ -3,11 +3,10 @@
 #include <iostream>
 
 #include "qsciscintillaextended.h"
-#include "controllers/filecontroller.h"
 #include "controllers/editcontroller.h"
 #include "controllers/newsearchcontroller.h"
 #include "controllers/projectcontroller.h"
-#include "controllers/viewcontroller.h"
+#include "controllers/menucontroller.h"
 #include "controllers/buildcontroller.h"
 #include "controllers/editorcontroller.h"
 
@@ -16,6 +15,7 @@
 #include <QMessageBox>
 #include <QLayout>
 #include <QDebug>
+#include <QStatusBar>
 
 struct MainWindow::PrivateData
 {
@@ -35,6 +35,8 @@ MainWindow::MainWindow( QWidget *parent ) :
     __setupTabWidget();
 
     __setupConnections();
+
+    statusBar()->showMessage(tr("Ready"));
 }
 
 MainWindow::~MainWindow()
@@ -50,13 +52,13 @@ Ui::MainWindow* MainWindow::mainwindow()
 
 void MainWindow::__setupControllers()
 {
-    //fc = new o3prm::FileController( this, this );
     ec = new EditController( this, this );
     sc = new o3prm::NewSearchController( this, this );
-    vc = new ViewController( this, this );
+    //vc = new ViewController( this, this );
     __setupProjectController();
     bc = new o3prm::BuildController( this, this );
-
+    
+    __menuContoller = new o3prm::MenuController(this);
     __editorController = new o3prm::EditorController(this);
 }
 
@@ -76,7 +78,7 @@ void MainWindow::__setupTabWidget()
     ui->splitter2->setStretchFactor( 1, 0 );
     ui->splitter2->setStretchFactor( 2, 0 );
 
-    vc->setCommandWidgetVisible( false );
+    //vc->setCommandWidgetVisible( false );
 }
 
 void MainWindow::__setupProjectExplorer()
@@ -107,6 +109,7 @@ void MainWindow::__setupConnections()
     bc->setupConnections();
     sc->setupConnections();
     __editorController->setupConnections();
+    __menuContoller->setupConnections();
 }
 
 void MainWindow::saveProject(o3prm::Project* project)
@@ -116,7 +119,7 @@ void MainWindow::saveProject(o3prm::Project* project)
 
 void MainWindow::closeProject()
 {
-    vc->setProjectExploratorVisibility( false );
+    __menuContoller->setProjectExploratorVisibility( false );
 
     //// Disable new specific file creation
     //ui->actionNewClass->setEnabled( false );
@@ -151,7 +154,7 @@ void MainWindow::showHelp()
     {
         // Create Help dialog
         __data->dial = new QDialog( this );
-        __data->dial->setWindowIcon( QIcon( "qrc:/logo" ) );
+        __data->dial->setWindowIcon( QIcon( ":/icons/logo" ) );
         __data->dial->setWindowTitle( tr( "O3prmEditor -- Help" ) );
         QVBoxLayout * layout = new QVBoxLayout( __data->dial );
         layout->setSpacing( 0 );
@@ -186,7 +189,7 @@ void MainWindow::loadProject(o3prm::Project* project)
     ui->actionShowProjectExplorator->setEnabled( true );
     ui->projectExplorator->setModel( project );
     //ui->projectExplorator->setRootIndex( project->root() );
-    //vc->setProjectExploratorVisibility( true );
+    __menuContoller->setProjectExploratorVisibility( true );
     ui->projectExplorator->expandAll();
     ui->projectExplorator->show();
 

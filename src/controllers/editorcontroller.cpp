@@ -7,7 +7,6 @@
 
 #include "uis/mainwindow.h"
 #include "controllers/projectcontroller.h"
-#include "controllers/viewcontroller.h"
 
 namespace o3prm
 {
@@ -308,7 +307,7 @@ namespace o3prm
             __mainWidget->mainWindow()->tabWidget->setTabText( index, sci->title() + ( sci->isModified()?"*":"" ) );
             __mainWidget->mainWindow()->actionBuild->setEnabled( true );
             __mainWidget->mainWindow()->actionExecute->setEnabled( true );
-            __mainWidget->viewController()->setCommandWidgetVisible( sci->lexerEnum() == QsciScintillaExtended::O3prmr );
+            //__mainWidget->viewController()->setCommandWidgetVisible( sci->lexerEnum() == QsciScintillaExtended::O3prmr );
         }
         else
         {
@@ -316,7 +315,7 @@ namespace o3prm
             __mainWidget->setWindowModified( false );
             __mainWidget->mainWindow()->actionExecute->setEnabled( false );
             __mainWidget->mainWindow()->actionBuild->setEnabled( false );
-            __mainWidget->viewController()->setCommandWidgetVisible( false );
+            //__mainWidget->viewController()->setCommandWidgetVisible( false );
         }
     }
 
@@ -430,21 +429,21 @@ namespace o3prm
         sci->setText( text );
         sci->setModified( false );
 
-        if ( ! __mainWidget->viewController()->isLineNumbersVisible() )
-        {
-            sci->setMarginWidth( 0,0 );
-        }
+        //if ( ! __mainWidget->viewController()->isLineNumbersVisible() )
+        //{
+        //    sci->setMarginWidth( 0,0 );
+        //}
 
-        if ( ! __mainWidget->viewController()->isBookmarksVisible() )
-        {
-            sci->setMarginWidth( 1,0 );
-        }
+        //if ( ! __mainWidget->viewController()->isBookmarksVisible() )
+        //{
+        //    sci->setMarginWidth( 1,0 );
+        //}
 
-        if ( __mainWidget->viewController()->isUnprintableCharactersVisible() ) 
-        {
-            sci->setWhitespaceVisibility(( QsciScintillaExtended::WhitespaceVisibility ) true );
-            sci->setEolVisibility( true );
-        }
+        //if ( __mainWidget->viewController()->isUnprintableCharactersVisible() ) 
+        //{
+        //    sci->setWhitespaceVisibility(( QsciScintillaExtended::WhitespaceVisibility ) true );
+        //    sci->setEolVisibility( true );
+        //}
 
         QSettings settings;
         sci->setTabWidth( settings.value( "preferences/editor/tabwidth" ).toInt() );

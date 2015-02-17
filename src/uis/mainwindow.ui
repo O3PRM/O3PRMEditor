@@ -24,7 +24,7 @@
     <normaloff>:/icons/logo</normaloff>:/icons/logo</iconset>
   </property>
   <property name="statusTip">
-   <string>Hello</string>
+   <string/>
   </property>
   <property name="documentMode">
    <bool>true</bool>
@@ -312,9 +312,6 @@
     <addaction name="actionShowToolbar"/>
     <addaction name="actionShowStatusBar"/>
     <addaction name="actionShowProjectExplorator"/>
-    <addaction name="separator"/>
-    <addaction name="actionShowBuild"/>
-    <addaction name="actionShowExecute"/>
    </widget>
    <widget class="QMenu" name="buildMenu">
     <property name="title">
@@ -398,7 +395,7 @@
   <action name="actionNewProject">
    <property name="icon">
     <iconset resource="../rsrc/resources.qrc">
-     <normaloff>:/icons/icons/transpO3PRM.png</normaloff>:/icons/icons/transpO3PRM.png</iconset>
+     <normaloff>:/icons/icons/new.png</normaloff>:/icons/icons/new.png</iconset>
    </property>
    <property name="text">
     <string>Project</string>
@@ -650,6 +647,9 @@
    </property>
   </action>
   <action name="actionBuild">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../rsrc/resources.qrc">
      <normaloff>:/icons/icons/gear-icon.png</normaloff>:/icons/icons/gear-icon.png</iconset>
@@ -659,6 +659,9 @@
    </property>
   </action>
   <action name="actionExecute">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../rsrc/resources.qrc">
      <normaloff>:/icons/icons/execute.png</normaloff>:/icons/icons/execute.png</iconset>

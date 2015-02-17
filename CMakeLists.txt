@@ -62,11 +62,9 @@ LINK_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/lib)
 SET(O3PRMEDITOR_MAIN src/main.cpp)
 SET(SOURCES src/controllers/buildcontroller.cpp
             src/controllers/editcontroller.cpp
-            src/controllers/filecontroller.cpp
             src/controllers/projectcontroller.cpp
             src/controllers/newsearchcontroller.cpp
-            src/controllers/searchcontroller.cpp
-            src/controllers/viewcontroller.cpp
+            src/controllers/menucontroller.cpp
             src/controllers/editorcontroller.cpp
             src/lexers/qscilexero3prml.cpp
             src/lexers/qscilexero3prml2.cpp
@@ -95,11 +93,9 @@ SET(TEST_SOURCES src/test/main.cpp
    )
 SET(HEADERS src/controllers/buildcontroller.h
             src/controllers/editcontroller.h
-            src/controllers/filecontroller.h
             src/controllers/projectcontroller.h
             src/controllers/newsearchcontroller.h
-            src/controllers/searchcontroller.h
-            src/controllers/viewcontroller.h
+            src/controllers/menucontroller.h
             src/controllers/editorcontroller.h
             src/lexers/qscilexero3prml.h
             src/lexers/qscilexero3prml2.h
