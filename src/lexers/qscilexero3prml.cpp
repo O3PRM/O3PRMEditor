@@ -6,8 +6,8 @@
 
 QsciLexerO3prml::QsciLexerO3prml( QObject * parent ) : QsciLexerJava( parent ) 
 {
-    QFont font( "monospace" );
-    font.setPointSize( 10 );
+    QFont font( "consolas" );
+    font.setPointSize( 12 );
     font.setStyleHint( QFont::Monospace );
     setFont( font,QsciLexerJava::Default );
     setFont( font,QsciLexerJava::Comment );
@@ -38,7 +38,7 @@ QsciLexerO3prml::~QsciLexerO3prml() { }
 
 const char * QsciLexerO3prml::language() const 
 {
-    return "O3prml";
+    return "O3prm";
 }
 
 const char * QsciLexerO3prml::keywords( int set ) const 

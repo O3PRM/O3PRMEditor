@@ -66,7 +66,7 @@ QsciLexerO3prml2::QsciLexerO3prml2( QObject * parent ) :
     d->declarationReference = QRegExp( "^[a-zA-Z_][\\.a-zA-Z_0-9]*(\\[\\d*\\])?\\s+[a-zA-Z_][a-zA-Z_0-9]*\\s*;" );
     d->declarationAttribute = QRegExp( "^[a-zA-Z_][\\.a-zA-Z_0-9]*(\\[\\d*\\])?\\s[^\\{\\;\\=]*\\{" );
 
-    d->normalFont = QFont( "Courier new", 10 );
+    d->normalFont = QFont( "consolas", 12 );
     d->normalFont.setStyleHint( QFont::Monospace );
     d->normalBoldFont = QFont( d->normalFont );
     d->normalBoldFont.setBold( true );
@@ -84,7 +84,7 @@ QsciLexerO3prml2::~QsciLexerO3prml2()
 
 const char* QsciLexerO3prml2::language() const 
 {
-    return "O3prml";
+    return "O3prm";
 }
 
 QString QsciLexerO3prml2::description( int style ) const 
@@ -238,7 +238,7 @@ void QsciLexerO3prml2::styleText( int start, int end )
 
     int style, previousStyle, lineNb = 0, level = QsciScintilla::SC_FOLDLEVELBASE;
     bool isWaitingBlock = false, isWaitingPackage = false;
-    bool startInComment = false, isNewLine = true, newLineJustMatch = false, startBlock = false;
+    bool startInComment = false, newLineJustMatch = false, startBlock = false;
 
     QString line;
 
@@ -291,7 +291,6 @@ void QsciLexerO3prml2::styleText( int start, int end )
             // match \n
             if ( d->spaces.cap( 0 ).contains( "\n" ) )
             { 
-                isNewLine = true;
 
                 if ( ! startBlock )
                 {
@@ -473,10 +472,6 @@ void QsciLexerO3prml2::styleText( int start, int end )
         if ( newLineJustMatch )
         {
             newLineJustMatch = false;
-        }
-        else
-        {
-            isNewLine = false;
         }
 
         if ( style != Keyword ) 

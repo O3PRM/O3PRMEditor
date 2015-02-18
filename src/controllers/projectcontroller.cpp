@@ -121,6 +121,7 @@ namespace o3prm
 
     void ProjectController::_openProject( QString path )
     {
+        std::cout << "In _openProject(" << path.toStdString() << ")" << std::endl;
         if (hasProject())
         {
             __saveProject();
@@ -136,12 +137,15 @@ namespace o3prm
                     );
         }
 
+        std::cout << "Opening project" << std::endl;
         QFile file(path);
         if (file.open(QIODevice::ReadOnly))
         { 
+            std::cout << "Project opened: " << file.fileName().toStdString() << std::endl;
             QDomDocument doc("o3prmproject");
             if( doc.setContent( &file ) )
             {
+                std::cout << "Content set" << std::endl;
                 QFileInfo info(file);
                 auto tag = Project::itemType2String(ProjectItem::ItemType::Project).toLower();
                 auto projects = doc.elementsByTagName(tag);
@@ -157,7 +161,15 @@ namespace o3prm
 
                 emit projectLoaded(__currentProj);
             }
+            else
+            {
+                std::cout << "Failed to set content" << std::endl;
+            }
             file.close();
+        }
+        else
+        {
+            std::cout << "Project could not be opened" << std::endl;
         }
     }
 
@@ -439,7 +451,9 @@ namespace o3prm
 
     bool ProjectController::__validNameAndWarn(QString name)
     {
-        if (name.isEmpty() or name == ".o3prm") //not boost::filesystem::portable_name(name.toStdString()))
+        //Should use BOOST !
+        // if (not boost::filesystem::portable_name(name.toStdString())
+        if (name.isEmpty() or name == ".o3prm") 
         {
             if (name.isEmpty())
             {
@@ -447,7 +461,14 @@ namespace o3prm
             }
             QMessageBox::warning ( __mainWidget,
                     tr("Invalid name"),
-                    tr("%1 is not a valid choice for this action, please chose another name.").arg(name));
+                    tr("%1 is not a valid choice, please chose another name.").arg(name));
+            return false;
+        }
+        else if (name.contains(" "))
+        {
+            QMessageBox::warning ( __mainWidget,
+                    tr("Do not use whitespace in name"),
+                    tr("%1 is not a valid choice, please chose another name.").arg(name));
             return false;
         }
         return true;
@@ -485,8 +506,8 @@ namespace o3prm
         bool ok;
         auto name = __askForName(ProjectItem::ItemType::Directory, ok);
         if (ok
-            and __validNameAndWarn(name)
-            and not __existsAndWarn(name, parent, ProjectItem::ItemType::Directory))
+                and __validNameAndWarn(name)
+                and not __existsAndWarn(name, parent, ProjectItem::ItemType::Directory))
         {
             QDir dir(__currentProj->dir());
             dir.cd(parent->path());
@@ -505,8 +526,8 @@ namespace o3prm
         auto name = __askForName(ProjectItem::ItemType::File, ok);
 
         if (ok
-            and __validNameAndWarn(name)
-            and not __existsAndWarn(name, parent, ProjectItem::ItemType::File))
+                and __validNameAndWarn(name)
+                and not __existsAndWarn(name, parent, ProjectItem::ItemType::File))
         {
             auto file = new ProjectItem(ProjectItem::ItemType::File, name);
             parent->appendRow(file);
@@ -533,8 +554,8 @@ namespace o3prm
         auto name = __askForName(ProjectItem::ItemType::Request, ok);
 
         if (ok
-            and __validNameAndWarn(name)
-            and not __existsAndWarn(name, parent, ProjectItem::ItemType::Request))
+                and __validNameAndWarn(name)
+                and not __existsAndWarn(name, parent, ProjectItem::ItemType::Request))
         {
             auto file = new ProjectItem(ProjectItem::ItemType::Request, name);
             parent->appendRow(file);
@@ -567,6 +588,7 @@ namespace o3prm
 
     void ProjectController::__execute(ProjectItem* item)
     {
+        emit beforeInference();
         __build = new BuildModel(__currentProj, this);
         auto interpreter = __build->build(item);
         std::stringstream strBuff;
@@ -618,27 +640,27 @@ namespace o3prm
             {
                 case (int)ProjectItem::ItemType::File:
                 case (int)ProjectItem::ItemType::Request:
-                {
-                    auto path = dir.absoluteFilePath(item->path());
-                    emit fileRemoved(path);
-                    dir.remove(path);
-                    break;
-                }
-                case (int)ProjectItem::ItemType::Directory:
-                {
-                    if (dir.exists(item->path()))
                     {
-                        dir.cd(item->path());
-                        __removeDir(dir.absolutePath());
-                        emit packageRemoved(dir.absolutePath());
+                        auto path = dir.absoluteFilePath(item->path());
+                        emit fileRemoved(path);
+                        dir.remove(path);
+                        break;
                     }
-                    break;
-                }
+                case (int)ProjectItem::ItemType::Directory:
+                    {
+                        if (dir.exists(item->path()))
+                        {
+                            dir.cd(item->path());
+                            __removeDir(dir.absolutePath());
+                            emit packageRemoved(dir.absolutePath());
+                        }
+                        break;
+                    }
                 default:
-                {
-                    // Do nothing
-                    break;
-                }
+                    {
+                        // Do nothing
+                        break;
+                    }
             }
             item->parent()->removeRow(item->row());
         }

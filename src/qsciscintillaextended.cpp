@@ -34,8 +34,8 @@ void QsciScintillaExtended::initParameters()
 
     setFolding( BoxedTreeFoldStyle );
 
-    QFont font( "monospace" );
-    font.setPointSize( 10 );
+    QFont font( "consolas" );
+    font.setPointSize( 12 );
     font.setStyleHint( QFont::Monospace );
     setFont( font );
 
@@ -137,7 +137,7 @@ void QsciScintillaExtended::setFilename( const QString & filename )
 
     d->filename = filename;
 
-    if ( info.suffix() == "o3prml" or info.suffix() == "skl" )
+    if ( info.suffix() == "o3prm" or info.suffix() == "skl" )
     {
         setLexer( O3prml );
     }

@@ -1,6 +1,6 @@
 <RCC>
   <qresource prefix="/icons">
-    <file>icons/transpO3PRM.png</file>
+    <file alias="logo">icons/transpO3PRM.png</file>
     <file>icons/folder.png</file>
     <file>icons/about.png</file>
     <file>icons/copy.png</file>
@@ -41,7 +41,6 @@
     <file>icons/new_class.png</file>
     <file>icons/new_request.png</file>
     <file>icons/new_system.png</file>
-    <file alias="logo">icons/logo3.png</file>
   </qresource>
   <qresource prefix="/">
     <file>api/o3prml.api</file>

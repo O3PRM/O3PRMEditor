@@ -52,6 +52,8 @@ namespace o3prm
                 this, SLOT( decreaseIndentation() ) );
         connect(__mainWidget->mainWindow()->actionAutocomplete, SIGNAL( triggered() ),
                 this, SLOT( autocomplete() ) );
+        connect(__mainWidget->mainWindow()->actionCloseFile, SIGNAL( triggered() ),
+                this, SLOT( closeFile() ) );
 
         // Connection some of the File entries from the main window.
         connect(__mainWidget->mainWindow()->actionSave, SIGNAL( triggered() ),
@@ -76,6 +78,8 @@ namespace o3prm
                 this, SLOT( closeFiles(QString) ));
         connect(__mainWidget->projectController(), SIGNAL( packageRemoved(QString) ),
                 this, SLOT( closeFiles(QString) ));
+        connect(__mainWidget->projectController(), SIGNAL(beforeInference()),
+                this, SLOT( saveAllFiles() ));
     }
 
     QsciScintillaExtended* EditorController::currentDocument() const
@@ -91,7 +95,7 @@ namespace o3prm
     // TODO Changing index is ugly, need to refactor this
     QsciScintillaExtended* EditorController::findDocument(int& index)
     {
-        if (index < 0 and index >= __mainWidget->mainWindow()->tabWidget->count())
+        if (index < 0 or index >= __mainWidget->mainWindow()->tabWidget->count())
         {
             index = __mainWidget->mainWindow()->tabWidget->currentIndex();
             return currentDocument();
@@ -542,7 +546,7 @@ namespace o3prm
 
     QString EditorController::__askForFileName(QsciScintillaExtended * sci, const QString& dir)
     {
-        const QString o3prmlFilter = tr( "Class or system files (*.o3prml)" );
+        const QString o3prmlFilter = tr( "Class or system files (*.o3prm)" );
         const QString o3prmrFilter = tr( "Request files (*.o3prmr)" );
 
         QString filters, selectedFilter;
@@ -560,9 +564,9 @@ namespace o3prm
         auto title = tr( "Save file as..." );
         auto filename = QFileDialog::getSaveFileName(__mainWidget, title, dir, filters, &selectedFilter);
 
-        if (selectedFilter == o3prmlFilter and not filename.endsWith(".o3prml"))
+        if (selectedFilter == o3prmlFilter and not filename.endsWith(".o3prm"))
         {
-            filename += ".o3prml";
+            filename += ".o3prm";
         }
         else if (selectedFilter == o3prmrFilter and not filename.endsWith(".o3prmr"))
         {

@@ -205,7 +205,7 @@ namespace o3prm
         if (filename.isEmpty())
         {
             auto msg = tr("Select files to open");
-            auto filter = tr("O3prm Files(*.o3prml *.o3prmr)");
+            auto filter = tr("O3prm Files(*.o3prm *.o3prmr)");
             filenameList = QFileDialog::getOpenFileNames(__mainWidget, msg, d->lastDir, filter);
 
             // If no files were selected, we stop here
@@ -424,7 +424,7 @@ namespace o3prm
 
     QString FileController::__askForFileName(QsciScintillaExtended * sci, const QString& dir)
     {
-        const QString o3prmlFilter = tr( "Class or system files (*.o3prml)" );
+        const QString o3prmlFilter = tr( "Class or system files (*.o3prm)" );
         const QString o3prmrFilter = tr( "Request files (*.o3prmr)" );
 
         QString filters, selectedFilter;
@@ -443,9 +443,9 @@ namespace o3prm
         auto filename = QFileDialog::getSaveFileName(__mainWidget,
                 title, dir, filters, &selectedFilter );
 
-        if (selectedFilter == o3prmlFilter && ! filename.endsWith(".o3prml"))
+        if (selectedFilter == o3prmlFilter && ! filename.endsWith(".o3prm"))
         {
-            filename += ".o3prml";
+            filename += ".o3prm";
         }
         else if (selectedFilter == o3prmrFilter && ! filename.endsWith(".o3prmr"))
         {

@@ -127,7 +127,7 @@ namespace o3prm
 
     QDomDocument Project::asXml()
     {
-        QDomDocument doc(name());
+        QDomDocument doc(name().replace(" ", "_"));
         auto xml_root = doc.createElement("o3prmproject");
         xml_root.setAttribute("name", name());
 

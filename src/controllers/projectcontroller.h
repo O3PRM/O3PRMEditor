@@ -60,6 +60,9 @@ namespace o3prm
             /// Emitted when a file is renamed.
             void packageRenamed(QString oldPath, QString newPath);
 
+            /// Emitied before inference starts
+            void beforeInference();
+
         protected slots:
             /// Create a new project.
             /// Open a dialog and ask the name and the directory of the project.
