@@ -33,7 +33,7 @@ ExternalProject_Add(AGRUM-SRC
         GIT_TAG 0.9.0
         CONFIGURE_COMMAND ""
         UPDATE_COMMAND ""
-        BUILD_COMMAND ./act install release -p linux -j 7 -m PRM -d <INSTALL_DIR> # call with python instead of ./
+        BUILD_COMMAND python ./act install release -p linux -j 7 -m PRM -d <INSTALL_DIR> # call with python instead of ./
         BUILD_IN_SOURCE 1
         INSTALL_COMMAND ""
         )
