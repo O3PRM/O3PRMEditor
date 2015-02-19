@@ -44,19 +44,19 @@ SET(AGRUM_LIB_DIR "${PROJECT_BINARY_DIR}/aGrUM/lib/")
 INCLUDE_DIRECTORIES(${AGRUM_INCLUDE_DIR})
 LINK_DIRECTORIES(${AGRUM_LIB_DIR})
 
-ExternalProject_add(GMOCK
-    PREFIX gmock
-    URL https://googlemock.googlecode.com/files/gmock-1.7.0.zip
-    URL_HASH SHA1=f9d9dd882a25f4069ed9ee48e70aff1b53e3c5a5
-    INSTALL_COMMAND mkdir -p <INSTALL_DIR>/lib <INSTALL_DIR>/include
-        COMMAND cp -R -f <INSTALL_DIR>/src/GMOCK/include/gmock <INSTALL_DIR>/include
-        COMMAND cp -f <BINARY_DIR>/libgmock.a <INSTALL_DIR>/lib
-        COMMAND cp -R -f <INSTALL_DIR>/src/GMOCK/gtest/include/gtest <INSTALL_DIR>/include
-        COMMAND cp -f <BINARY_DIR>/gtest/libgtest.a <INSTALL_DIR>/lib
-)
+# ExternalProject_add(GMOCK
+#     PREFIX gmock
+#     URL https://googlemock.googlecode.com/files/gmock-1.7.0.zip
+#     URL_HASH SHA1=f9d9dd882a25f4069ed9ee48e70aff1b53e3c5a5
+#     INSTALL_COMMAND mkdir -p <INSTALL_DIR>/lib <INSTALL_DIR>/include
+#         COMMAND cp -R -f <INSTALL_DIR>/src/GMOCK/include/gmock <INSTALL_DIR>/include
+#         COMMAND cp -f <BINARY_DIR>/libgmock.a <INSTALL_DIR>/lib
+#         COMMAND cp -R -f <INSTALL_DIR>/src/GMOCK/gtest/include/gtest <INSTALL_DIR>/include
+#         COMMAND cp -f <BINARY_DIR>/gtest/libgtest.a <INSTALL_DIR>/lib
+# )
 
-INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/include)
-LINK_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/lib)
+#INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/include)
+#LINK_DIRECTORIES(${PROJECT_BINARY_DIR}/gmock/lib)
 
 # Reproducing what qmake does
 SET(O3PRMEDITOR_MAIN src/main.cpp)
@@ -152,9 +152,9 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 
 # Test related stuff
-ADD_EXECUTABLE(o3prmeditor_test ${TEST_SOURCES} ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
-TARGET_LINK_LIBRARIES(o3prmeditor_test gmock gtest pthread ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum)  #${Boost_LIBRARIES}
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    SET_TARGET_PROPERTIES(o3prmeditor_test PROPERTIES LINK_FLAGS "-lstdc++")
-endif()
+#ADD_EXECUTABLE(o3prmeditor_test ${TEST_SOURCES} ${SOURCES} ${HEADERS_MOC} ${FORMS_HEADERS})
+#TARGET_LINK_LIBRARIES(o3prmeditor_test gmock gtest pthread ${QT_LIBRARIES} ${QSCINTILLA_LIBRARIES} agrum)  #${Boost_LIBRARIES}
+#if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+#    SET_TARGET_PROPERTIES(o3prmeditor_test PROPERTIES LINK_FLAGS "-lstdc++")
+#endif()
 
