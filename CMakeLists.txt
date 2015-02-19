@@ -60,9 +60,7 @@ LINK_DIRECTORIES(${AGRUM_LIB_DIR})
 
 # Reproducing what qmake does
 SET(O3PRMEDITOR_MAIN src/main.cpp)
-SET(SOURCES src/controllers/buildcontroller.cpp
-            src/controllers/editcontroller.cpp
-            src/controllers/projectcontroller.cpp
+SET(SOURCES src/controllers/projectcontroller.cpp
             src/controllers/newsearchcontroller.cpp
             src/controllers/menucontroller.cpp
             src/controllers/editorcontroller.cpp
@@ -91,9 +89,7 @@ SET(TEST_SOURCES src/test/main.cpp
                  src/test/projectTest.cpp
                  src/test/buildmodelTest.cpp
    )
-SET(HEADERS src/controllers/buildcontroller.h
-            src/controllers/editcontroller.h
-            src/controllers/projectcontroller.h
+SET(HEADERS src/controllers/projectcontroller.h
             src/controllers/newsearchcontroller.h
             src/controllers/menucontroller.h
             src/controllers/editorcontroller.h

@@ -3,11 +3,9 @@
 #include <iostream>
 
 #include "qsciscintillaextended.h"
-#include "controllers/editcontroller.h"
 #include "controllers/newsearchcontroller.h"
 #include "controllers/projectcontroller.h"
 #include "controllers/menucontroller.h"
-#include "controllers/buildcontroller.h"
 #include "controllers/editorcontroller.h"
 
 #include <QFileDialog>
@@ -56,11 +54,11 @@ Ui::MainWindow* MainWindow::mainwindow()
 
 void MainWindow::__setupControllers()
 {
-    ec = new EditController( this, this );
+    //ec = new EditController( this, this );
     sc = new o3prm::NewSearchController( this, this );
     //vc = new ViewController( this, this );
     __setupProjectController();
-    bc = new o3prm::BuildController( this, this );
+    //bc = new o3prm::BuildController( this, this );
 
     __menuContoller = new o3prm::MenuController(this);
     __editorController = new o3prm::EditorController(this);
@@ -110,7 +108,7 @@ void MainWindow::__setupConnections()
     // Setting up connections of each controller
     //fc->setupConnections();
     pc->setupConnections();
-    bc->setupConnections();
+    //bc->setupConnections();
     sc->setupConnections();
     __editorController->setupConnections();
     __menuContoller->setupConnections();
@@ -133,13 +131,13 @@ void MainWindow::closeProject()
     ui->projectExplorator->hide();
 
     //// Disable auto syntax check
-    bc->setAutoSyntaxCheck( false );
+    //bc->setAutoSyntaxCheck( false );
 }
 
 void MainWindow::closeEvent( QCloseEvent *event )
 {
-    bool oldAutoSyntax = bc->isAutoSyntaxCheck();
-    bc->setAutoSyntaxCheck( false );
+    //bool oldAutoSyntax = bc->isAutoSyntaxCheck();
+    //bc->setAutoSyntaxCheck( false );
 
     if ( __editorController->quit() ) 
     {
@@ -147,7 +145,7 @@ void MainWindow::closeEvent( QCloseEvent *event )
     }
     else
     {
-        bc->setAutoSyntaxCheck( oldAutoSyntax );
+        //bc->setAutoSyntaxCheck( oldAutoSyntax );
         event->ignore();
     }
 }
@@ -203,7 +201,7 @@ void MainWindow::loadProject(o3prm::Project* project)
     // ui->actionNewRequestFile->setEnabled( true );
 
     // Enable auto syntax check
-    bc->setAutoSyntaxCheck( true );
+    //bc->setAutoSyntaxCheck( true );
 }
 
 o3prm::ProjectController* MainWindow::projectController()

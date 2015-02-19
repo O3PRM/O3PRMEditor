@@ -3,17 +3,12 @@
 #include <iostream>
 #include <sstream>
 
-#include "buildcontroller.h"
-#include "editcontroller.h"
-#include "filecontroller.h"
 #include "lexers/qscilexero3prml2.h"
 #include "qsciscintillaextended.h"
-#include "searchcontroller.h"
 #include "ui_mainwindow.h"
 #include "uis/mainwindow.h"
 #include "uis/newprojectdialog.h"
 #include "uis/projectproperties.h"
-#include "viewcontroller.h"
 
 #include <QDebug>
 #include <QDir>

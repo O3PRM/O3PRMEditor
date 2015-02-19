@@ -5,7 +5,6 @@
 #include "ui_mainwindow.h"
 
 #include "qsciscintillaextended.h"
-#include "controllers/filecontroller.h"
 #include "controllers/editorcontroller.h"
 
 #include <QMenu>

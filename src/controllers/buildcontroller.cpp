@@ -2,10 +2,6 @@
 
 #include "uis/mainwindow.h"
 #include "ui_mainwindow.h"
-#include "filecontroller.h"
-#include "editcontroller.h"
-#include "searchcontroller.h"
-#include "viewcontroller.h"
 #include "projectcontroller.h"
 #include "qsciscintillaextended.h"
 #include "parsers/o3prmlinterpretation.h"
