@@ -309,17 +309,11 @@ namespace o3prm
             __mainWidget->setWindowFilePath( sci->title() );
             __mainWidget->setWindowModified( sci->isModified() );
             __mainWidget->mainWindow()->tabWidget->setTabText( index, sci->title() + ( sci->isModified()?"*":"" ) );
-            __mainWidget->mainWindow()->actionBuild->setEnabled( true );
-            __mainWidget->mainWindow()->actionExecute->setEnabled( true );
-            //__mainWidget->viewController()->setCommandWidgetVisible( sci->lexerEnum() == QsciScintillaExtended::O3prmr );
         }
         else
         {
             __mainWidget->setWindowFilePath( QString() );
             __mainWidget->setWindowModified( false );
-            __mainWidget->mainWindow()->actionExecute->setEnabled( false );
-            __mainWidget->mainWindow()->actionBuild->setEnabled( false );
-            //__mainWidget->viewController()->setCommandWidgetVisible( false );
         }
     }
 
