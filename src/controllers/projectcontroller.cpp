@@ -4,7 +4,7 @@
 #include <sstream>
 
 #include "lexers/qscilexero3prml2.h"
-#include "qsciscintillaextended.h"
+#include "models/qsciscintillaextended.h"
 #include "ui_mainwindow.h"
 #include "uis/mainwindow.h"
 #include "uis/newprojectdialog.h"

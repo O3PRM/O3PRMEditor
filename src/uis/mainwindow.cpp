@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "qsciscintillaextended.h"
+#include "models/qsciscintillaextended.h"
 #include "controllers/newsearchcontroller.h"
 #include "controllers/projectcontroller.h"
 #include "controllers/menucontroller.h"

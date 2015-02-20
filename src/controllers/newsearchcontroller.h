@@ -5,7 +5,7 @@
 
 class MainWindow;
 
-#include "qsciscintillaextended.h"
+#include "models/qsciscintillaextended.h"
 #include "models/searchmodel.h"
 
 namespace o3prm

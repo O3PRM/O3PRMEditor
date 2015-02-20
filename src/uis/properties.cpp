@@ -4,7 +4,7 @@
 #include "ui_properties.h"
 #include "ui_mainwindow.h"
 
-#include "qsciscintillaextended.h"
+#include "models/qsciscintillaextended.h"
 #include "controllers/editorcontroller.h"
 
 #include <QMenu>
@@ -50,12 +50,6 @@ Properties::Properties( MainWindow * mainw, QWidget *parent ) :
     ui->tabIndentsCheckBox->setChecked( settings.value( "tabIndents",true ).toBool() );
     auto value = settings.value( "backspaceUnindents",true ).toBool();
     ui->backspaceUnindentsCheckBox->setChecked(value);
-    settings.endGroup();
-
-    settings.beginGroup( "metadata" );
-    ui->auteurPlainText->setPlainText( settings.value( "autor" ).toString() );
-    ui->licencePlainText->setPlainText( settings.value( "licence" ).toString() );
-    ui->dateCheck->setChecked( settings.value( "updateDateChecked",true ).toBool() );
     settings.endGroup();
 
     settings.beginGroup( "shortcuts" );
@@ -214,12 +208,6 @@ void Properties::accept()
         sci->setBackspaceUnindents( ui->backspaceUnindentsCheckBox->isChecked() );
         sci->setIndentationsUseTabs( ui->indentUseTabsCheckBox->isChecked() );
     }
-
-    settings.beginGroup( "metadata" );
-    settings.setValue( "autor", ui->auteurPlainText->toPlainText() );
-    settings.setValue( "licence", ui->licencePlainText->toPlainText() );
-    settings.setValue( "updateDateChecked", ui->dateCheck->isChecked() );
-    settings.endGroup();
 
     settings.beginGroup( "shortcuts" );
     foreach( QTreeWidgetItem * item, d->hash.keys() ) 

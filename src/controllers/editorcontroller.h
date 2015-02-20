@@ -5,7 +5,7 @@
 #include <QHash>
 #include <QFileInfo>
 
-#include "qsciscintillaextended.h"
+#include "models/qsciscintillaextended.h"
 
 // Cross reference, do not replace by an include directive.
 class MainWindow; // uis/mainwindow.h

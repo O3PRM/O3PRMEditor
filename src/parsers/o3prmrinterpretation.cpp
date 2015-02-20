@@ -1,7 +1,7 @@
 #include "o3prmrinterpretation.h"
 
-#include "qsciscintillaextended.h"
-#include "prmtreemodel.h"
+#include "models/qsciscintillaextended.h"
+#include "models/prmtreemodel.h"
 #include <agrum/PRM/o3prmr/O3prmrInterpreter.h>
 
 #include <QDebug>
@@ -81,34 +81,6 @@ void O3prmrInterpretation::run()
     QMutexLocker locker( d->mutex );
     QString command = d->command;
     locker.unlock();
-
-    bool result;
-
-    if ( ! command.isEmpty() )
-    {
-        // File not parsed yet
-        if ( ! d->interpreter || ! d->interpreter->prm() )
-        {
-            if ( ! f.isEmpty() ) 
-            {
-                result = d->interpreter->interpretFile( f.toStdString() );
-            }
-            else
-            {
-                result = d->interpreter->interpretLine( b.toStdString() );
-            }
-        }
-
-        result = d->interpreter->interpretLine( command.toStdString() );
-    }
-    else if ( ! f.isEmpty() )
-    {
-        result = d->interpreter->interpretFile( f.toStdString() );
-    }
-    else
-    {
-        result = d->interpreter->interpretLine( b.toStdString() );
-    }
 
     setErrors( d->interpreter->errorsContainer() );
 

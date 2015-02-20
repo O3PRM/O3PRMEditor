@@ -1,6 +1,6 @@
 #include "qscilexero3prml2.h"
 
-#include "qsciscintillaextended.h"
+#include "models/qsciscintillaextended.h"
 
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscistyle.h>

@@ -1,7 +1,7 @@
 #include "abstractparser.h"
 
-#include "qsciscintillaextended.h"
-#include "prmtreemodel.h"
+#include "models/qsciscintillaextended.h"
+#include "models/prmtreemodel.h"
 
 #include <agrum/core/errorsContainer.h>
 #include <agrum/PRM/PRM.h>

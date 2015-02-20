@@ -1,7 +1,7 @@
 #include "parsers/o3prmlinterpretation.h"
 
-#include "qsciscintillaextended.h"
-#include "prmtreemodel.h"
+#include "models/qsciscintillaextended.h"
+#include "models/prmtreemodel.h"
 #include <agrum/PRM/o3prm/O3prmReader.h>
 
 #include <QDebug>
