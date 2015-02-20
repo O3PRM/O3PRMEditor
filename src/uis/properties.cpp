@@ -32,7 +32,7 @@ Properties::Properties( MainWindow * mainw, QWidget *parent ) :
     ui->listIcon->addItem( tr( "Keyboard shortcuts" ) );
     ui->listIcon->addItem( tr( "Metadata" ) );
 
-    foreach( QAction * a, mw->ui->menuBar->actions() ) 
+    foreach( QAction * a, mw->mainWindow()->menuBar->actions() ) 
     {
         ui->shortcutsTree->addTopLevelItem( addShortcuts( a ) );
     }

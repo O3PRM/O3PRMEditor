@@ -20,6 +20,7 @@ namespace o3prm
     class EditorController;
     class NewSearchController;
     class MenuController;
+    class SettingsController;
 }
 
 class EditController;
@@ -38,11 +39,18 @@ class MainWindow : public QMainWindow
     public:
         explicit MainWindow( QWidget * parent = 0 );
         ~MainWindow();
-        Ui::MainWindow* mainwindow();
 
+        Ui::MainWindow* mainWindow();
+
+        o3prm::NewSearchController* searchController();
         o3prm::ProjectController* projectController();
-        o3prm::EditorController* editorController() { return __editorController; }
-        Ui::MainWindow* mainWindow() { return ui; }
+        o3prm::SettingsController* settingsController();
+        o3prm::MenuController* menuController();
+        o3prm::EditorController* editorController();
+
+    signals:
+        void started();
+        void closing();
 
     protected:
         void closeEvent( QCloseEvent * event );
@@ -58,24 +66,18 @@ class MainWindow : public QMainWindow
         struct PrivateData;
         PrivateData *__data;
 
-        Ui::MainWindow *ui;
+        Ui::MainWindow *__ui;
 
-        EditController *ec;
-        o3prm::NewSearchController *sc;
-        o3prm::ProjectController *pc;
-
-        o3prm::MenuController *__menuContoller;
-        o3prm::EditorController* __editorController;
-
-        friend class EditController;
-        friend class o3prm::ProjectController;
-        friend class Properties;
+        o3prm::NewSearchController *__search;
+        o3prm::ProjectController *__project;
+        o3prm::SettingsController *__settings;
+        o3prm::MenuController *__menu;
+        o3prm::EditorController* __editor;
 
         void __setupControllers();
         void __setupProjectController();
-        void __setupTabWidget();
         void __setupProjectExplorer();
-
+        void __setupTabWidget();
         void __setupConnections();
 };
 

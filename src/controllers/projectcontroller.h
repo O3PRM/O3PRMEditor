@@ -39,6 +39,9 @@ namespace o3prm
             /// Emitted when a project is loaded.
             void projectLoaded(o3prm::Project* project);
 
+            /// Emitted when a project is loaded.
+            void projectLoaded(QString path);
+
             /// Emitted when a project is saved.
             void projectSaved(o3prm::Project* project);
 
@@ -84,12 +87,18 @@ namespace o3prm
             /// Shows the custom context menu mathcin the ProjectItem under pos
             void _onCustomContextMenuRequested( const QPoint & pos );
 
+            /// Updates __defaultDir location
+            void _lastDirChanged(QString path);
+
         private:
             /// The current opened project.
             Project* __currentProj;
 
             /// The app main window
             MainWindow* __mainWidget;
+
+            /// Where to open File dialogs.
+            QString __defaultDir;
 
             /// The build model used for inference.
             BuildModel* __build;

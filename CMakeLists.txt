@@ -28,7 +28,8 @@ FILE(GLOB_RECURSE RESSOURCES "${CMAKE_SOURCE_DIR}/src/*.qrc")
 
 LIST(REMOVE_ITEM SOURCES "${CMAKE_SOURCE_DIR}/src/main.cpp")
 # remove headers that we don't need to process with MOC
-LIST(REMOVE_ITEM HEADERS "${CMAKE_SOURCE_DIR}/src/models/projectitem.h")
+LIST(REMOVE_ITEM HEADERS "${CMAKE_SOURCE_DIR}/src/models/projectitem.h"
+                         "${CMAKE_SOURCE_DIR}/src/models/settings.h")
 
 # Reproducing what QMake does
 QT4_WRAP_CPP(HEADERS_MOC ${HEADERS})

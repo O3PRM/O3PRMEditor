@@ -5,6 +5,7 @@
 #include "models/qsciscintillaextended.h"
 #include "controllers/newsearchcontroller.h"
 #include "controllers/projectcontroller.h"
+#include "controllers/settingscontroller.h"
 #include "controllers/menucontroller.h"
 #include "controllers/editorcontroller.h"
 
@@ -28,9 +29,9 @@ struct MainWindow::PrivateData
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ),
     __data( new PrivateData ),
-    ui( new Ui::MainWindow )
+    __ui( new Ui::MainWindow )
 {
-    ui->setupUi( this );
+    __ui->setupUi( this );
 
     __setupControllers();
     __setupProjectExplorer();
@@ -39,79 +40,98 @@ MainWindow::MainWindow( QWidget *parent ) :
     __setupConnections();
 
     statusBar()->showMessage(tr("Ready"));
+    emit started();
 }
 
 MainWindow::~MainWindow()
 {
     delete __data;
-    delete ui;
+    delete __ui;
 }
 
-Ui::MainWindow* MainWindow::mainwindow()
+Ui::MainWindow* MainWindow::mainWindow()
 {
-    return ui;
+    return __ui;
+}
+
+o3prm::NewSearchController* MainWindow::searchController()
+{
+    return __search; 
+}
+
+o3prm::ProjectController* MainWindow::projectController() 
+{
+    return __project; 
+}
+
+o3prm::SettingsController* MainWindow::settingsController()
+{
+    return __settings; 
+}
+
+o3prm::MenuController* MainWindow::menuController()
+{
+    return __menu; 
+}
+
+o3prm::EditorController* MainWindow::editorController()
+{
+    return __editor; 
 }
 
 void MainWindow::__setupControllers()
 {
-    //ec = new EditController( this, this );
-    sc = new o3prm::NewSearchController( this, this );
-    //vc = new ViewController( this, this );
+    __search = new o3prm::NewSearchController( this, this );
     __setupProjectController();
-    //bc = new o3prm::BuildController( this, this );
-
-    __menuContoller = new o3prm::MenuController(this);
-    __editorController = new o3prm::EditorController(this);
+    __settings = new o3prm::SettingsController(this, this);
+    __menu = new o3prm::MenuController(this);
+    __editor = new o3prm::EditorController(this);
 }
 
 void MainWindow::__setupProjectController()
 {
-    pc = new o3prm::ProjectController( this );
-    ui->projectExplorator->setVisible( false );
-    ui->projectExplorator->setDragDropMode( QAbstractItemView::NoDragDrop );
-    ui->projectExplorator->setEditTriggers( QAbstractItemView::NoEditTriggers );
-    //ui->actionProjectProperties->setEnabled( false );
+    __project = new o3prm::ProjectController( this );
+    __ui->projectExplorator->setVisible( false );
+    __ui->projectExplorator->setDragDropMode( QAbstractItemView::NoDragDrop );
+    __ui->projectExplorator->setEditTriggers( QAbstractItemView::NoEditTriggers );
 }
 
 void MainWindow::__setupTabWidget()
 {
-    ui->splitter->setStretchFactor( 1, 128 );
-    ui->splitter2->setStretchFactor( 0, 5 );
-    ui->splitter2->setStretchFactor( 1, 0 );
-    ui->splitter2->setStretchFactor( 2, 0 );
-
-    //vc->setCommandWidgetVisible( false );
+    __ui->splitter->setStretchFactor( 1, 128 );
+    __ui->splitter2->setStretchFactor( 0, 5 );
+    __ui->splitter2->setStretchFactor( 1, 0 );
+    __ui->splitter2->setStretchFactor( 2, 0 );
 }
 
 void MainWindow::__setupProjectExplorer()
 {
-    ui->projectExplorator->resize( 200, ui->projectExplorator->height() );
+    __ui->projectExplorator->resize( 200, __ui->projectExplorator->height() );
 }
 
 void MainWindow::__setupConnections()
 {
-    // Main ui's various events
-    connect( ui->actionQuit, SIGNAL( triggered() ),
+    // Main __ui's various events
+    connect( __ui->actionQuit, SIGNAL( triggered() ),
             this, SLOT( close() ) );
-    connect( ui->actionHelp, SIGNAL( triggered() ),
+    connect( __ui->actionHelp, SIGNAL( triggered() ),
             this, SLOT( showHelp() ) );
-    connect( ui->actionAbout, SIGNAL( triggered() ),
+    connect( __ui->actionAbout, SIGNAL( triggered() ),
             this, SLOT( showAboutDialog() ) );
 
-    connect( pc, SIGNAL( projectLoaded(o3prm::Project*) ),
+    connect( __project, SIGNAL( projectLoaded(o3prm::Project*) ),
             this, SLOT(loadProject(o3prm::Project*)));
-    connect( pc, SIGNAL( projectSaved(o3prm::Project*) ),
+    connect( __project, SIGNAL( projectSaved(o3prm::Project*) ),
             this, SLOT(saveProject(o3prm::Project*)));
-    connect( pc, SIGNAL( projectClosed() ),
+    connect( __project, SIGNAL( projectClosed() ),
             this, SLOT(closeProject()));
 
     // Setting up connections of each controller
-    //fc->setupConnections();
-    pc->setupConnections();
-    //bc->setupConnections();
-    sc->setupConnections();
-    __editorController->setupConnections();
-    __menuContoller->setupConnections();
+    __search->setupConnections();
+    __project->setupConnections();
+    __settings->setupConnections();
+    __editor->setupConnections();
+    __menu->setupConnections();
 }
 
 void MainWindow::saveProject(o3prm::Project* project)
@@ -121,31 +141,22 @@ void MainWindow::saveProject(o3prm::Project* project)
 
 void MainWindow::closeProject()
 {
-    __menuContoller->setProjectExploratorVisibility( false );
+    __menu->setProjectExploratorVisibility( false );
 
     //// Disable new specific file creation
-    //ui->actionNewClass->setEnabled( false );
-    //ui->actionNewModel->setEnabled( false );
-    //ui->actionNewRequestFile->setEnabled( false );
-    ui->actionShowProjectExplorator->setEnabled( false );
-    ui->projectExplorator->hide();
-
-    //// Disable auto syntax check
-    //bc->setAutoSyntaxCheck( false );
+    __ui->actionShowProjectExplorator->setEnabled( false );
+    __ui->projectExplorator->hide();
 }
 
 void MainWindow::closeEvent( QCloseEvent *event )
 {
-    //bool oldAutoSyntax = bc->isAutoSyntaxCheck();
-    //bc->setAutoSyntaxCheck( false );
-
-    if ( __editorController->quit() ) 
+    emit closing();
+    if ( __editor->quit() ) 
     {
         event->accept();
     }
     else
     {
-        //bc->setAutoSyntaxCheck( oldAutoSyntax );
         event->ignore();
     }
 }
@@ -188,24 +199,10 @@ void MainWindow::showAboutDialog()
 void MainWindow::loadProject(o3prm::Project* project)
 {
     // Show project arborescence
-    ui->actionShowProjectExplorator->setEnabled( true );
-    ui->projectExplorator->setModel( project );
-    //ui->projectExplorator->setRootIndex( project->root() );
-    __menuContoller->setProjectExploratorVisibility( true );
-    ui->projectExplorator->expandAll();
-    ui->projectExplorator->show();
-
-    // Enable new specific file creation
-    // ui->actionNewClass->setEnabled( true );
-    // ui->actionNewModel->setEnabled( true );
-    // ui->actionNewRequestFile->setEnabled( true );
-
-    // Enable auto syntax check
-    //bc->setAutoSyntaxCheck( true );
-}
-
-o3prm::ProjectController* MainWindow::projectController()
-{
-    return pc;
+    __ui->actionShowProjectExplorator->setEnabled( true );
+    __ui->projectExplorator->setModel( project );
+    __menu->setProjectExploratorVisibility( true );
+    __ui->projectExplorator->expandAll();
+    __ui->projectExplorator->show();
 }
 

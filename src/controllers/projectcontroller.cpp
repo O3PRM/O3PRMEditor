@@ -3,17 +3,11 @@
 #include <iostream>
 #include <sstream>
 
-#include "lexers/qscilexero3prml2.h"
-#include "models/qsciscintillaextended.h"
-#include "ui_mainwindow.h"
-#include "uis/mainwindow.h"
-#include "uis/newprojectdialog.h"
-#include "uis/projectproperties.h"
-
 #include <QDebug>
 #include <QDir>
 #include <QEventLoop>
 #include <QFile>
+#include <QFileInfo>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -24,6 +18,15 @@
 
 #include <QFileSystemModel>
 
+#include "ui_mainwindow.h"
+
+#include "controllers/settingscontroller.h"
+#include "lexers/qscilexero3prml2.h"
+#include "models/qsciscintillaextended.h"
+#include "uis/mainwindow.h"
+#include "uis/newprojectdialog.h"
+#include "uis/projectproperties.h"
+
 namespace o3prm
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -33,7 +36,8 @@ namespace o3prm
     ProjectController::ProjectController(MainWindow *parent ) :
         QObject( parent ),
         __currentProj( 0 ),
-        __mainWidget(parent)
+        __mainWidget(parent),
+        __defaultDir(QDir::homePath())
     {
         // Setting up context menus
         __projectMenu = new QMenu(__mainWidget);
@@ -64,20 +68,25 @@ namespace o3prm
 
     void ProjectController::setupConnections()
     {
-        connect( __mainWidget->ui->projectExplorator, SIGNAL( clicked( QModelIndex ) ),
+        connect( __mainWidget->mainWindow()->projectExplorator, SIGNAL( clicked( QModelIndex ) ),
                 this, SLOT( _onClick( QModelIndex ) ) );
-        connect( __mainWidget->ui->projectExplorator, SIGNAL( doubleClicked( QModelIndex ) ),
+        connect( __mainWidget->mainWindow()->projectExplorator, SIGNAL( doubleClicked( QModelIndex ) ),
                 this, SLOT( _onDoubleClick( QModelIndex ) ) );
-        connect( __mainWidget->ui->projectExplorator, SIGNAL( customContextMenuRequested( QPoint ) ),
+        connect( __mainWidget->mainWindow()->projectExplorator, SIGNAL( customContextMenuRequested( QPoint ) ),
                 this, SLOT( _onCustomContextMenuRequested( QPoint ) ) );
 
-        connect(__mainWidget->ui->actionNewProject, SIGNAL( triggered() ),
+        connect(__mainWidget->mainWindow()->actionNewProject, SIGNAL( triggered() ),
                 this, SLOT( _newProject() ) );
 
-        connect( __mainWidget->ui->actionOpenProject, SIGNAL( triggered() ),
+        connect( __mainWidget->mainWindow()->actionOpenProject, SIGNAL( triggered() ),
                 this, SLOT( _openProject() ) );
-        connect( __mainWidget->ui->actionCloseProject, SIGNAL( triggered() ),
+        connect( __mainWidget->mainWindow()->actionCloseProject, SIGNAL( triggered() ),
                 this, SLOT( _closeProject() ) );
+
+        connect(__mainWidget->settingsController(), SIGNAL( recentProjectClicked(QString) ),
+                this, SLOT( _openProject(QString) ));
+        connect(__mainWidget->settingsController(), SIGNAL( lastDirChanged(QString) ),
+                this, SLOT( _lastDirChanged(QString) ));
     }
 
     Project* ProjectController::currentProject() const
@@ -111,12 +120,14 @@ namespace o3prm
             __saveProject();
 
             emit projectLoaded(__currentProj);
+
+            QString path = __currentProj->dir().absoluteFilePath(__currentProj->name() + ".o3prmproject");
+            emit projectLoaded(path);
         }
     }
 
     void ProjectController::_openProject( QString path )
     {
-        std::cout << "In _openProject(" << path.toStdString() << ")" << std::endl;
         if (hasProject())
         {
             __saveProject();
@@ -127,20 +138,17 @@ namespace o3prm
         {
             path = QFileDialog::getOpenFileName ( __mainWidget,
                     tr( "Open project file" ),
-                    QDir::home().absolutePath(),
+                    __defaultDir,
                     tr("O3PRM project Files (*.o3prmproject)")
                     );
         }
 
-        std::cout << "Opening project" << std::endl;
         QFile file(path);
         if (file.open(QIODevice::ReadOnly))
         { 
-            std::cout << "Project opened: " << file.fileName().toStdString() << std::endl;
             QDomDocument doc("o3prmproject");
             if( doc.setContent( &file ) )
             {
-                std::cout << "Content set" << std::endl;
                 QFileInfo info(file);
                 auto tag = Project::itemType2String(ProjectItem::ItemType::Project).toLower();
                 auto projects = doc.elementsByTagName(tag);
@@ -155,16 +163,10 @@ namespace o3prm
                 __currentProj = Project::load(info.absoluteDir().absolutePath(), *elt, this);
 
                 emit projectLoaded(__currentProj);
-            }
-            else
-            {
-                std::cout << "Failed to set content" << std::endl;
+                QString path = __currentProj->dir().absoluteFilePath(__currentProj->name() + ".o3prmproject");
+                emit projectLoaded(path);
             }
             file.close();
-        }
-        else
-        {
-            std::cout << "Project could not be opened" << std::endl;
         }
     }
 
@@ -217,7 +219,7 @@ namespace o3prm
     {
         if (hasProject())
         {
-            auto view = __mainWidget->mainwindow()->projectExplorator;
+            auto view = __mainWidget->mainWindow()->projectExplorator;
             auto index = view->indexAt(pos);
             if (index.isValid())
             {
@@ -296,7 +298,7 @@ namespace o3prm
 
     void ProjectController::__projectCustomContextMenu(const QPoint& pos, ProjectItem* item)
     {
-        auto view = __mainWidget->mainwindow()->projectExplorator;
+        auto view = __mainWidget->mainWindow()->projectExplorator;
         auto map = view->mapToGlobal( pos ) ;
         QAction * action = __projectMenu->exec(map);
 
@@ -316,7 +318,7 @@ namespace o3prm
 
     void ProjectController::__packageCustomContextMenu(const QPoint& pos, ProjectItem* item)
     {
-        auto view = __mainWidget->mainwindow()->projectExplorator;
+        auto view = __mainWidget->mainWindow()->projectExplorator;
         auto map = view->mapToGlobal( pos ) ;
         QAction * action = __packageMenu->exec(map);
 
@@ -345,7 +347,7 @@ namespace o3prm
 
     void ProjectController::__fileCustomContextMenu(const QPoint& pos, ProjectItem* item)
     {
-        auto view = __mainWidget->mainwindow()->projectExplorator;
+        auto view = __mainWidget->mainWindow()->projectExplorator;
         auto map = view->mapToGlobal( pos ) ;
         QAction * action = __fileMenu->exec(map);
 
@@ -361,7 +363,7 @@ namespace o3prm
 
     void ProjectController::__requestCustomContextMenu(const QPoint& pos, ProjectItem* item)
     {
-        auto view = __mainWidget->mainwindow()->projectExplorator;
+        auto view = __mainWidget->mainWindow()->projectExplorator;
         auto map = view->mapToGlobal( pos ) ;
         QAction * action = __requestMenu->exec(map);
 
@@ -689,6 +691,11 @@ namespace o3prm
             result = dir.rmdir(dirName);
         }
         return result;
+    }
+
+    void ProjectController::_lastDirChanged(QString path)
+    {
+        __defaultDir = path;
     }
 
 } // o3prm

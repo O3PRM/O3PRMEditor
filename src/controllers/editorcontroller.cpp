@@ -84,7 +84,7 @@ namespace o3prm
 
     QsciScintillaExtended* EditorController::currentDocument() const
     {
-        auto obj = __mainWidget->mainwindow()->tabWidget->currentWidget();
+        auto obj = __mainWidget->mainWindow()->tabWidget->currentWidget();
         if (obj)
         {
             return qobject_cast<QsciScintillaExtended *>(obj);
@@ -210,16 +210,16 @@ namespace o3prm
         // if there is an open file then of file has changed, ask for save
         if (sci and __askForSaveIfChanged(sci, index))
         {
-            __mainWidget->mainwindow()->tabWidget->removeTab( index );
+            __mainWidget->mainWindow()->tabWidget->removeTab( index );
 
-            if ( __mainWidget->mainwindow()->tabWidget->count() == 0 ) 
+            if ( __mainWidget->mainWindow()->tabWidget->count() == 0 ) 
             {
                 __toggleEditorMenus(false);
             }
             else if ( index == 0 )
             {
                 auto new_index = (index?index-1:index); // previous tab or last one left
-                __mainWidget->mainwindow()->tabWidget->widget( new_index )->setFocus();
+                __mainWidget->mainWindow()->tabWidget->widget( new_index )->setFocus();
             }
 
             emit fileClosed(sci->filename());
