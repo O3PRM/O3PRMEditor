@@ -34,7 +34,7 @@ void QsciScintillaExtended::initParameters()
 
     setFolding( BoxedTreeFoldStyle );
 
-    QFont font( "consolas" );
+    QFont font( "courier" );
     font.setPointSize( 12 );
     font.setStyleHint( QFont::Monospace );
     setFont( font );

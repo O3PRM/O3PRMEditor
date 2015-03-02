@@ -538,7 +538,8 @@ namespace o3prm
             if (data.open(QFile::WriteOnly | QFile::Truncate)) 
             {
                 QTextStream out(&data);
-                out << __defaultPackage(file) << '\n';
+                //out << __defaultPackage(file) << '\n';
+                out << '\n';
             }
 
             __saveProject();
@@ -566,7 +567,8 @@ namespace o3prm
             if (data.open(QFile::WriteOnly | QFile::Truncate)) 
             {
                 QTextStream out(&data);
-                out << __defaultPackage(file) << '\n';
+                //out << __defaultPackage(file) << '\n';
+                out << '\n';
             }
 
             __saveProject();

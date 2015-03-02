@@ -66,7 +66,7 @@ QsciLexerO3prml2::QsciLexerO3prml2( QObject * parent ) :
     d->declarationReference = QRegExp( "^[a-zA-Z_][\\.a-zA-Z_0-9]*(\\[\\d*\\])?\\s+[a-zA-Z_][a-zA-Z_0-9]*\\s*;" );
     d->declarationAttribute = QRegExp( "^[a-zA-Z_][\\.a-zA-Z_0-9]*(\\[\\d*\\])?\\s[^\\{\\;\\=]*\\{" );
 
-    d->normalFont = QFont( "consolas", 12 );
+    d->normalFont = QFont( "courier", 12 );
     d->normalFont.setStyleHint( QFont::Monospace );
     d->normalBoldFont = QFont( d->normalFont );
     d->normalBoldFont.setBold( true );

@@ -11,7 +11,7 @@ QsciLexerO3prmr::QsciLexerO3prmr( QObject * parent ) :
     api->prepare(); 
     setAPIs( api );
 
-    QFont font( "consolas" );
+    QFont font( "courier" );
     font.setPointSize( 12 );
     font.setStyleHint( QFont::Monospace );
     setFont( font,QsciLexerJava::Default );

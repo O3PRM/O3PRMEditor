@@ -6,7 +6,7 @@
 
 QsciLexerO3prml::QsciLexerO3prml( QObject * parent ) : QsciLexerJava( parent ) 
 {
-    QFont font( "consolas" );
+    QFont font( "courier" );
     font.setPointSize( 12 );
     font.setStyleHint( QFont::Monospace );
     setFont( font,QsciLexerJava::Default );
