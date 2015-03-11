@@ -66,6 +66,9 @@ namespace o3prm
             /// Emitied before inference starts
             void beforeInference();
 
+            /// Emitied after inference finished
+            void afterInference();
+
         protected slots:
             /// Create a new project.
             /// Open a dialog and ask the name and the directory of the project.
@@ -159,6 +162,9 @@ namespace o3prm
             
             // Returns the default package declaration for item.
             QString __defaultPackage(ProjectItem* item);
+
+            /// Saves the relational sketon if item can load a system.
+            void __buildSkeleton(ProjectItem* item);
 
             /// Executes the given item if its a Request.
             void __execute(ProjectItem* item);

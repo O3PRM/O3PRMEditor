@@ -23,6 +23,7 @@
 #include "controllers/settingscontroller.h"
 #include "lexers/qscilexero3prml2.h"
 #include "models/qsciscintillaextended.h"
+#include "models/buildmodel.h"
 #include "uis/mainwindow.h"
 #include "uis/newprojectdialog.h"
 #include "uis/projectproperties.h"
@@ -55,6 +56,7 @@ namespace o3prm
         __fileMenu = new QMenu(__mainWidget);
         __fileMenu->addAction( tr( "Rename" ) )->setData( "rename" );
         __fileMenu->addAction( tr( "Delete" ) )->setData( "delete" );
+        __fileMenu->addAction( tr( "Skeleton" ) )->setData( "skeleton" );
 
         __requestMenu = new QMenu(__mainWidget);
         __requestMenu->addAction( tr( "Execute" ) )->setData( "execute" );
@@ -359,6 +361,10 @@ namespace o3prm
         {
             __delete(item);
         }
+        else if (action and action->data().toString() == "skeleton")
+        {
+            __buildSkeleton(item);
+        }
     }
 
     void ProjectController::__requestCustomContextMenu(const QPoint& pos, ProjectItem* item)
@@ -585,11 +591,46 @@ namespace o3prm
         return QString();
     }
 
+    void ProjectController::__buildSkeleton(ProjectItem* item)
+    {
+        BuildModel build(__currentProj, this);
+        QList<QPair<QString, QString>> skeletons;
+        build.skeleton(item, skeletons);
+        if (not skeletons.empty())
+        {
+        
+          for ( auto sk: skeletons )
+          {
+
+            auto caption = tr("Choose a file to save %1 skeleton graph").arg(sk.first);
+            auto path = __defaultDir + "/" + sk.first;
+            auto filename = QFileDialog::getSaveFileName(__mainWidget, caption, path, "Dot files (*.dot)");
+
+            QFile file(filename);
+
+            if( file.open( QIODevice::WriteOnly | QIODevice::Truncate) )
+            {
+              QTextStream ts( &file );
+              ts << sk.second;
+              file.close();
+            }
+
+          }
+        }
+        else
+        {
+          auto title = tr("Could not find any system");
+          auto text = tr("Loading selected file did not resolve into a system.");
+          QMessageBox::warning(__mainWidget, title, text);
+        }
+    }
+
     void ProjectController::__execute(ProjectItem* item)
     {
         emit beforeInference();
-        __build = new BuildModel(__currentProj, this);
-        auto interpreter = __build->build(item);
+
+        BuildModel build(__currentProj, this);
+        auto interpreter = build.build(item);
         std::stringstream strBuff;
         auto errors = interpreter->errorsContainer();
         if (errors.count() > 0)
@@ -618,9 +659,15 @@ namespace o3prm
             }
         }
 
+        emit afterInference();
+
         QMessageBox msgBox;
         msgBox.setText(QString::fromStdString(strBuff.str()));
         msgBox.exec();
+
+        if (interpreter) {
+          delete interpreter;
+        }
     }
 
     void ProjectController::__delete(ProjectItem* item)
