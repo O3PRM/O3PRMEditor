@@ -56,7 +56,7 @@ namespace o3prm
       {
         const auto &inst = sys.get(node);
         const auto &c = inst.type();
-        QString line = "\n%1[labe=\"%2 %3\"]";
+        QString line = "\n%1[label=\"%2 %3\"]";
         sk.append(line.arg(QString::number(node), QString::fromStdString(c.name()), QString::fromStdString(inst.name())));
       }
 
