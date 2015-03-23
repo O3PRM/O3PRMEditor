@@ -635,13 +635,8 @@ namespace o3prm
         auto errors = interpreter->errorsContainer();
         if (errors.count() > 0)
         {
-            strBuff << "Errors and warnings: ";
-            for (int i = 0; i < errors.count(); ++i)
-            {
-                auto parse_error = errors.error(i);
-                strBuff << std::endl << parse_error.msg;
-            }
-            strBuff << std::endl << std::endl;
+          interpreter->showElegantErrorsAndWarnings(strBuff);
+          interpreter->showElegantErrorsAndWarnings(std::cout);
         }
 
         if (interpreter->results().size())
