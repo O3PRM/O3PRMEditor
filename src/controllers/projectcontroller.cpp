@@ -14,6 +14,8 @@
 #include <QSettings>
 #include <QSignalMapper>
 #include <QStringBuilder>
+#include <QScrollArea>
+#include <QPlainTextEdit>
 #include <QTimer>
 
 #include <QFileSystemModel>
@@ -627,43 +629,55 @@ namespace o3prm
 
     void ProjectController::__execute(ProjectItem* item)
     {
-        emit beforeInference();
+      emit beforeInference();
 
-        BuildModel build(__currentProj, this);
-        auto interpreter = build.build(item);
-        std::stringstream strBuff;
-        auto errors = interpreter->errorsContainer();
-        if (errors.count() > 0)
+      BuildModel build(__currentProj, this);
+      auto interpreter = build.build(item);
+      std::stringstream strBuff;
+      auto errors = interpreter->errorsContainer();
+      if (errors.count() > 0)
+      {
+        interpreter->showElegantErrorsAndWarnings(strBuff);
+      }
+
+      if (interpreter->results().size())
+      {
+        strBuff << "Results: ";
+        for (size_t i = 0; i < interpreter->results().size(); ++i)
         {
-          interpreter->showElegantErrorsAndWarnings(strBuff);
-          interpreter->showElegantErrorsAndWarnings(std::cout);
+          auto result = interpreter->results()[i];
+          strBuff << std::endl << "    " << result.command << ": ";
+          for (size_t j = 0; j < result.values.size(); ++j)
+          {
+            auto value = result.values[j];
+            strBuff << "\n" << "        " << value.label << ": " << value.p;
+          }
         }
+      }
 
-        if (interpreter->results().size())
-        {
-            strBuff << "Results: ";
-            for (size_t i = 0; i < interpreter->results().size(); ++i)
-            {
-                auto result = interpreter->results()[i];
-                strBuff << std::endl << "    " << result.command << ": ";
-                for (size_t j = 0; j < result.values.size(); ++j)
-                {
-                    auto value = result.values[j];
-                    strBuff << "\n" << "        " << value.label << ": " << value.p;
-                }
-            }
-        }
+      emit afterInference();
 
-        emit afterInference();
+      if (interpreter) {
+        delete interpreter;
+      }
 
-        if (interpreter) {
-          delete interpreter;
-        }
+      QDialog * dialog = new QDialog(__mainWidget);
 
-        QMessageBox msgBox;
-        msgBox.setText(QString::fromStdString(strBuff.str()));
-        msgBox.exec();
+      QScrollArea *scroll = new QScrollArea(dialog);
+      scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+      scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
+      QPlainTextEdit *message = new QPlainTextEdit(dialog);
+      scroll->setWidget(message);
+      scroll->setWidgetResizable(true);
+
+      message->appendPlainText( QString::fromStdString(strBuff.str()) );
+      message->setReadOnly(true);
+
+      QHBoxLayout *dialog_layout = new QHBoxLayout(dialog);
+      dialog->setLayout(dialog_layout);
+      dialog->layout()->addWidget(scroll); // add scroll to the QDialog's layout
+      dialog->show();
     }
 
     void ProjectController::__delete(ProjectItem* item)

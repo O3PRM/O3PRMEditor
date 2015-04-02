@@ -171,7 +171,7 @@ QColor QsciLexerO3prml2::defaultColor( int style ) const
         }
         case Error:
         {
-            return Qt::red;
+            return Qt::black;
         }
         default:
         {
