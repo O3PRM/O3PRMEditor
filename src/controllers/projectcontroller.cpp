@@ -656,13 +656,14 @@ namespace o3prm
 
         emit afterInference();
 
+        if (interpreter) {
+          delete interpreter;
+        }
+
         QMessageBox msgBox;
         msgBox.setText(QString::fromStdString(strBuff.str()));
         msgBox.exec();
 
-        if (interpreter) {
-          delete interpreter;
-        }
     }
 
     void ProjectController::__delete(ProjectItem* item)

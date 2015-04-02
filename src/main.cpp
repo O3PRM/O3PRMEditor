@@ -26,6 +26,7 @@
 int main( int argc, char *argv[] ) try
 {
     QApplication a( argc, argv );
+    setlocale(LC_NUMERIC,"C");
     QTextCodec::setCodecForTr( QTextCodec::codecForName( "UTF-8" ) );
     QTextCodec::setCodecForCStrings( QTextCodec::codecForName( "UTF-8" ) );
     QCoreApplication::setOrganizationName( "Lip6" );

@@ -20,9 +20,11 @@ namespace o3prm
     gum::prm::o3prmr::O3prmrInterpreter* BuildModel::build(ProjectItem* item)
     {
         auto interpreter = new gum::prm::o3prmr::O3prmrInterpreter();
+
         interpreter->addPath(__project->dir().absolutePath().toStdString() + '/');
         auto path = __project->dir().absoluteFilePath(item->path());
         interpreter->interpretFile(path.toStdString());
+
         return interpreter;
     }
 
