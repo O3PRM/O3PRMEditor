@@ -169,6 +169,9 @@ namespace o3prm
             /// Executes the given item if its a Request.
             void __execute(ProjectItem* item);
 
+            /// Exports he given item in BIF format (one for each system).
+            void __export(ProjectItem* item);
+
             void __delete(ProjectItem* item);
 
             bool __removeDir(const QString & dirName);

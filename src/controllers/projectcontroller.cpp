@@ -59,6 +59,7 @@ namespace o3prm
         __fileMenu->addAction( tr( "Rename" ) )->setData( "rename" );
         __fileMenu->addAction( tr( "Delete" ) )->setData( "delete" );
         __fileMenu->addAction( tr( "Skeleton" ) )->setData( "skeleton" );
+        __fileMenu->addAction( tr( "Export" ) )->setData( "export" );
 
         __requestMenu = new QMenu(__mainWidget);
         __requestMenu->addAction( tr( "Execute" ) )->setData( "execute" );
@@ -366,6 +367,10 @@ namespace o3prm
         else if (action and action->data().toString() == "skeleton")
         {
             __buildSkeleton(item);
+        }
+        else if (action and action->data().toString() == "export")
+        {
+            __export(item);
         }
     }
 
@@ -678,6 +683,40 @@ namespace o3prm
       dialog->setLayout(dialog_layout);
       dialog->layout()->addWidget(scroll); // add scroll to the QDialog's layout
       dialog->show();
+    }
+
+    void ProjectController::__export(ProjectItem* item)
+    {
+        BuildModel build(__currentProj, this);
+        QList<QPair<QString, QString>> bns;
+        build.exportAsBIF(item, bns);
+        if (not bns.empty())
+        {
+        
+          for ( auto sk: bns )
+          {
+
+            auto caption = tr("Choose a file to save %1 grounded BayesNets ").arg(sk.first);
+            auto path = __defaultDir + "/" + sk.first;
+            auto filename = QFileDialog::getSaveFileName(__mainWidget, caption, path, "BIF files (*.bif)");
+
+            QFile file(filename);
+
+            if( file.open( QIODevice::WriteOnly | QIODevice::Truncate) )
+            {
+              QTextStream ts( &file );
+              ts << sk.second;
+              file.close();
+            }
+
+          }
+        }
+        else
+        {
+          auto title = tr("Could not find any system");
+          auto text = tr("Loading selected file did not resolve into a system.");
+          QMessageBox::warning(__mainWidget, title, text);
+        }
     }
 
     void ProjectController::__delete(ProjectItem* item)

@@ -2,6 +2,10 @@
 
 #include <QPair>
 
+#include <agrum/BN/BayesNet.h>
+#include <agrum/BN/BayesNetFactory.h>
+#include <agrum/BN/io/BIF/BIFWriter.h>
+
 #include <agrum/PRM/o3prm/O3prmReader.h>
 
 namespace o3prm
@@ -82,6 +86,43 @@ namespace o3prm
       }
       sk.append("\n}");
       return sk;
+    }
+
+    void BuildModel::exportAsBIF(ProjectItem* item, QList<QPair<QString, QString>> &result) 
+    {
+      auto path = __project->dir().absoluteFilePath(item->path());
+      gum::prm::o3prm::O3prmReader<double> reader;
+      QString package = item->path().replace("/", ".");
+      reader.readFile(path.toStdString(), package.toStdString());
+      auto prm = reader.prm();
+
+      if (not prm->systems().empty())
+      {
+        for ( auto sys: prm->systems() ) {
+          gum::BayesNet<double> bn;
+          gum::BayesNetFactory<double> bn_fact(&bn);
+          sys->groundedBN(bn_fact);
+
+          gum::BIFWriter<double> writer;
+          std::stringstream str;
+
+          writer.write(str, bn);
+
+          QString name = QString::fromStdString(sys->name());
+          std::cout << std::endl;
+          std::cout << str.str();
+          std::cout << std::endl;
+          std::cout << bn.size() << std::endl;
+
+          QString ground = QString::fromStdString( str.str() );
+
+          auto pair = qMakePair(name, ground);
+
+          result.push_back(pair);
+        }
+      }
+
+      delete prm;
     }
 
 } // o3prm

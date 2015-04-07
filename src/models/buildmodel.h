@@ -34,6 +34,11 @@ namespace o3prm
              */
             void skeleton(ProjectItem* item, QList<QPair<QString, QString>> &skeleton);
 
+            /*!
+              Return the grounded BayesNet in BIF format for each system.
+             */
+            void exportAsBIF(ProjectItem* item, QList<QPair<QString, QString>> &result) ;
+
         private:
             Project* __project;
 
