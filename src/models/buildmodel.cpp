@@ -92,34 +92,28 @@ namespace o3prm
     {
       auto path = __project->dir().absoluteFilePath(item->path());
       gum::prm::o3prm::O3prmReader<double> reader;
+      reader.addClassPath( __project->dir().absolutePath().toStdString() );
       QString package = item->path().replace("/", ".");
       reader.readFile(path.toStdString(), package.toStdString());
       auto prm = reader.prm();
 
-      if (not prm->systems().empty())
-      {
-        for ( auto sys: prm->systems() ) {
-          gum::BayesNet<double> bn;
-          gum::BayesNetFactory<double> bn_fact(&bn);
-          sys->groundedBN(bn_fact);
+      reader.showElegantErrorsAndWarnings();
 
-          gum::BIFWriter<double> writer;
-          std::stringstream str;
+      for ( auto sys: prm->systems() ) {
+        gum::BayesNet<double> bn;
+        gum::BayesNetFactory<double> bn_fact(&bn);
+        sys->groundedBN(bn_fact);
 
-          writer.write(str, bn);
+        gum::BIFWriter<double> writer;
+        std::stringstream str;
 
-          QString name = QString::fromStdString(sys->name());
-          std::cout << std::endl;
-          std::cout << str.str();
-          std::cout << std::endl;
-          std::cout << bn.size() << std::endl;
+        writer.write(str, bn);
 
-          QString ground = QString::fromStdString( str.str() );
+        auto name = QString::fromStdString(sys->name());
+        auto ground = QString::fromStdString( str.str() );
+        auto pair = qMakePair(name, ground);
 
-          auto pair = qMakePair(name, ground);
-
-          result.push_back(pair);
-        }
+        result.push_back(pair);
       }
 
       delete prm;
