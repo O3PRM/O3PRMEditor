@@ -43,6 +43,7 @@ namespace o3prm
             Project* __project;
 
             QString __skeleton(gum::prm::System<double> &sys);
+            QString __retrievePackage( ProjectItem *item );
     };
 
 }
