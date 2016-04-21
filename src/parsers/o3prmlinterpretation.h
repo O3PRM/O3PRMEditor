@@ -1,18 +1,8 @@
 #ifndef O3PRMLINTERPRETATION_H
 #define O3PRMLINTERPRETATION_H
 
+#include <agrum/PRM/o3prm/O3prmReader.h>
 #include "abstractparser.h"
-
-namespace gum
-{
-  namespace prm 
-  {
-    namespace o3prm 
-    {
-      template<typename GUM_SCALAR> class O3prmReader;
-    }
-  }
-}
 
 /*!
   This class read a o3prm file to check its syntax.
