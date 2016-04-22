@@ -45,8 +45,6 @@
   <qresource prefix="/">
     <file>api/o3prml.api</file>
     <file>api/o3prmr.api</file>
-    <file>doc/capture_o3prmeditor_7zones.png</file>
     <file>doc/index.html</file>
-    <file>doc/capture_o3prmeditor_editeur_annote.png</file>
   </qresource>
 </RCC>
