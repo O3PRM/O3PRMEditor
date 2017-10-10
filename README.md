@@ -1,4 +1,4 @@
-**This project is no longer maintaned. Check out the `prm_run` O3PRM interpreter for the latest O3PRM implementation: http://gitlab.com/agrumery/agrum**
+**This project is no longer maintained. Check out the `prm_run` O3PRM interpreter for the latest O3PRM implementation: http://gitlab.com/agrumery/agrum**
 
 O3PRMEditor
 ===========
